@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    tools:context=".activity.forum.nova_discussao.ForumNovaDiscussaoActivity">
+
+    <TextView
+        android:text="@string/titulo"
+        android:id="@+id/lblTitulo"
+        style="@style/AppTema.AppTextTitulo" />
+
+    <TextView
+        android:text="0 / 30"
+        android:id="@+id/lblContTitulo"
+        style="@style/AppTema.AppInfoTitulo" />
+
+    <EditText
+        android:id="@+id/txtTituloDiscussao"
+        android:layout_below="@+id/lblTitulo"
+        android:maxLength="30"
+        android:singleLine="true"
+        android:inputType="textCapSentences"
+        android:textColor="@color/colorSecondaryText"
+        android:layout_marginTop="5dp"
+        style="@style/AppTema.AppItemFrame" />
+
+    <TextView
+        android:text="@string/descricao"
+        android:id="@+id/lblDescricao"
+        android:layout_below="@+id/txtTituloDiscussao"
+        style="@style/AppTema.AppTextTitulo" />
+
+    <TextView
+        android:text="0 / 250"
+        android:id="@+id/lblContDescricao"
+        android:layout_below="@+id/txtTituloDiscussao"
+        style="@style/AppTema.AppInfoTitulo" />
+
+    <EditText
+        android:id="@+id/txtDescricaoDiscussao"
+        android:layout_below="@+id/lblDescricao"
+        android:maxLength="250"
+        android:inputType="textCapSentences|textMultiLine"
+        android:maxLines="10"
+        android:gravity="top|left"
+        android:scrollbars="vertical"
+        android:textColor="@color/colorSecondaryText"
+        android:layout_marginTop="5dp"
+        style="@style/AppTema.AppItemFrame" />
+
+    <Button
+        android:text="@string/criar"
+        android:id="@+id/btnCriarDiscussao"
+        android:layout_below="@+id/txtDescricaoDiscussao"
+        android:layout_marginTop="20dp"
+        android:onClick="salvar"
+        style="@style/AppTema.AppBotao" />
+
+</RelativeLayout>

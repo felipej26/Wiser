@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="br.com.wiser">
+
+    <!-- Permissões -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/logo_wiser_2"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTema">
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <!-- Activity do Splash Screen -->
+        <!-- Activity Main do App -->
+        <activity
+            android:name=".activity.app.splashscreen.AppSplashScreenActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name"
+            android:theme="@style/AppTema.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Activity para Logar com o Facebook -->
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+
+        <!-- Activity da Tela Configurações do App -->
+        <activity
+            android:name=".activity.app.configuracoes.AppConfiguracoesActivity"
+            android:label="@string/app_configuracoes_title"
+            android:screenOrientation="portrait" />
+
+        <!-- Activity da Tela Login do App -->
+        <activity
+            android:name=".activity.app.login.AppLoginActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTema.NoActionBar" />
+
+        <!-- Activity da Tela Principal do App -->
+        <activity
+            android:name=".activity.app.principal.AppPrincipalActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppCompatTema"/>
+
+        <!-- Activity da Tela Sobre do App -->
+        <activity
+            android:name=".activity.app.sobre.AppSobreActivity"
+            android:label="@string/app_sobre_title"
+            android:screenOrientation="portrait" />
+
+        <!-- Activity da Tela de Conversas do Chat  -->
+        <activity
+            android:name="br.com.wiser.activity.chat.mensagens.ChatMensagensActivity"
+            android:label="@string/chat_resultados_title"
+            android:screenOrientation="portrait" />
+
+        <!-- Activity da Tela de Resultados do Chat  -->
+        <activity
+            android:name=".activity.encontrarusuarios.resultados.ChatResultadosActivity"
+            android:label="@string/chat_resultados_title"
+            android:screenOrientation="portrait" />
+
+        <!-- Activity da Tela de Discussões do Forum -->
+        <activity
+            android:name=".activity.forum.discussao.ForumDiscussaoActivity"
+            android:label="@string/forum_discussao_title"
+            android:screenOrientation="portrait" />
+
+        <!-- Activity da Tela de Discussões do Usuário do Forum -->
+        <activity
+            android:name=".activity.forum.minhas_discussoes.ForumMinhasDiscussoesActivity"
+            android:label="@string/forum_minhasdiscussoes_title"
+            android:screenOrientation="portrait" />
+
+        <!-- Activity da Tela de Nova Discussão do Forum -->
+        <activity
+            android:name=".activity.forum.nova_discussao.ForumNovaDiscussaoActivity"
+            android:label="@string/forum_novadiscussao_title"
+            android:screenOrientation="portrait" />
+
+        <!-- Activity da Tela de Pesquisa do Forum -->
+        <activity
+            android:name=".activity.forum.pesquisa.ForumPesquisaActivity"
+            android:label="@string/forum_pesquisa_title"
+            android:screenOrientation="portrait" />
+
+    </application>
+
+</manifest>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.forum.pesquisa.ForumPesquisaActivity" >
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtDiscussao"
+        android:layout_alignStart="@+id/recycler_view"
+        android:layout_toStartOf="@+id/btnProcurarDiscussao"
+        android:layout_alignBottom="@+id/btnProcurarDiscussao"
+        android:hint="@string/procure_por"
+        android:singleLine="true"
+        android:textColor="#3a3939"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/procurar"
+        android:id="@+id/btnProcurarDiscussao"
+        android:onClick="procurarDiscussao"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:textColor="@color/colorPrimaryInverseText"
+        android:background="@drawable/btncustomshape"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Resultados para ''"
+        android:id="@+id/lblResultados"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/txtDiscussao" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="(0) Discussões Encontradas"
+        android:id="@+id/lblContResultados"
+        android:layout_below="@+id/lblResultados"
+        android:layout_centerHorizontal="true" />
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pgbLoading"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:progressDrawable="@drawable/circular_loading"
+        android:visibility="invisible"
+        style="?android:attr/progressBarStyleLarge" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:scrollbars="vertical"
+        android:layout_below="@id/lblContResultados" />
+
+</RelativeLayout>

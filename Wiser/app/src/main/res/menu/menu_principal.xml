@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/itmMinhasDiscussoes"
+        android:title="@string/forum_minhasdiscussoes_title" />
+
+    <item
+        android:id="@+id/itmConfiguracoes"
+        android:title="@string/menu_configuracoes_title" />
+
+    <item
+        android:id="@+id/itmSobre"
+        android:title="@string/menu_sobre_title" />
+
+    <item
+        android:id="@+id/itmSair"
+        android:title="@string/menu_sair_title" />
+
+</menu>

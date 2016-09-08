@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.app.configuracoes.AppConfiguracoesActivity">
+
+    <TextView
+        android:text="@string/idioma"
+        android:id="@+id/lblIdioma"
+        style="@style/AppTema.AppTextTitulo" />
+
+    <ImageView
+        android:layout_height="60dp"
+        android:id="@+id/imageView2"
+        android:layout_below="@+id/lblIdioma"
+        style="@style/AppTema.AppFrame" />
+
+    <Spinner
+        android:id="@+id/cmbIdiomaConfig"
+        android:spinnerMode="dropdown"
+        android:layout_below="@id/lblIdioma"
+        android:layout_marginTop="15dp"
+        style="@style/AppTema.AppItemFrame" />
+
+    <TextView
+        android:text="@string/fluencia"
+        android:id="@+id/lblFluencia"
+        android:layout_below="@id/imageView2"
+        style="@style/AppTema.AppTextTitulo" />
+
+    <ImageView
+        android:layout_height="60dp"
+        android:id="@+id/imageView3"
+        android:layout_below="@+id/lblFluencia"
+        android:layout_centerHorizontal="true"
+        style="@style/AppTema.AppFrame" />
+
+    <Spinner
+        android:id="@+id/cmbFluenciaConfig"
+        android:spinnerMode="dropdown"
+        android:layout_below="@id/lblFluencia"
+        android:layout_marginTop="15dp"
+        style="@style/AppTema.AppItemFrame" />
+
+    <TextView
+        android:text="@string/app_configuracoes_item_status"
+        android:id="@+id/lblStatus"
+        android:layout_below="@id/imageView3"
+        style="@style/AppTema.AppTextTitulo"/>
+
+    <TextView
+        android:id="@+id/lblContLetras"
+        android:text="0 / 30"
+        android:layout_below="@id/imageView3"
+        style="@style/AppTema.AppInfoTitulo" />
+
+    <ImageView
+        android:layout_height="60dp"
+        android:id="@+id/imageView4"
+        android:layout_below="@+id/lblStatus"
+        style="@style/AppTema.AppFrame" />
+
+    <EditText
+        android:id="@+id/txtStatus"
+        android:layout_below="@+id/lblStatus"
+        android:textColor="@color/colorSecondaryText"
+        android:layout_marginTop="18dp"
+        android:background="@null"
+        android:maxLength="30"
+        android:gravity="top"
+        android:singleLine="true"
+        android:textSize="18dp"
+        android:inputType="textCapSentences"
+        android:hint="Digite seus status aqui..."
+        style="@style/AppTema.AppItemFrame" />
+
+    <Button
+        android:text="@string/salvar"
+        android:id="@+id/btnSalvar"
+        android:onClick="salvar"
+        android:layout_below="@+id/imageView4"
+        android:layout_marginTop="20dp"
+        style="@style/AppTema.AppBotao" />
+
+    <Button
+        android:text="@string/desativar_conta"
+        android:id="@+id/btnDesativar"
+        android:onClick="desativar"
+        android:layout_below="@+id/btnSalvar"
+        android:layout_marginTop="10dp"
+        style="@style/AppTema.AppBotao" />
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pgbLoading"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:progressDrawable="@drawable/circular_loading"
+        android:visibility="invisible"
+        style="?android:attr/progressBarStyleLarge" />
+
+</RelativeLayout>
