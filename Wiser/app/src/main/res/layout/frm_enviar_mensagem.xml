@@ -26,7 +26,8 @@
         android:maxLength="250"
         android:maxLines="5"
         android:hint="Digite sua mensagem aqui..."
-        android:textColor="#414040" />
+        android:textColor="#414040"
+        android:capitalize="sentences" />
 
     <Button
         android:layout_width="50dp"

@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class AppConfiguracoesActivity extends Activity {
 
@@ -78,6 +79,7 @@ public class AppConfiguracoesActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         onBackPressed();
+        salvar();
         return true;
     }
 
@@ -90,22 +92,7 @@ public class AppConfiguracoesActivity extends Activity {
         }
     }
 
-    public void salvar(View view) {
-        AlertDialog.Builder dialogo = new AlertDialog.Builder(this);
-
-        dialogo.setTitle(getString(R.string.confirmar));
-        dialogo.setMessage(getString(R.string.confirmar_salvar));
-        dialogo.setPositiveButton(getString(R.string.sim), new DialogInterface.OnClickListener(){
-            public void onClick(DialogInterface dialog, int id){
-                salvar();
-            }
-        });
-        dialogo.setNegativeButton(getString(R.string.nao), null);
-        dialogo.show();
-    }
-
     private void salvar(){
-        AlertDialog.Builder dialogo = new AlertDialog.Builder(this);
         UsuarioDAO usuario = new UsuarioDAO(Sistema.getUsuario(this).getUserID());
 
         ComboBoxItem comboBoxItem = (ComboBoxItem)cmbIdioma.getItemAtPosition(cmbIdioma.getSelectedItemPosition());
@@ -121,22 +108,10 @@ public class AppConfiguracoesActivity extends Activity {
             Sistema.getUsuario(this).setFluencia(usuario.getFluencia());
             Sistema.getUsuario(this).setStatus(usuario.getStatus());
             Sistema.getUsuario(this).setSetouConfiguracoes(true);
-
-            dialogo.setTitle(getString(R.string.sucesso));
-            dialogo.setMessage(getString(R.string.sucesso_salvar_configuracao));
-            dialogo.setNeutralButton(getString(R.string.ok),  new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    finish();
-                }
-            });
         }
         else {
-            dialogo.setTitle(getString(R.string.erro));
-            dialogo.setMessage(getString(R.string.erro_salvar_configuracao));
-            dialogo.setNeutralButton(R.string.ok,  null);
+            Toast.makeText(AppConfiguracoesActivity.this, getString(R.string.erro_salvar_configuracao), Toast.LENGTH_SHORT).show();
         }
-
-        dialogo.show();
     }
 
     public void desativar(View view){

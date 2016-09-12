@@ -11,6 +11,8 @@ import java.util.List;
 
 import br.com.wiser.R;
 import br.com.wiser.business.chat.conversas.Conversas;
+import br.com.wiser.business.chat.mensagem.Mensagem;
+import br.com.wiser.utils.Utils;
 
 /**
  * Created by Jefferson on 30/05/2016.
@@ -18,20 +20,19 @@ import br.com.wiser.business.chat.conversas.Conversas;
 public class ChatMensagensAdapter extends RecyclerView.Adapter<ChatMensagensAdapter.ViewHolder> {
 
     private Context context;
-    private List<Conversas> mensagens;
+    private List<Mensagem> mensagens;
 
     private final int USUARIO = 0;
     private final int CONTATO = 1;
 
-    public ChatMensagensAdapter(Context context, List<Conversas> mensagens) {
+    public ChatMensagensAdapter(Context context, List<Mensagem> mensagens) {
         this.context = context;
         this.mensagens = mensagens;
     }
 
     @Override
     public int getItemViewType(int position) {
-        //return (mensagens.get(position).getUserID().equals(Sistema.USER_ID)) ? USUARIO : CONTATO;
-        return Integer.parseInt(null);
+        return (mensagens.get(position).isDestinatario() ? CONTATO : USUARIO);
     }
 
     @Override
@@ -53,13 +54,13 @@ public class ChatMensagensAdapter extends RecyclerView.Adapter<ChatMensagensAdap
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Conversas m = mensagens.get(position);
-        //holder.lblDataHora.setText(FuncoesData.formatDate(m.getDataHora(), FuncoesData.getDiferencaDataDiferenteHoje(m.getDataHora()) ? FuncoesData.HHMM : FuncoesData.DDMMYYYY_HHMM));
-        //holder.lblMensagem.setText(m.getMensagem().trim());
+        Mensagem m = mensagens.get(position);
+        holder.lblDataHora.setText(m.getData().toString());
+        holder.lblMensagem.setText(m.getMensagem().trim());
 
-        //if(!m.getLido()){
-        //    Utils.vibrar(context, 150);
-        //}
+        if (!m.isLida()) {
+            Utils.vibrar(context, 150);
+        }
     }
 
     @Override

@@ -87,8 +87,6 @@ public class ChatMensagensActivity extends Activity {
         final Context context = this;
         final Handler hCarregar = new Handler();
 
-        //objConversa.carregarMensagens();
-
         if (objConversa.getMensagens() == null || objConversa.getMensagens().isEmpty()) {
             return;
         }
@@ -102,7 +100,7 @@ public class ChatMensagensActivity extends Activity {
             }
         });
 
-        // objConversa.atualizarLidas();
+        // TODO: objConversa.atualizarLidas();
     }
 
     public void enviar(View view) {
@@ -110,7 +108,7 @@ public class ChatMensagensActivity extends Activity {
         String texto = objConversa.toString().trim();
 
         if (!texto.isEmpty()) {
-            //objConversa.enviarMensagem(texto);
+            objConversa.enviarMensagem(texto);
             txtResposta.setText("");
         }
     }

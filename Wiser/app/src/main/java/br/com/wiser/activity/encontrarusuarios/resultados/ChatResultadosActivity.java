@@ -51,8 +51,6 @@ public class ChatResultadosActivity extends Activity {
     }
 
     private void carregar(){
-        listaUsuarios = Facebook.getProfiles(listaUsuarios);
-
         objCustomGridAdapter = new ChatResultadosAdapter(this, R.layout.chat_resultados_grid, listaUsuarios);
         grdResultado.setAdapter(objCustomGridAdapter);
     }

@@ -73,21 +73,9 @@ public class AppPrincipalActivity extends AppCompatActivity {
         return (true);
     }
 
-    public void verificarConfiguracao(){
-
+    public void verificarConfiguracao() {
         if (!Sistema.getUsuario(this).isSetouConfiguracoes()){
-            AlertDialog.Builder dialogo = new AlertDialog.Builder(this);
-
-            dialogo.setTitle(getString(R.string.configurar));
-            dialogo.setMessage(getString(R.string.configuracoes_nao_personalizadas)
-                    + "\n" + getString(R.string.fazer_agora));
-            dialogo.setPositiveButton(getString(R.string.sim), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    Utils.chamarActivity(AppPrincipalActivity.this, Activities.APP_CONFIGURACOES);
-                }
-            });
-            dialogo.setNegativeButton(getString(R.string.nao), null);
-            dialogo.show();
+            Utils.chamarActivity(this, Activities.APP_CONFIGURACOES);
         }
     }
 

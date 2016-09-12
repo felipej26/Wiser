@@ -2,13 +2,16 @@ package br.com.wiser.enums;
 
 public enum Models {
 
-    DISCUSSAO(0),
-    DISCUSSAORESPOSTA(1),
-    FLUENCIA(2),
-    IDIOMA(3),
-    MENSAGENS(4),
-    USER(5),
-    ACCESSTOKEN(6);
+    CONVERSA(0),
+    CONVERSAMENSAGEM(1),
+    CONVERSAUSUARIO(2),
+    DISCUSSAO(3),
+    DISCUSSAORESPOSTA(4),
+    FACEBOOK(5),
+    FLUENCIA(6),
+    IDIOMA(7),
+    LINGUAGEM(8),
+    USUARIO(9);
 
     public int getEnmModels;
     Models(int valor) {

@@ -22,7 +22,8 @@
         android:inputType="textCapSentences"
         android:textColor="@color/colorSecondaryText"
         android:layout_marginTop="5dp"
-        style="@style/AppTema.AppItemFrame" />
+        style="@style/AppTema.AppItemFrame"
+        android:capitalize="sentences" />
 
     <TextView
         android:text="@string/descricao"
@@ -46,7 +47,8 @@
         android:scrollbars="vertical"
         android:textColor="@color/colorSecondaryText"
         android:layout_marginTop="5dp"
-        style="@style/AppTema.AppItemFrame" />
+        style="@style/AppTema.AppItemFrame"
+        android:capitalize="sentences" />
 
     <Button
         android:text="@string/criar"

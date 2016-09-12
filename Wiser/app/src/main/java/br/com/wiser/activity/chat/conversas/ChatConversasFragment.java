@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import java.util.LinkedList;
 
 import br.com.wiser.R;
+import br.com.wiser.Sistema;
 import br.com.wiser.business.chat.conversas.ConversasDAO;
 
 /**
@@ -67,11 +68,12 @@ public class ChatConversasFragment extends Fragment {
             @Override
             public void run() {
                 while(true) {
-                    tratarLoading(hCarregar, context, objMensagens.carregarGeral());
+                    tratarLoading(hCarregar, context, objMensagens.carregarGeral(Sistema.getUsuario(context)));
 
                     try {
                         Thread.sleep(3000);
-                    }catch (Exception e){
+                    }
+                    catch (Exception e) {
                         continue;
                     }
                 }

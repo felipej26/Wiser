@@ -73,23 +73,16 @@
         android:textSize="18dp"
         android:inputType="textCapSentences"
         android:hint="Digite seus status aqui..."
-        style="@style/AppTema.AppItemFrame" />
-
-    <Button
-        android:text="@string/salvar"
-        android:id="@+id/btnSalvar"
-        android:onClick="salvar"
-        android:layout_below="@+id/imageView4"
-        android:layout_marginTop="20dp"
-        style="@style/AppTema.AppBotao" />
+        style="@style/AppTema.AppItemFrame"
+        android:capitalize="sentences" />
 
     <Button
         android:text="@string/desativar_conta"
         android:id="@+id/btnDesativar"
         android:onClick="desativar"
-        android:layout_below="@+id/btnSalvar"
+        android:layout_below="@+id/imageView4"
         android:layout_marginTop="10dp"
-        style="@style/AppTema.AppBotao" />
+        style="@style/AppTema.AppBotao.Atencao" />
 
     <ProgressBar
         android:layout_width="wrap_content"

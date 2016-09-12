@@ -96,6 +96,7 @@ public class ForumDiscussaoActivity extends Activity {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setFocusable(false);
 
         txtResposta = (EditText) findViewById(R.id.txtResposta);
 
@@ -129,7 +130,7 @@ public class ForumDiscussaoActivity extends Activity {
         lblDataHora.setText(FuncoesData.formatDate(objDiscussao.getDataHora(), FuncoesData.DDMMYYYY_HHMMSS));
         lblRespostas.setText(getString(objDiscussao.getListaRespostas().size() == 1 ? R.string.resposta : R.string.respostas, objDiscussao.getListaRespostas().size()));
 
-        if(objDiscussao.getListaRespostas() == null || objDiscussao.getListaRespostas().isEmpty()){
+        if (objDiscussao.getListaRespostas() == null || objDiscussao.getListaRespostas().isEmpty()) {
             return;
         }
 

@@ -19,7 +19,9 @@ import java.util.List;
 import br.com.wiser.Sistema;
 import br.com.wiser.business.app.facebook.Facebook;
 import br.com.wiser.business.app.usuario.Usuario;
+import br.com.wiser.business.chat.conversas.Conversas;
 import br.com.wiser.business.chat.conversas.ConversasDAO;
+import br.com.wiser.business.chat.mensagem.Mensagem;
 import br.com.wiser.business.encontrarusuarios.pesquisa.Pesquisa;
 import br.com.wiser.business.forum.discussao.Discussao;
 import br.com.wiser.business.forum.discussao.DiscussaoDAO;
@@ -41,7 +43,7 @@ public class Servidor {
             JSONObject json;
 
             //TODO colocar try/catch
-            Response response = requestGET(Models.ACCESSTOKEN, "getAccessToken");
+            Response response = requestGET(Models.FACEBOOK, "getAccessToken");
 
             if (response.getCodeResponse() != HttpURLConnection.HTTP_OK)
             {
@@ -69,11 +71,9 @@ public class Servidor {
 
             try {
                 parametros.put("linguagem", Sistema.APP_LINGUAGEM);
-                jsonArray = new JSONArray(requestGET(Models.IDIOMA, "getIdiomas", parametros).getMessageResponse());
+                parametros.put("todos", itemTodos);
 
-                if (itemTodos) {
-                    idiomas.add(new ComboBoxItem(0, "Todos"));
-                }
+                jsonArray = new JSONArray(requestGET(Models.IDIOMA, "getIdiomas", parametros).getMessageResponse());
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     json = jsonArray.getJSONObject(i);
@@ -97,11 +97,9 @@ public class Servidor {
 
             try {
                 parametros.put("linguagem", Sistema.APP_LINGUAGEM);
-                jsonArray = new JSONArray(requestGET(Models.FLUENCIA, "getFluencias", parametros).getMessageResponse());
+                parametros.put("todos", itemTodos);
 
-                if (itemTodos) {
-                    fluencias.add(new ComboBoxItem(0, "Todos"));
-                }
+                jsonArray = new JSONArray(requestGET(Models.FLUENCIA, "getFluencias", parametros).getMessageResponse());
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     json = jsonArray.getJSONObject(i);
@@ -133,7 +131,7 @@ public class Servidor {
                 json.put("latitude", usuario.getLatitude());
                 json.put("longitude", usuario.getLongitude());
 
-                response = requestPOST(Models.USER, "updateOrCreateUser", json.toString());
+                response = requestPOST(Models.USUARIO, "updateOrCreate", json.toString());
 
                 if (response.getCodeResponse() != HttpURLConnection.HTTP_OK) {
                     throw new Exception(response.getCodeResponse() + "-" + response.getMessageResponse());
@@ -163,7 +161,7 @@ public class Servidor {
                 json.put("fluencia", usuario.getFluencia());
                 json.put("status", usuario.getStatus());
 
-                response = requestPOST(Models.USER, "salvarConfiguracoes", json.toString());
+                response = requestPOST(Models.USUARIO, "salvarConfiguracoes", json.toString());
 
                 if (response.getCodeResponse() != HttpURLConnection.HTTP_OK) {
                     return false;
@@ -183,7 +181,7 @@ public class Servidor {
             try {
                 json.put("id", usuario);
 
-                response = requestPOST(Models.USER, "desativarConta", json.toString());
+                response = requestPOST(Models.USUARIO, "desativarConta", json.toString());
 
                 if (response.getCodeResponse() != HttpURLConnection.HTTP_OK) {
                     return false;
@@ -215,19 +213,10 @@ public class Servidor {
 
                 parametros.put("distancia", pesquisa.getDistancia());
 
-                jsonResultados = new JSONArray(requestGET(Models.USER, "encontrarUsuarios", parametros).getMessageResponse());
+                jsonResultados = new JSONArray(requestGET(Models.USUARIO, "encontrarUsuarios", parametros).getMessageResponse());
 
                 for (int i = 0; i < jsonResultados.length(); i++) {
-                    JSONObject jsonUsuario = jsonResultados.getJSONObject(i);
-
-                    Usuario usuario = new Usuario(jsonUsuario.getLong("id"));
-                    usuario.setFacebookID(jsonUsuario.getString("facebook_id"));
-                    usuario.setIdioma(jsonUsuario.getInt("idioma"));
-                    usuario.setFluencia(jsonUsuario.getInt("fluencia"));
-                    usuario.setDataUltimoAcesso(formatarData.parse(jsonUsuario.getString("data_ultimo_acesso").replaceAll("Z$", "+0000")));
-                    usuario.setStatus(jsonUsuario.getString("status"));
-
-                    listaResultados.add(usuario);
+                    listaResultados.add(getUsuarioJSON(jsonResultados.getJSONObject(i), true));
                 }
             }
             catch (Exception e) {
@@ -238,62 +227,62 @@ public class Servidor {
         }
     }
 
-    public class Mensagens extends AbstractServidor {
+    public class Chat extends AbstractServidor {
 
-        public Mensagens(Usuario usuario) {
+        public Chat(Usuario usuario) {
             super(usuario);
         }
 
         public LinkedList<ConversasDAO> carregarGeral() {
-            LinkedList<ConversasDAO> conversas = new LinkedList<ConversasDAO>();
+            LinkedList<ConversasDAO> listaConversas = new LinkedList<ConversasDAO>();
             GETParametros parametros = new GETParametros();
-            JSONArray jsonMensagens;
+            JSONArray jsonConversas;
 
             try {
-                parametros.put("user", usuario);
+                parametros.put("usuario", usuario);
 
-                jsonMensagens = new JSONArray(requestGET(Models.MENSAGENS, parametros).getMessageResponse());
+                jsonConversas = new JSONArray(requestGET(Models.CONVERSAMENSAGEM, "carregarMensagens", parametros).getMessageResponse());
+
+                for(int i = 0; i < jsonConversas.length(); i++) {
+                    JSONObject jsonConversa = jsonConversas.getJSONObject(i);
+                    JSONArray jsonUsuarios = jsonConversa.getJSONArray("usuarios");
+                    JSONArray jsonMensagens = jsonConversa.getJSONArray("mensagens");
+
+                    ConversasDAO conversa = new ConversasDAO();
+                    Mensagem mensagem;
+                    Usuario destinatario;
+
+                    conversa.setId(jsonConversa.getLong("id"));
+
+                    for (int j = 0; j < jsonUsuarios.length(); j++) {
+                        if (jsonUsuarios.getJSONObject(j).getLong("usuario") != usuario.getUserID()) {
+                            destinatario = new Usuario(jsonUsuarios.getJSONObject(j).getLong("usuario"));
+                            conversa.setDestinatario(destinatario);
+                        }
+                    }
+
+                    for (int j = 0; j < jsonMensagens.length(); j++) {
+                        JSONObject json = new JSONObject();
+                        mensagem = new Mensagem();
+
+                        mensagem.setId(json.getLong("id"));
+                        mensagem.setDestinatario(json.getLong("usuario") == usuario.getUserID());
+                        mensagem.setData(formatarData.parse(json.getString("data").replaceAll("Z$", "+0000")));
+                        mensagem.setLida(json.getBoolean("lida"));
+                        mensagem.setMensagem(json.getString("mensagem"));
+
+                        conversa.getMensagens().add(mensagem);
+                    }
+
+                    listaConversas.add(conversa);
+                }
             }
             catch (Exception ex) {
                 ex.printStackTrace();
             }
 
-
-            return conversas;
+            return listaConversas;
         }
-
-//
-//        public LinkedList<Conversas.InfoMensagem> getConversa(String destinatarioID) {
-//            LinkedList<Mensagem> mensagens = new LinkedList<Mensagem>();
-//            GETParametros parametros = new GETParametros();
-//
-//            JSONObject jsonDados;
-//            JSONArray jsonMensagens;
-//
-//            try {
-//                parametros.put("user", Sistema.USUARIO.getUserID());
-//                parametros.put("destinatario", destinatarioID);
-//
-//                jsonDados = new JSONObject(requestGET(Models.MENSAGENS, parametros).getMessageResponse());
-//                jsonMensagens = jsonDados.getJSONArray("mensagens");
-//
-//                for (int i = 0; i < jsonMensagens.length(); i++) {
-//                    Mensagem infoMensagem = new Mensagem();
-//                    JSONObject mensagem = jsonMensagens.getJSONObject(i);
-//
-//                    infoMensagem.ID = mensagem.getInt("id");
-//                    infoMensagem.dataHora = Date.valueOf(mensagem.getString("data"));
-//                    infoMensagem.mensagem = mensagem.getString("conteudo");
-//                    infoMensagem.lido = mensagem.getBoolean("lida");
-//                    mensagens.add(infoMensagem);
-//                }
-//            }
-//            catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//
-//            return mensagens;
-//        }
 
         public void atualizarMsgsLidas(int idMensagem) {
             // TODO Atualizar as Conversas Lidas
@@ -317,36 +306,13 @@ public class Servidor {
 
             try {
                 if (minhasDiscussoes) {
-                    parametros.put("user", usuario.getUserID());
+                    parametros.put("usuario", usuario.getUserID());
                 }
 
                 jsonDiscussoes = new JSONArray(requestGET(Models.DISCUSSAO, "carregarDiscussoes", parametros).getMessageResponse());
 
                 for (int i = 0; i < jsonDiscussoes.length(); i++) {
-                    JSONObject json = jsonDiscussoes.getJSONObject(i);
-                    DiscussaoDAO discussao = new DiscussaoDAO();
-
-                    discussao.setUsuario(minhasDiscussoes ? usuario :
-                            getUsuarioJSON(json.getJSONObject("user"), true));
-                    discussao.setId(json.getLong("id"));
-                    discussao.setTitulo(json.getString("titulo"));
-                    discussao.setDescricao(json.getString("descricao"));
-                    discussao.setDiscussaoAtiva(json.getBoolean("discussao_ativa"));
-                    discussao.setDataHora(formatarData.parse(json.getString("data").replaceAll("Z$", "+0000")));
-
-                    for (int j = 0; j < json.getJSONArray("respostas").length(); j++) {
-                        JSONObject jsonResp = json.getJSONArray("respostas").getJSONObject(j);
-                        Resposta resposta = new Resposta();
-
-                        resposta.setId(jsonResp.getLong("id"));
-                        resposta.setUsuario(new Usuario(jsonResp.getLong("user")));
-                        resposta.setDataHora(formatarData.parse(jsonResp.getString("data").replaceAll("Z$", "+0000")));
-                        resposta.setResposta(jsonResp.getString("resposta"));
-
-                        discussao.getListaRespostas().add(resposta);
-                    }
-
-                    listaDiscussao.add(discussao);
+                    listaDiscussao.add(getDiscussaoJSON(jsonDiscussoes.getJSONObject(i), minhasDiscussoes, usuario));
                 }
             }
             catch (Exception ex) {
@@ -363,7 +329,7 @@ public class Servidor {
             try {
                 jsonParametros = new JSONObject();
                 jsonParametros.put("id", String.valueOf(discussao.getId()));
-                jsonParametros.put("user", usuario.getUserID());
+                jsonParametros.put("usuario", usuario.getUserID());
                 jsonParametros.put("titulo", discussao.getTitulo());
                 jsonParametros.put("descricao", discussao.getDescricao());
                 jsonParametros.put("data", discussao.getDataHora());
@@ -390,29 +356,7 @@ public class Servidor {
                 jsonDiscussoes = new JSONArray(requestGET(Models.DISCUSSAO, "procurarDiscussoes", parametros).getMessageResponse());
 
                 for (int i = 0; i < jsonDiscussoes.length(); i++) {
-                    json = jsonDiscussoes.getJSONObject(i);
-                    DiscussaoDAO discussao = new DiscussaoDAO();
-
-                    discussao.setUsuario(getUsuarioJSON(json.getJSONObject("user"), true));
-                    discussao.setId(json.getLong("id"));
-                    discussao.setTitulo(json.getString("titulo"));
-                    discussao.setDescricao(json.getString("descricao"));
-                    discussao.setDiscussaoAtiva(json.getBoolean("discussao_ativa"));
-                    discussao.setDataHora(formatarData.parse(json.getString("data").replaceAll("Z$", "+0000")));
-
-                    for (int j = 0; j < json.getJSONArray("respostas").length(); j++) {
-                        JSONObject jsonResp = json.getJSONArray("respostas").getJSONObject(j);
-                        Resposta resposta = new Resposta();
-
-                        resposta.setId(jsonResp.getLong("id"));
-                        resposta.setUsuario(new Usuario(jsonResp.getLong("user")));
-                        resposta.setDataHora(formatarData.parse(jsonResp.getString("data").replaceAll("Z$", "+0000")));
-                        resposta.setResposta(jsonResp.getString("resposta"));
-
-                        discussao.getListaRespostas().add(resposta);
-                    }
-
-                    listaDiscussoes.add(discussao);
+                    listaDiscussoes.add(getDiscussaoJSON(jsonDiscussoes.getJSONObject(i)));
                 }
             }
             catch (Exception ex) {
@@ -428,6 +372,7 @@ public class Servidor {
             try {
                 json = new JSONObject();
                 json.put("id", String.valueOf(discussao.getId()));
+                json.put("desativar", discussao.getDiscussaoAtiva());
 
                 Response response = requestPOST(Models.DISCUSSAO, "desativarDiscussao", json.toString());
 
@@ -449,7 +394,7 @@ public class Servidor {
             try {
                 json = new JSONObject();
                 json.put("id", String.valueOf(discussao.getId()));
-                json.put("user", usuario.getUserID());
+                json.put("usuario", usuario.getUserID());
                 json.put("data", resposta.getDataHora());
                 json.put("resposta", resposta.getResposta());
 
@@ -474,7 +419,7 @@ public class Servidor {
         return getUsuarioJSON(json, false);
     }
 
-    private Usuario getUsuarioJSON(JSONObject json, boolean loadInfoPessoais) throws JSONException {
+    private Usuario getUsuarioJSON(JSONObject json, boolean carregarInfoPessoais) throws JSONException {
         Usuario usuario = new Usuario(json.getLong("id"));
 
         try {
@@ -482,15 +427,16 @@ public class Servidor {
             usuario.setDataUltimoAcesso(formatarData.parse(json.getString("data_ultimo_acesso").replaceAll("Z$", "+0000")));
             usuario.setLatitude(json.getDouble("latitude"));
             usuario.setLongitude(json.getDouble("longitude"));
-            if (json.getBoolean("setou_configuracoes")) {
+            usuario.setContaAtiva(json.getBoolean("conta_ativa"));
+            usuario.setSetouConfiguracoes(json.getBoolean("setou_configuracoes"));
+
+            if (usuario.isSetouConfiguracoes()) {
                 usuario.setIdioma(json.getInt("idioma"));
                 usuario.setFluencia(json.getInt("fluencia"));
                 usuario.setStatus(json.getString("status"));
             }
-            usuario.setContaAtiva(json.getBoolean("conta_ativa"));
-            usuario.setSetouConfiguracoes(json.getBoolean("setou_configuracoes"));
 
-            if (loadInfoPessoais) {
+            if (carregarInfoPessoais) {
                 Facebook.getProfile(usuario);
             }
         }
@@ -499,6 +445,39 @@ public class Servidor {
         }
 
         return usuario;
+    }
+
+    private DiscussaoDAO getDiscussaoJSON(JSONObject json) throws Exception {
+        return getDiscussaoJSON(json, false, null);
+    }
+
+    private DiscussaoDAO getDiscussaoJSON(JSONObject json, boolean minhasDiscussoes, Usuario usuario) throws Exception {
+        DiscussaoDAO discussao = new DiscussaoDAO();
+
+        discussao.setUsuario(minhasDiscussoes ? usuario : getUsuarioJSON(json.getJSONObject("usuario"), true));
+        discussao.setId(json.getLong("id"));
+        discussao.setTitulo(json.getString("titulo"));
+        discussao.setDescricao(json.getString("descricao"));
+        discussao.setDiscussaoAtiva(json.getBoolean("discussao_ativa"));
+        discussao.setDataHora(formatarData.parse(json.getString("data").replaceAll("Z$", "+0000")));
+
+        for (int j = 0; j < json.getJSONArray("respostas").length(); j++) {
+            JSONObject jsonResp = json.getJSONArray("respostas").getJSONObject(j);
+            Resposta resposta = new Resposta();
+
+            resposta.setId(jsonResp.getLong("id"));
+            /* TODO Arrumar isso
+                Não esta sendo trazido as informações do Usuario
+                resposta.setUsuario(getUsuarioJSON(json.getJSONObject("usuario")));
+             */
+            resposta.setUsuario(new Usuario(jsonResp.getLong("usuario")));
+            resposta.setDataHora(formatarData.parse(jsonResp.getString("data").replaceAll("Z$", "+0000")));
+            resposta.setResposta(jsonResp.getString("resposta"));
+
+            discussao.getListaRespostas().add(resposta);
+        }
+
+        return discussao;
     }
 
     private Response requestGET(Models model) {

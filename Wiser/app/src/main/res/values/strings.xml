@@ -81,7 +81,8 @@
     <string name="sucesso_criar_discussao">A discussão foi criada com sucesso.</string>
     <string name="sucesso_discussao_excluida">A discussão foi excluída com sucesso.</string>
     <string name="erro_excluir_discussao">Um erro ocorreu ao excluir a discussão.</string>
-    <string name="confirmar_excluir_discussao">Você deseja realmente excluir esta discussão?</string>
+    <string name="confirmar_desativar_discussao">Você deseja realmente desativar esta discussão?</string>
+    <string name="confirmar_reativar_discussao">Você deseja realmente reativar esta discussão?</string>
     <string name="erro_discussao_nao_encontrada">Não foram encontradas discussões com este filtro.</string>
     <string name="erro_usuario_sem_discussao">Você ainda não criou discussões.</string>
     <string name="erro_criar_discussao_campos">Título e Descrição devem estar preenchidos!</string>

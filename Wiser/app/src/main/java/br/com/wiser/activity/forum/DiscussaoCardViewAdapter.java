@@ -19,8 +19,6 @@ import java.util.List;
 import br.com.wiser.Sistema;
 import br.com.wiser.R;
 import br.com.wiser.activity.forum.discussao.ForumDiscussaoActivity;
-import br.com.wiser.activity.forum.minhas_discussoes.ForumMinhasDiscussoesActivity;
-import br.com.wiser.activity.forum.pesquisa.ForumPesquisaActivity;
 import br.com.wiser.business.forum.discussao.Discussao;
 import br.com.wiser.business.forum.discussao.DiscussaoDAO;
 import br.com.wiser.frames.FrameImagemPerfil;
@@ -114,7 +112,7 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
                 @Override
                 public void onClick(View v) {
                     long idDiscussao = listaDiscussoes.get(posicao).getId();
-                    desativar(v.getContext(), idDiscussao);
+                    desativar(v.getContext(), idDiscussao, posicao);
                 }
             };
 
@@ -154,21 +152,30 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
             this.posicao = posicao;
         }
 
-        public void desativar(final Context context, final long idDiscussao){
+        public void desativar(final Context context, final long idDiscussao, final int posicao){
 
             final AlertDialog.Builder dialogo = new AlertDialog.Builder(context);
             final AlertDialog.Builder confirmar = new AlertDialog.Builder(context);
 
             confirmar.setTitle(context.getString(R.string.confirmar));
-            confirmar.setMessage(context.getString(R.string.confirmar_excluir_discussao));
+
+            if (listaDiscussoes.get(posicao).getDiscussaoAtiva()) {
+                confirmar.setMessage(context.getString(R.string.confirmar_desativar_discussao));
+            }
+            else {
+                confirmar.setMessage(context.getString(R.string.confirmar_reativar_discussao));
+            }
 
             confirmar.setPositiveButton(context.getString(R.string.ok), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     DiscussaoDAO objDiscussao = new DiscussaoDAO();
 
                     objDiscussao.setId(idDiscussao);
+                    objDiscussao.setDiscussaoAtiva(!listaDiscussoes.get(posicao).getDiscussaoAtiva());
 
                     if (objDiscussao.desativarDiscussao(Sistema.getUsuario(context))) {
+                        listaDiscussoes.get(posicao).setDiscussaoAtiva(objDiscussao.getDiscussaoAtiva());
+
                         dialogo.setTitle(context.getString(R.string.sucesso));
                         dialogo.setMessage(R.string.sucesso_discussao_excluida);
                         dialogo.setPositiveButton(context.getString(R.string.ok), new DialogInterface.OnClickListener() {

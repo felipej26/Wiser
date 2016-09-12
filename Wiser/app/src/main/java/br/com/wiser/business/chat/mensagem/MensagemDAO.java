@@ -8,10 +8,10 @@ import br.com.wiser.business.app.servidor.Servidor;
 public class MensagemDAO {
 
     public void carregarMensagens() {
-        //this.setMensagens(Servidor.Mensagens.getConversa(this.getDestinatario().getUserID()));
+        //this.setMensagens(Servidor.Chat.getConversa(this.getDestinatario().getUserID()));
     }
 
     public void enviarMensagem(String texto) {
-        //Servidor.Mensagens.enviarMensagem(this.getDestinatario().getUserID(), texto);
+        //Servidor.Chat.enviarMensagem(this.getDestinatario().getUserID(), texto);
     }
 }

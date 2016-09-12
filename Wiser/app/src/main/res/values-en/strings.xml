@@ -55,7 +55,7 @@
     <string name="sucesso_criar_discussao">The discussion was created with sucess.</string>
     <string name="sucesso_discussao_excluida">The discussion was deleted with sucess.</string>
     <string name="forum_minhasdiscussoes_title">My Discussions</string>
-    <string name="confirmar_excluir_discussao">Do you really want to delete this discussion?</string>
+    <string name="confirmar_desativar_discussao">Do you really want to delete this discussion?</string>
     <string name="app_pesquisa_title">Search People</string>
     <string name="atualizar">Refresh</string>
     <string name="compartilhar">Share</string>
