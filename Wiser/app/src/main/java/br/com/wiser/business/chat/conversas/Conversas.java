@@ -44,7 +44,7 @@ public class Conversas implements Serializable {
 
         if (mensagens != null) {
             for (Mensagem m : this.mensagens) {
-                if (!m.isLida()) {
+                if (m.isDestinatario() && !m.isLida()) {
                     naoLidos++;
                 }
             }

@@ -18,6 +18,8 @@ import br.com.wiser.Sistema;
 import br.com.wiser.R;
 import br.com.wiser.business.app.usuario.Usuario;
 import br.com.wiser.business.forum.discussao.DiscussaoDAO;
+import br.com.wiser.dialogs.DialogConfirmar;
+import br.com.wiser.dialogs.DialogInformar;
 import br.com.wiser.enums.Activities;
 import br.com.wiser.utils.Utils;
 
@@ -77,8 +79,12 @@ public class ForumNovaDiscussaoActivity extends Activity {
     }
 
     public void salvar(View view) {
+        DialogConfirmar confirmar = new DialogConfirmar(this);
+        DialogInformar informar = new DialogInformar(this);
+
         if(txtTituloDiscussao.getText().toString().trim().isEmpty() || txtDescricaoDiscussao.getText().toString().trim().isEmpty()){
-            Toast.makeText(this, getString(R.string.erro_criar_discussao_campos), Toast.LENGTH_SHORT).show();
+            informar.setMensagem(getString(R.string.erro_criar_discussao_campos));
+            informar.show();
             return;
         }
 
@@ -86,39 +92,33 @@ public class ForumNovaDiscussaoActivity extends Activity {
         objDiscussao.setDescricao(txtDescricaoDiscussao.getText().toString().trim());
         objDiscussao.setDataHora(new Date());
 
-        AlertDialog.Builder dialogo = new AlertDialog.Builder(this);
-
-        dialogo.setTitle(getString(R.string.confirmar));
-        dialogo.setMessage(getString(R.string.confirmar_salvar));
-        dialogo.setPositiveButton(getString(R.string.sim), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
+        confirmar.setMensagem(getString(R.string.confirmar_salvar));
+        confirmar.setYesClick(new DialogConfirmar.DialogInterface() {
+            @Override
+            public void onClick() {
                 salvar();
             }
         });
-        dialogo.setNegativeButton(getString(R.string.nao), null);
-        dialogo.show();
+        confirmar.show();
     }
 
     public void salvar(){
+        DialogInformar informar = new DialogInformar(this);
 
-        AlertDialog.Builder dialogo = new AlertDialog.Builder(this);
-
-        if (objDiscussao.salvarDiscussao(Sistema.getUsuario(this))) {
-            dialogo.setTitle(getString(R.string.sucesso));
-            dialogo.setMessage(getString(R.string.sucesso_criar_discussao));
-            dialogo.setNeutralButton(getString(R.string.ok),  new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
+        if (objDiscussao.salvarDiscussao(this)) {
+            informar.setMensagem(getString(R.string.sucesso_criar_discussao));
+            informar.setOkClick(new DialogInformar.DialogInterface() {
+                @Override
+                public void onClick() {
                     Utils.chamarActivity(ForumNovaDiscussaoActivity.this, Activities.FORUM_MINHAS_DISCUSSOES);
                     finish();
                 }
             });
         }
         else {
-            dialogo.setTitle(getString(R.string.erro));
-            dialogo.setMessage(getString(R.string.erro_criar_discussao));
-            dialogo.setNeutralButton(R.string.ok,  null);
+            informar.setMensagem(getString(R.string.erro_criar_discussao));
         }
 
-        dialogo.show();
+        informar.show();
     }
 }

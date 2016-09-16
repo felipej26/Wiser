@@ -13,7 +13,7 @@ import java.util.LinkedList;
 
 import br.com.wiser.R;
 import br.com.wiser.business.forum.resposta.Resposta;
-import br.com.wiser.utils.FuncoesData;
+import br.com.wiser.utils.UtilsDate;
 import br.com.wiser.utils.Utils;
 
 /**
@@ -47,7 +47,7 @@ public class DiscussaoRespostaAdapter extends RecyclerView.Adapter<DiscussaoResp
         Utils.loadImageInBackground(context, r.getUsuario().getUrlProfilePicture(), holder.imgPerfil, holder.prgBarra);
         holder.lblIDResposta.setText("#" + (position + 1));
         holder.lblAutor.setText(r.getUsuario().getFirstName());
-        holder.lblDataHora.setText(FuncoesData.formatDate(r.getDataHora(), FuncoesData.DDMMYYYY_HHMMSS));
+        holder.lblDataHora.setText(UtilsDate.formatDate(r.getDataHora(), UtilsDate.DDMMYYYY_HHMMSS));
         holder.lblResposta.setText(r.getResposta());
     }
 

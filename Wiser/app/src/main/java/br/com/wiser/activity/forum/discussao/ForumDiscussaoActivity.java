@@ -23,7 +23,7 @@ import br.com.wiser.R;
 import br.com.wiser.activity.forum.DiscussaoRespostaAdapter;
 import br.com.wiser.business.forum.discussao.DiscussaoDAO;
 import br.com.wiser.business.forum.resposta.Resposta;
-import br.com.wiser.utils.FuncoesData;
+import br.com.wiser.utils.UtilsDate;
 import br.com.wiser.utils.Utils;
 
 /**
@@ -114,7 +114,7 @@ public class ForumDiscussaoActivity extends Activity {
 
         pgbLoading = (ProgressBar) findViewById(R.id.pgbLoading);
 
-        if (!objDiscussao.getDiscussaoAtiva()) {
+        if (!objDiscussao.isAtiva()) {
             findViewById(R.id.include).setVisibility(View.INVISIBLE);
         }
 
@@ -127,12 +127,14 @@ public class ForumDiscussaoActivity extends Activity {
         lblDescricaoDiscussao.setText(objDiscussao.getDescricao());
         lblAutor.setText(objDiscussao.getUsuario().getFirstName());
         Utils.loadImageInBackground(this, objDiscussao.getUsuario().getUrlProfilePicture(), imgPerfil, prgBarra);
-        lblDataHora.setText(FuncoesData.formatDate(objDiscussao.getDataHora(), FuncoesData.DDMMYYYY_HHMMSS));
+        lblDataHora.setText(UtilsDate.formatDate(objDiscussao.getDataHora(), UtilsDate.DDMMYYYY_HHMMSS));
         lblRespostas.setText(getString(objDiscussao.getListaRespostas().size() == 1 ? R.string.resposta : R.string.respostas, objDiscussao.getListaRespostas().size()));
 
+        /*
         if (objDiscussao.getListaRespostas() == null || objDiscussao.getListaRespostas().isEmpty()) {
             return;
         }
+        */
 
         adapter = new DiscussaoRespostaAdapter(this, objDiscussao.getListaRespostas());
         recyclerView.setAdapter(adapter);
@@ -159,7 +161,7 @@ public class ForumDiscussaoActivity extends Activity {
                 objResposta.setResposta(txtResposta.getText().toString());
                 objResposta.setDataHora(new Date());
 
-                objDiscussao.enviarResposta(Sistema.getUsuario(ForumDiscussaoActivity.this), objResposta);
+                objDiscussao.enviarResposta(ForumDiscussaoActivity.this, objResposta);
 
                 hCarregar.post(new Runnable() {
                     @Override

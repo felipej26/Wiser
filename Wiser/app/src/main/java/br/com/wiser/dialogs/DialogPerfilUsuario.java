@@ -1,4 +1,4 @@
-package br.com.wiser.frames;
+package br.com.wiser.dialogs;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -16,7 +16,7 @@ import br.com.wiser.utils.Utils;
 /**
  * Created by Jefferson on 29/05/2016.
  */
-public class FrameImagemPerfil {
+public class DialogPerfilUsuario {
 
     private static AlertDialog detalhes;
     private static AlertDialog.Builder builderDetalhes;

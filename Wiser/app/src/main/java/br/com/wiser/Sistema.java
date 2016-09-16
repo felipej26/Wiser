@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.hardware.camera2.params.Face;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 
@@ -88,24 +89,25 @@ public class Sistema {
 
         UtilsLocation.atualizarCoordenadas(context);
 
-        usuario.setFacebookID(Facebook.getFacebookID());
+        Facebook facebook = new Facebook(context);
+        usuario.setFacebookID(facebook.getFacebookID());
         usuario.setDataUltimoAcesso(new Date());
         usuario.setLatitude(UtilsLocation.getLatitude());
         usuario.setLongitude(UtilsLocation.getLongitude());
 
         if (salvarLogin) {
-            if (!usuario.salvarLogin()) {
+            if (!usuario.salvarLogin(context)) {
                 return false;
             }
         }
 
-        Facebook.getProfile(usuario);
+        facebook.getProfile(usuario);
         Sistema.USUARIO = usuario;
         return true;
     }
 
     public static void logout(Context context) {
-        Facebook.logout(context);
+        new Facebook(context).logout();
         Sistema.USUARIO = null;
     }
 

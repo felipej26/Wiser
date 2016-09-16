@@ -1,8 +1,7 @@
 package br.com.wiser.activity.forum;
 
-import android.app.AlertDialog;
+import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -21,8 +20,8 @@ import br.com.wiser.R;
 import br.com.wiser.activity.forum.discussao.ForumDiscussaoActivity;
 import br.com.wiser.business.forum.discussao.Discussao;
 import br.com.wiser.business.forum.discussao.DiscussaoDAO;
-import br.com.wiser.frames.FrameImagemPerfil;
-import br.com.wiser.utils.FuncoesData;
+import br.com.wiser.dialogs.DialogPerfilUsuario;
+import br.com.wiser.utils.UtilsDate;
 import br.com.wiser.utils.Utils;
 import android.widget.ProgressBar;
 
@@ -31,11 +30,19 @@ import android.widget.ProgressBar;
  */
 public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCardViewAdapter.ViewHolder> {
 
+    private IDiscussaoCardViewAdapterCallback mCallback;
     private Context context;
-    private static List<DiscussaoDAO> listaDiscussoes;
+    private List<DiscussaoDAO> listaDiscussoes;
 
-    public DiscussaoCardViewAdapter(Context context, List<DiscussaoDAO> listaDiscussoes) {
-        this.context = context;
+    public DiscussaoCardViewAdapter(Activity activity, List<DiscussaoDAO> listaDiscussoes) {
+        this.mCallback = (IDiscussaoCardViewAdapterCallback) activity;
+        this.context = (Context) activity;
+        this.listaDiscussoes = listaDiscussoes;
+    }
+
+    public DiscussaoCardViewAdapter(Activity activity, Object fragment, List<DiscussaoDAO> listaDiscussoes) {
+        this.mCallback = (IDiscussaoCardViewAdapterCallback) fragment;
+        this.context = (Context) activity;
         this.listaDiscussoes = listaDiscussoes;
     }
 
@@ -60,7 +67,8 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
         viewHolder.lblContRespostas.setText(
                 context.getString(objDiscussao.getListaRespostas().size() == 1 ? R.string.resposta : R.string.respostas,
                         objDiscussao.getListaRespostas().size()));
-        viewHolder.lblDataHora.setText(FuncoesData.formatDate(objDiscussao.getDataHora(), FuncoesData.DDMMYYYY_HHMMSS));
+        viewHolder.lblDataHora.setText(UtilsDate.formatDate(objDiscussao.getDataHora(), UtilsDate.DDMMYYYY_HHMMSS));
+        viewHolder.btnDesativar.setText(objDiscussao.isAtiva() ? context.getString(R.string.desativar) : "Reativar");
 
         if(objDiscussao.getUsuario().getUserID() != Sistema.getUsuario(context).getUserID()){
             viewHolder.btnDesativar.setVisibility(View.INVISIBLE);
@@ -75,10 +83,10 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
     }
 
     public Discussao getDiscussao(int posicao) {
-        return this.listaDiscussoes.get(posicao);
+        return listaDiscussoes.get(posicao);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private int posicao;
 
@@ -108,20 +116,17 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
             btnDesativar = (Button) itemLayoutView.findViewById(R.id.btnDesativar);
             btnCompartilhar = (Button) itemLayoutView.findViewById(R.id.btnCompartilhar);
 
-            View.OnClickListener btnDesativarListener = new View.OnClickListener(){
+            btnDesativar.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    long idDiscussao = listaDiscussoes.get(posicao).getId();
-                    desativar(v.getContext(), idDiscussao, posicao);
+                    mCallback.desativarDiscussao(listaDiscussoes.get(posicao));
                 }
-            };
-
-            btnDesativar.setOnClickListener(btnDesativarListener);
+            });
 
             imgPerfil.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FrameImagemPerfil.mostrarDetalhes(v.getContext(), listaDiscussoes.get(posicao).getUsuario());
+                    DialogPerfilUsuario.mostrarDetalhes(v.getContext(), listaDiscussoes.get(posicao).getUsuario());
                 }
             });
 
@@ -150,55 +155,6 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
 
         public void setPosicao(int posicao) {
             this.posicao = posicao;
-        }
-
-        public void desativar(final Context context, final long idDiscussao, final int posicao){
-
-            final AlertDialog.Builder dialogo = new AlertDialog.Builder(context);
-            final AlertDialog.Builder confirmar = new AlertDialog.Builder(context);
-
-            confirmar.setTitle(context.getString(R.string.confirmar));
-
-            if (listaDiscussoes.get(posicao).getDiscussaoAtiva()) {
-                confirmar.setMessage(context.getString(R.string.confirmar_desativar_discussao));
-            }
-            else {
-                confirmar.setMessage(context.getString(R.string.confirmar_reativar_discussao));
-            }
-
-            confirmar.setPositiveButton(context.getString(R.string.ok), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    DiscussaoDAO objDiscussao = new DiscussaoDAO();
-
-                    objDiscussao.setId(idDiscussao);
-                    objDiscussao.setDiscussaoAtiva(!listaDiscussoes.get(posicao).getDiscussaoAtiva());
-
-                    if (objDiscussao.desativarDiscussao(Sistema.getUsuario(context))) {
-                        listaDiscussoes.get(posicao).setDiscussaoAtiva(objDiscussao.getDiscussaoAtiva());
-
-                        dialogo.setTitle(context.getString(R.string.sucesso));
-                        dialogo.setMessage(R.string.sucesso_discussao_excluida);
-                        dialogo.setPositiveButton(context.getString(R.string.ok), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                return;
-                            }
-                        });
-                    } else {
-                        dialogo.setTitle(context.getString(R.string.erro));
-                        dialogo.setMessage(context.getString(R.string.erro_excluir_discussao));
-                        dialogo.setNeutralButton(context.getString(R.string.ok), null);
-                    }
-
-                    dialogo.show();
-                }
-            });
-            confirmar.setNegativeButton(context.getString(R.string.nao), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    return;
-                }
-            });
-
-            confirmar.show();
         }
     }
 }

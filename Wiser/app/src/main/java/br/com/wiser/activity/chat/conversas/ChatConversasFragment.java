@@ -68,10 +68,10 @@ public class ChatConversasFragment extends Fragment {
             @Override
             public void run() {
                 while(true) {
-                    tratarLoading(hCarregar, context, objMensagens.carregarGeral(Sistema.getUsuario(context)));
+                    tratarLoading(hCarregar, context, objMensagens.carregarGeral(context));
 
                     try {
-                        Thread.sleep(3000);
+                        Thread.sleep(30000);
                     }
                     catch (Exception e) {
                         continue;

@@ -10,8 +10,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import br.com.wiser.R;
-import br.com.wiser.business.chat.conversas.Conversas;
 import br.com.wiser.business.chat.mensagem.Mensagem;
+import br.com.wiser.utils.UtilsDate;
 import br.com.wiser.utils.Utils;
 
 /**
@@ -55,7 +55,7 @@ public class ChatMensagensAdapter extends RecyclerView.Adapter<ChatMensagensAdap
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Mensagem m = mensagens.get(position);
-        holder.lblDataHora.setText(m.getData().toString());
+        holder.lblDataHora.setText(UtilsDate.formatDate(m.getData(), UtilsDate.HHMM));
         holder.lblMensagem.setText(m.getMensagem().trim());
 
         if (!m.isLida()) {

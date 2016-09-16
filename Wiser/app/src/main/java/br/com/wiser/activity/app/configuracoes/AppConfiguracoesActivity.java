@@ -103,7 +103,7 @@ public class AppConfiguracoesActivity extends Activity {
 
         usuario.setStatus(txtStatus.getText().toString());
 
-        if (usuario.salvarConfiguracoes()) {
+        if (usuario.salvarConfiguracoes(this)) {
             Sistema.getUsuario(this).setIdioma(usuario.getIdioma());
             Sistema.getUsuario(this).setFluencia(usuario.getFluencia());
             Sistema.getUsuario(this).setStatus(usuario.getStatus());
@@ -131,7 +131,7 @@ public class AppConfiguracoesActivity extends Activity {
     private void desativar() {
         AlertDialog.Builder dialogo = new AlertDialog.Builder(this);
 
-        if (Sistema.getUsuario(this).desativarConta()) {
+        if (Sistema.getUsuario(this).desativarConta(this)) {
             dialogo.setTitle(getString(R.string.sucesso));
             dialogo.setMessage(R.string.sucesso_conta_desativada);
             dialogo.setPositiveButton(getString(R.string.sim), new DialogInterface.OnClickListener() {

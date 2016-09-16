@@ -6,9 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 
 import android.util.Base64;
@@ -30,7 +27,6 @@ import com.facebook.login.LoginResult;
 
 import org.json.JSONObject;
 
-import java.net.URL;
 import java.security.MessageDigest;
 import java.util.LinkedList;
 
@@ -42,32 +38,24 @@ import br.com.wiser.business.app.usuario.Usuario;
  * Created by Jefferson on 03/04/2016.
  */
 public class Facebook {
-    private static Context contexto;
+    private Context contexto;
     private static CallbackManager callbackManager;
 
-    private static GraphResponse response;
-    private static boolean requisitando = false;
-
-    private static String nomeIndisponivel = "";
+    private String nomeIndisponivel = "";
 
     public Facebook(Context contexto) {
         this.contexto = contexto;
 
-        FacebookSdk.sdkInitialize(contexto);
-        callbackManager = CallbackManager.Factory.create();
-        getSignatures();
+        if (!FacebookSdk.isInitialized()) {
+            FacebookSdk.sdkInitialize(contexto);
+            getSignatures();
+        }
 
-        //TODO while (!FacebookSdk.isInitialized());
+        if (callbackManager == null) {
+            callbackManager = CallbackManager.Factory.create();
+        }
+
         while (!FacebookSdk.isInitialized());
-
-        /*
-        try {
-            Thread.sleep(1000);
-        }
-        catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        */
 
         nomeIndisponivel = contexto.getResources().getString(R.string.usuario);
     }
@@ -88,11 +76,11 @@ public class Facebook {
         }
     }
 
-    public static void callbackManager(int requestCode, int resultCode, Intent data) {
+    public void callbackManager(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    public static void setBtnLogin(final Activity loginActivity, Button loginButton) {
+    public void setBtnLogin(final Activity loginActivity, Button loginButton) {
         Button btnLogin = loginButton;
 
         try {
@@ -123,14 +111,9 @@ public class Facebook {
         });
     }
 
-    /**
-     *
-     * @param node Pode ser vazio
-     * @param parametros
-     */
-    private static void request(final String node, final Bundle parametros) {
-        response = null;
-        requisitando = true;
+    private JSONObject request(final String node, final Bundle parametros) {
+        final JSONObject[] json = {new JSONObject()};
+        final boolean[] requisitando = {true};
 
         new Thread() {
             public void run() {
@@ -140,18 +123,21 @@ public class Facebook {
                             @Override
                             public void onCompleted(GraphResponse graphResponse) {
                                 if (graphResponse != null) {
-                                    response = graphResponse;
+                                    json[0] = graphResponse.getJSONObject();
                                 }
-                                requisitando = false;
+                                requisitando[0] = false;
                             }
+
                         }).executeAndWait();
             }
         }.start();
 
-        while (requisitando);
+        while (requisitando[0]);
+
+        return json[0];
     }
 
-    public static String getFacebookID() {
+    public String getFacebookID() {
         try {
             return Profile.getCurrentProfile().getId();
         }
@@ -160,70 +146,13 @@ public class Facebook {
         }
     }
 
-    public static String getFirstName(String userID) {
-        String firstName = "";
-
-        Bundle parametros = new Bundle();
-        parametros.putString("fields", "first_name");
-        request(userID, parametros);
-
-        try {
-            JSONObject obj = response.getJSONObject();
-            firstName = obj.optString("first_name");
-
-            if (firstName.equals("")) {
-                firstName = nomeIndisponivel;
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return firstName;
-    }
-
-    public static Bitmap getProfilePicture(String userID) {
-        Bitmap mIcon1 = null;
-        URL imgValue = null;
-
-        String profilePicture = "";
-
-        Bundle parametros = new Bundle();
-        parametros.putString("fields", "picture");
-        request(userID, parametros);
-
-        try {
-            JSONObject obj = response.getJSONObject();
-            if (obj.has("picture")) {
-                profilePicture = obj.getJSONObject("picture").getJSONObject("data").optString("url");
-            }
-
-            if (!profilePicture.equals("")) {
-                imgValue = new URL(profilePicture);
-                mIcon1 = BitmapFactory.decodeStream(imgValue.openConnection().getInputStream());
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return mIcon1;
-    }
-
-    // TODO Fazer o método sem preguiça
-    public static Usuario getProfile(long userID) {
+    public Usuario getProfile(Usuario usuario) {
         LinkedList<Usuario> conts = new LinkedList<Usuario>();
-        conts.add(0, new Usuario(userID));
+        conts.add(0, usuario);
         return getProfiles(conts).get(0);
     }
 
-    public static Usuario getProfile(Usuario user) {
-        LinkedList<Usuario> conts = new LinkedList<Usuario>();
-        conts.add(0, user);
-        return getProfiles(conts).get(0);
-    }
-
-    public static LinkedList<Usuario> getProfiles(final LinkedList<Usuario> usuarios) {
+    public LinkedList<Usuario> getProfiles(final LinkedList<Usuario> usuarios) {
         String listUsersID = "";
 
         for (Usuario c : usuarios) {
@@ -237,27 +166,25 @@ public class Facebook {
         Bundle parametros = new Bundle();
         parametros.putString("ids", listUsersID);
         parametros.putString("fields", "name,first_name,picture.width(250).height(250){url}");
-        request("", parametros);
 
         try {
-            JSONObject listUsers = response.getJSONObject();
-            JSONObject user = null;
-            URL imgValue = null;
+            JSONObject jsonUsuarios = request("", parametros);
+            JSONObject json;
 
             for (Usuario c : usuarios) {
-                if (listUsers.has(c.getFacebookID())) {
-                    user = listUsers.getJSONObject(c.getFacebookID());
+                if (jsonUsuarios.has(c.getFacebookID())) {
+                    json = jsonUsuarios.getJSONObject(c.getFacebookID());
 
-                    if (user.has("name")) {
-                        c.setFullName(user.getString("name"));
+                    if (json.has("name")) {
+                        c.setFullName(json.getString("name"));
                     }
 
-                    if (user.has("first_name")) {
-                        c.setFirstName(user.getString("first_name"));
+                    if (json.has("first_name")) {
+                        c.setFirstName(json.getString("first_name"));
                     }
 
-                    if (user.has("picture")) {
-                        c.setUrlProfilePicture(user
+                    if (json.has("picture")) {
+                        c.setUrlProfilePicture(json
                                 .getJSONObject("picture")
                                 .getJSONObject("data")
                                 .optString("url"));
@@ -272,32 +199,7 @@ public class Facebook {
         return usuarios;
     }
 
-    public static void abrirPerfil(Activity activity, String userID) {
-        String facebookUrl = "https://www.facebook.com/" + userID;
-
-        try {
-            int versionCode = activity.getApplicationContext().getPackageManager().getPackageInfo("com.facebook.katana", 0).versionCode;
-
-            if(!userID.isEmpty()) {
-                Uri uri = Uri.parse("fb://profile/" + userID);
-                activity.startActivity(new Intent(Intent.ACTION_VIEW, uri));
-            }
-            else if (versionCode >= 3002850 && !facebookUrl.isEmpty()) {
-                Uri uri = Uri.parse("fb://facewebmodal/f?href=" + facebookUrl);
-                activity.startActivity(new Intent(Intent.ACTION_VIEW, uri));
-            }
-            else {
-                Uri uri = Uri.parse(facebookUrl);
-                activity.startActivity(new Intent(Intent.ACTION_VIEW, uri));
-            }
-        }
-        catch (PackageManager.NameNotFoundException e) {
-            Uri uri = Uri.parse(facebookUrl);
-            activity.startActivity(new Intent(Intent.ACTION_VIEW, uri));
-        }
-    }
-
-    public static boolean logado() {
+    public boolean isLogado() {
         try {
             return AccessToken.getCurrentAccessToken() != null;
         }
@@ -306,19 +208,7 @@ public class Facebook {
         }
     }
 
-    public static void logout(Context contexto) {
-
-        if (!FacebookSdk.isInitialized()) {
-            Facebook.contexto = contexto;
-            FacebookSdk.sdkInitialize(contexto);
-
-            try {
-                Thread.sleep(1000);
-            }
-            catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    public void logout() {
 
         try {
             LoginManager.getInstance().logOut();

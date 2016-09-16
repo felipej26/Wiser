@@ -1,5 +1,7 @@
 package br.com.wiser.business.app.usuario;
 
+import android.content.Context;
+
 import br.com.wiser.Sistema;
 import br.com.wiser.business.app.servidor.Servidor;
 
@@ -12,9 +14,9 @@ public class UsuarioDAO extends Usuario{
         super(userID);
     }
 
-    public boolean salvarLogin() {
+    public boolean salvarLogin(Context context) {
         try {
-            new Servidor().new Usuarios(this).salvarLogin(this);
+            new Servidor().new Usuarios(context).salvarLogin(this);
             return true;
         }
         catch (Exception e) {
@@ -23,11 +25,11 @@ public class UsuarioDAO extends Usuario{
         return false;
     }
 
-    public boolean salvarConfiguracoes() {
-        return new Servidor().new Usuarios(this).salvarConfiguracoes(this);
+    public boolean salvarConfiguracoes(Context context) {
+        return new Servidor().new Usuarios(context).salvarConfiguracoes(this);
     }
 
-    public boolean desativarConta(){
-        return new Servidor().new Usuarios(this).desativarConta();
+    public boolean desativarConta(Context context){
+        return new Servidor().new Usuarios(context).desativarConta();
     }
 }

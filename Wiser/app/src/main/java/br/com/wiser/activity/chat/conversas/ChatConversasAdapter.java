@@ -16,6 +16,7 @@ import br.com.wiser.R;
 import br.com.wiser.activity.chat.mensagens.ChatMensagensActivity;
 import br.com.wiser.business.chat.conversas.Conversas;
 import br.com.wiser.business.chat.conversas.ConversasDAO;
+import br.com.wiser.utils.UtilsDate;
 import br.com.wiser.utils.Utils;
 
 /**
@@ -47,12 +48,12 @@ public class ChatConversasAdapter extends RecyclerView.Adapter<ChatConversasAdap
         holder.viewSeparator.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
 
         Utils.loadImageInBackground(context, m.getDestinatario().getUrlProfilePicture(), holder.imgPerfil, holder.prgBarra);
-        holder.lblDataHora.setText(m.getMensagens().getLast().getData().toString());
+        holder.lblDataHora.setText(UtilsDate.formatDate(m.getMensagens().getLast().getData(), UtilsDate.HHMM));
         holder.lblMensagens.setText(m.getMensagens().getLast().getMensagem());
         holder.lblContMensagens.setText(m.getContMsgNaoLidas() + " " + context.getString(m.getContMsgNaoLidas() <= 1 ? R.string.nao_lida : R.string.nao_lidas));
 
-        if(m.getContMsgNaoLidas() != 0){
-            Utils.vibrar(context, 150);
+        if (m.getContMsgNaoLidas() != 0) {
+            // TODO: Utils.vibrar(context, 150);
         }
 
         holder.setPosicao(position);

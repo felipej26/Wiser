@@ -17,7 +17,7 @@ public class Discussao implements Serializable {
     private String titulo;
     private String descricao;
     private Date dataHora;
-    private boolean discussaoAtiva;
+    private boolean isAtiva;
     private LinkedList<Resposta> listaRespostas = new LinkedList<Resposta>();
 
     public long getId() {
@@ -60,12 +60,12 @@ public class Discussao implements Serializable {
         this.dataHora = dataHora;
     }
 
-    public boolean getDiscussaoAtiva() {
-        return discussaoAtiva;
+    public boolean isAtiva() {
+        return isAtiva;
     }
 
-    public void setDiscussaoAtiva(boolean discussaoAtiva) {
-        this.discussaoAtiva = discussaoAtiva;
+    public void setAtiva(boolean ativa) {
+        this.isAtiva = ativa;
     }
 
     public LinkedList<Resposta> getListaRespostas() {

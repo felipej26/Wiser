@@ -1,11 +1,12 @@
 package br.com.wiser.business.chat.mensagem;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by Jefferson on 10/08/2016.
  */
-public class Mensagem {
+public class Mensagem implements Serializable {
     private long id;
     private boolean isDestinatario;
     private Date data;

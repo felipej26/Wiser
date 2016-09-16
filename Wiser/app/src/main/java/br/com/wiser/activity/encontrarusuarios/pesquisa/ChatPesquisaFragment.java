@@ -102,7 +102,7 @@ public class ChatPesquisaFragment extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (objProcurar.procurarUsuarios(Sistema.getUsuario(context))){
+                if (objProcurar.procurarUsuarios(context)){
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("listaUsuarios", objProcurar.getListaResultados());
 

@@ -14,10 +14,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.EditText;
 
+import java.util.Date;
 import java.util.List;
 
 import br.com.wiser.R;
 import br.com.wiser.business.chat.conversas.ConversasDAO;
+import br.com.wiser.business.chat.mensagem.Mensagem;
 
 /**
  * Created by Jefferson on 30/05/2016.
@@ -40,7 +42,7 @@ public class ChatMensagensActivity extends Activity {
         objConversa = (ConversasDAO) getIntent().getSerializableExtra("conversa");
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setTitle(objConversa.getDestinatario().getFirstName());
+        getActionBar().setTitle(objConversa.getDestinatario().getFullName());
 
         carregarComponentes();
     }
@@ -105,11 +107,23 @@ public class ChatMensagensActivity extends Activity {
 
     public void enviar(View view) {
 
-        String texto = objConversa.toString().trim();
+        String texto = txtResposta.getText().toString();
+        Mensagem mensagem;
 
         if (!texto.isEmpty()) {
-            objConversa.enviarMensagem(texto);
-            txtResposta.setText("");
+            mensagem = new Mensagem();
+
+            mensagem.setLida(true);
+            mensagem.setDestinatario(false);
+            mensagem.setData(new Date());
+            mensagem.setMensagem(texto);
+
+            if (objConversa.enviarMensagem(this, mensagem)) {
+                objConversa.getMensagens().add(mensagem);
+
+                txtResposta.setText("");
+                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+            }
         }
     }
 }

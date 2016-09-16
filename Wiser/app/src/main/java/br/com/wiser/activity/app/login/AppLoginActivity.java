@@ -41,9 +41,11 @@ public class AppLoginActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        Facebook.setBtnLogin(this, (Button) super.findViewById(R.id.btnLogin));
+        Facebook facebook = new Facebook(this);
 
-        if (Facebook.logado() && salvar()) {
+        facebook.setBtnLogin(this, (Button) super.findViewById(R.id.btnLogin));
+
+        if (facebook.isLogado() && salvar()) {
             loginSucesso();
             return;
         }
@@ -52,7 +54,8 @@ public class AppLoginActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Facebook.callbackManager(requestCode, resultCode, data);
+        Facebook facebook = new Facebook(this);
+        facebook.callbackManager(requestCode, resultCode, data);
     }
 
     @Override
@@ -91,7 +94,7 @@ public class AppLoginActivity extends Activity {
     }
 
     private void loginSucesso() {
-        Toast.makeText(this, getString(R.string.boas_vindas, Facebook.getFirstName(Sistema.getUsuario(this).getFacebookID())), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.boas_vindas, Sistema.getUsuario(this).getFirstName()), Toast.LENGTH_SHORT).show();
         Utils.chamarActivity(this, Activities.APP_PRINCIPAL);
         finish();
     }

@@ -1,7 +1,8 @@
 package br.com.wiser.activity.forum.principal;
 
 import android.app.Activity;
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -15,18 +16,20 @@ import android.widget.Button;
 
 import java.util.LinkedList;
 
-import br.com.wiser.Sistema;
 import br.com.wiser.R;
 import br.com.wiser.activity.forum.DiscussaoCardViewAdapter;
+import br.com.wiser.activity.forum.IDiscussaoCardViewAdapterCallback;
 import br.com.wiser.business.forum.discussao.Discussao;
 import br.com.wiser.business.forum.discussao.DiscussaoDAO;
+import br.com.wiser.dialogs.DialogConfirmar;
+import br.com.wiser.dialogs.DialogInformar;
 import br.com.wiser.enums.Activities;
 import br.com.wiser.utils.Utils;
 
 /**
  * Created by Jefferson on 16/05/2016.
  */
-public class ForumPrincipalFragment extends Fragment {
+public class ForumPrincipalFragment extends Fragment implements IDiscussaoCardViewAdapterCallback {
 
     private Button btnNovaDiscussao;
     private Button btnProcurarDiscussao;
@@ -37,7 +40,8 @@ public class ForumPrincipalFragment extends Fragment {
 
     private ProgressBar pgbLoading;
 
-    private DiscussaoDAO objDiscussaoDAO = null;
+    private DiscussaoDAO objDiscussaoDAO;
+    private LinkedList<DiscussaoDAO> listaDiscussoes;
 
     public static ForumPrincipalFragment newInstance() {
         return new ForumPrincipalFragment();
@@ -93,31 +97,30 @@ public class ForumPrincipalFragment extends Fragment {
         carregarDados(view);
     }
 
-    private void carregarDados(View view) {
+    private void carregarDados(final View view) {
 
         pgbLoading.setVisibility(View.VISIBLE);
         pgbLoading.bringToFront();
 
         final Handler hCarregar = new Handler();
-        final Context context = this.getContext();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                LinkedList<DiscussaoDAO> listaDiscussoes = objDiscussaoDAO.carregarDiscussoes(Sistema.getUsuario(context));
-                tratarLoading(hCarregar, context, listaDiscussoes);
+                listaDiscussoes = objDiscussaoDAO.carregarDiscussoes(view.getContext());
+                tratarLoading(hCarregar, listaDiscussoes);
             }
         }).start();
     }
 
-    private void tratarLoading(Handler hCarregar, final Context context, final LinkedList<DiscussaoDAO> listaDiscussoes){
+    private void tratarLoading(Handler hCarregar, final LinkedList<DiscussaoDAO> listaDiscussoes){
         hCarregar.post(new Runnable() {
             @Override
             public void run() {
 
                 if (listaDiscussoes != null) {
                     if (!listaDiscussoes.isEmpty()) {
-                        adapter = new DiscussaoCardViewAdapter(context, listaDiscussoes);
+                        adapter = new DiscussaoCardViewAdapter(ForumPrincipalFragment.this.getActivity(), ForumPrincipalFragment.this, listaDiscussoes);
                         recyclerView.setAdapter(adapter);
                     }
                 }
@@ -137,5 +140,45 @@ public class ForumPrincipalFragment extends Fragment {
 
     public void atualizarDiscussoes(View view) {
         carregarDados(view);
+    }
+
+    @Override
+    public void desativarDiscussao(final Discussao discussao) {
+        DialogConfirmar confirmar = new DialogConfirmar(this.getActivity());
+
+        if (discussao.isAtiva()) {
+            confirmar.setMensagem(this.getContext().getString(R.string.confirmar_desativar_discussao));
+        }
+        else {
+            confirmar.setMensagem(this.getContext().getString(R.string.confirmar_reativar_discussao));
+        }
+
+        confirmar.setYesClick(new DialogConfirmar.DialogInterface() {
+            @Override
+            public void onClick() {
+                desativar(discussao);
+            }
+        });
+
+        confirmar.show();
+    }
+
+    public void desativar(Discussao discussao) {
+        DialogInformar informar = new DialogInformar(this.getActivity());
+        DiscussaoDAO objDiscussao = new DiscussaoDAO();
+
+        objDiscussao.setId(discussao.getId());
+        objDiscussao.setAtiva(!discussao.isAtiva());
+
+        if (objDiscussao.desativarDiscussao(ForumPrincipalFragment.this.getContext())) {
+            discussao.setAtiva(objDiscussao.isAtiva());
+
+            informar.setMensagem(getString(R.string.sucesso_discussao_excluida));
+        }
+        else {
+            informar.setMensagem(this.getContext().getString(R.string.erro_excluir_discussao));
+        }
+
+        informar.show();
     }
 }

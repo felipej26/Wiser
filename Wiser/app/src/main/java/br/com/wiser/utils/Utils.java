@@ -56,6 +56,7 @@ public class Utils {
         return 0;
     }
 
+    // TODO: Fazer com que seja carregado estas combos quando o App for startado
     public static String getDescricaoFluencia(int id) {
         return new Servidor().new App().getIdiomas(false).get(id).getDescricao();
     }

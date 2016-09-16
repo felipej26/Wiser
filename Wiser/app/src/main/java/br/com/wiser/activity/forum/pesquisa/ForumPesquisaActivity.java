@@ -75,7 +75,7 @@ public class ForumPesquisaActivity extends Activity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final LinkedList<DiscussaoDAO> listaDiscussoes = objDiscussao.procurarDiscussoes(Sistema.getUsuario(context), procurar);
+                final LinkedList<DiscussaoDAO> listaDiscussoes = objDiscussao.procurarDiscussoes(context, procurar);
 
                 hRecycleView.post(new Runnable() {
                     @Override
@@ -101,7 +101,7 @@ public class ForumPesquisaActivity extends Activity {
                         recyclerView.setHasFixedSize(true);
                         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-                        adapter = new DiscussaoCardViewAdapter(context, listaDiscussoes);
+                        adapter = new DiscussaoCardViewAdapter(ForumPesquisaActivity.this, listaDiscussoes);
                         recyclerView.setAdapter(adapter);
                         recyclerView.setVisibility(View.VISIBLE);
 

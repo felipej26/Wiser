@@ -1,13 +1,13 @@
 package br.com.wiser.business.encontrarusuarios.pesquisa;
 
-import br.com.wiser.Sistema;
+import android.content.Context;
+
 import br.com.wiser.business.app.servidor.Servidor;
-import br.com.wiser.business.app.usuario.Usuario;
 
 public class PesquisaDAO extends Pesquisa {
 
-    public boolean procurarUsuarios(Usuario usuario) {
-        this.setListaResultados(new Servidor().new Usuarios(usuario).pesquisarUsuarios(this));
+    public boolean procurarUsuarios(Context context) {
+        this.setListaResultados(new Servidor().new Usuarios(context).pesquisarUsuarios(this));
         return (this.getListaResultados().size() > 0);
     }
 }

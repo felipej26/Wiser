@@ -11,9 +11,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import br.com.wiser.R;
-import br.com.wiser.business.app.facebook.Facebook;
 import br.com.wiser.business.app.usuario.Usuario;
-import br.com.wiser.frames.FrameImagemPerfil;
+import br.com.wiser.dialogs.DialogPerfilUsuario;
 
 /**
  * Created by Jefferson on 31/03/2016.
@@ -39,7 +38,7 @@ public class ChatResultadosActivity extends Activity {
         grdResultado.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FrameImagemPerfil.mostrarDetalhes(ChatResultadosActivity.this, listaUsuarios.get(position));
+                DialogPerfilUsuario.mostrarDetalhes(ChatResultadosActivity.this, listaUsuarios.get(position));
             }
         });
     }
