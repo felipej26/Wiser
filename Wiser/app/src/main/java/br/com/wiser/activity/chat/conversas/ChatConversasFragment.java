@@ -11,6 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.LinkedList;
 
 import br.com.wiser.R;
@@ -26,7 +30,7 @@ public class ChatConversasFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
 
-    private ConversasDAO objMensagens;
+    private LinkedList<ConversasDAO> conversas;
 
     public static ChatConversasFragment newInstance() {
         return new ChatConversasFragment();
@@ -36,22 +40,36 @@ public class ChatConversasFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frag_mensagens, container, false);
 
-        objMensagens = new ConversasDAO();
         carregarComponentes(view);
 
         return view;
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
 
-        carregarComponentes(this.getView());
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(final LinkedList<ConversasDAO> conversas) {
+        if (conversas != null) {
+            if (!conversas.isEmpty()) {
+                ((ChatConversasAdapter) adapter).setItems(conversas);
+            }
+        }
     }
 
     private void carregarComponentes(View view) {
-
-        objMensagens = new ConversasDAO();
 
         pgbLoading = (ProgressBar) view.findViewById(R.id.pgbLoadingMsg);
         pgbLoading.setVisibility(View.VISIBLE);
@@ -61,40 +79,10 @@ public class ChatConversasFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-        final Handler hCarregar = new Handler();
-        final Context context = this.getContext();
+        conversas = new LinkedList<>();
+        adapter = new ChatConversasAdapter(ChatConversasFragment.this.getContext(), conversas);
+        recyclerView.setAdapter(adapter);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(true) {
-                    tratarLoading(hCarregar, context, objMensagens.carregarGeral(context));
-
-                    try {
-                        Thread.sleep(30000);
-                    }
-                    catch (Exception e) {
-                        continue;
-                    }
-                }
-            }
-        }).start();
-    }
-
-    private void tratarLoading(Handler hCarregar, final Context context, final LinkedList<ConversasDAO> listaConversas) {
-        hCarregar.post(new Runnable() {
-            @Override
-            public void run() {
-
-                if (listaConversas != null) {
-                    if (!listaConversas.isEmpty()) {
-                        adapter = new ChatConversasAdapter(context, listaConversas);
-                        recyclerView.setAdapter(adapter);
-                    }
-                }
-
-                pgbLoading.setVisibility(View.INVISIBLE);
-            }
-        });
+        pgbLoading.setVisibility(View.INVISIBLE);
     }
 }

@@ -57,15 +57,16 @@ public class ChatMensagensAdapter extends RecyclerView.Adapter<ChatMensagensAdap
         Mensagem m = mensagens.get(position);
         holder.lblDataHora.setText(UtilsDate.formatDate(m.getData(), UtilsDate.HHMM));
         holder.lblMensagem.setText(m.getMensagem().trim());
-
-        if (!m.isLida()) {
-            Utils.vibrar(context, 150);
-        }
     }
 
     @Override
     public int getItemCount() {
         return mensagens.size();
+    }
+
+    public void setItems(List<Mensagem> mensagens) {
+        this.mensagens = mensagens;
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -3,6 +3,7 @@ package br.com.wiser.dialogs;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,7 +11,11 @@ import android.widget.ProgressBar;
 import android.widget.Button;
 
 import br.com.wiser.R;
+import br.com.wiser.Sistema;
+import br.com.wiser.activity.chat.mensagens.ChatMensagensActivity;
 import br.com.wiser.business.app.usuario.Usuario;
+import br.com.wiser.business.chat.conversas.Conversas;
+import br.com.wiser.business.chat.conversas.ConversasDAO;
 import br.com.wiser.utils.Utils;
 
 /**
@@ -18,19 +23,19 @@ import br.com.wiser.utils.Utils;
  */
 public class DialogPerfilUsuario {
 
-    private static AlertDialog detalhes;
-    private static AlertDialog.Builder builderDetalhes;
-    private static View viewDetalhes;
-    private static ImageView imgPerfil;
-    private static ProgressBar prgBarra;
-    private static TextView lblNome;
-    private static TextView lblIdiomaNivel;
-    private static TextView lblStatus;
-    private static Button btnAbrirChat;
+    private AlertDialog alert;
+    private AlertDialog.Builder builder;
+    private View viewDetalhes;
+    private ImageView imgPerfil;
+    private ProgressBar prgBarra;
+    private TextView lblNome;
+    private TextView lblIdiomaNivel;
+    private TextView lblStatus;
+    private Button btnAbrirChat;
 
-    public static void mostrarDetalhes(final Context context, final Usuario contato) {
+    public void mostrarDetalhes(final Context context, final Usuario contato) {
 
-        builderDetalhes = new AlertDialog.Builder(context);
+        builder = new AlertDialog.Builder(context);
         viewDetalhes = ((Activity) context).getLayoutInflater().inflate(R.layout.chat_perfil_detalhes, null);
         imgPerfil = (ImageView) viewDetalhes.findViewById(R.id.imgPerfil);
         prgBarra = (ProgressBar) viewDetalhes.findViewById(R.id.prgBarra);
@@ -42,31 +47,28 @@ public class DialogPerfilUsuario {
         Utils.loadImageInBackground(context, contato.getUrlProfilePicture(), imgPerfil, prgBarra);
         lblNome.setText(contato.getFirstName());
         lblIdiomaNivel.setText(Utils.getDescricaoIdioma(contato.getIdioma()) + " - " + Utils.getDescricaoFluencia(contato.getFluencia()));
+        lblIdiomaNivel.setText(context.getString(R.string.fluencia_idioma,
+                Utils.getDescricaoFluencia(contato.getIdioma()), Utils.getDescricaoIdioma(contato.getIdioma())));
         lblStatus.setText(contato.getStatus());
 
-        /*
-        btnAbrirChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Usuario destinatario = new Usuario();
-                destinatario.setUserID(contato.getUserID());
-                destinatario.setFullName(contato.getFullName());
+        if (Sistema.getUsuario(context).getUserID() == contato.getUserID()) {
+            btnAbrirChat.setVisibility(View.INVISIBLE);
+        }
+        else {
+            btnAbrirChat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(v.getContext(), ChatMensagensActivity.class);
+                    ConversasDAO conversa = new ConversasDAO();
+                    conversa.setDestinatario(contato);
+                    i.putExtra("conversa", conversa);
+                    v.getContext().startActivity(i);
+                }
+            });
+        }
 
-                Bundle bdlContatos = new Bundle();
-                LinkedList<Usuario> contatos = new LinkedList<Usuario>();
-                contatos.add(0, destinatario);
-                bdlContatos.putSerializable("contatos", contatos);
-
-                Intent i = new Intent(v.getContext(), ChatMensagensActivity.class);
-                i.putExtra("contatos", bdlContatos);
-                i.putExtra("especifico", 1);
-                v.getContext().startActivity(i);
-            }
-        });
-        */
-
-        builderDetalhes.setView(viewDetalhes);
-        detalhes = builderDetalhes.create();
-        detalhes.show();
+        builder.setView(viewDetalhes);
+        alert = builder.create();
+        alert.show();
     }
 }

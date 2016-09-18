@@ -130,12 +130,6 @@ public class ForumDiscussaoActivity extends Activity {
         lblDataHora.setText(UtilsDate.formatDate(objDiscussao.getDataHora(), UtilsDate.DDMMYYYY_HHMMSS));
         lblRespostas.setText(getString(objDiscussao.getListaRespostas().size() == 1 ? R.string.resposta : R.string.respostas, objDiscussao.getListaRespostas().size()));
 
-        /*
-        if (objDiscussao.getListaRespostas() == null || objDiscussao.getListaRespostas().isEmpty()) {
-            return;
-        }
-        */
-
         adapter = new DiscussaoRespostaAdapter(this, objDiscussao.getListaRespostas());
         recyclerView.setAdapter(adapter);
     }
@@ -170,6 +164,7 @@ public class ForumDiscussaoActivity extends Activity {
 
                         txtResposta.setText("");
                         pgbLoading.setVisibility(View.INVISIBLE);
+                        lblRespostas.setText(getString(objDiscussao.getListaRespostas().size() == 1 ? R.string.resposta : R.string.respostas, objDiscussao.getListaRespostas().size()));
                     }
                 });
             }

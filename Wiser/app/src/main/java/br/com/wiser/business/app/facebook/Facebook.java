@@ -139,7 +139,7 @@ public class Facebook {
 
     public String getFacebookID() {
         try {
-            return Profile.getCurrentProfile().getId();
+            return AccessToken.getCurrentAccessToken().getUserId();
         }
         catch (Exception e) {
             return "";

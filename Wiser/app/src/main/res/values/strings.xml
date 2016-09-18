@@ -92,4 +92,6 @@
     <string name="sistema_link_playstore" translatable="false">https://play.google.com/store/apps/details?id=com.whatsapp</string> <!--exemplo-->
     <string name="nao_lida">não lida</string>
     <string name="nao_lidas">não lidas</string>
+    <string name="fluencia_idioma">%1$s em %2$s</string>
+    <string name="ativar">Ativar</string>
 </resources>

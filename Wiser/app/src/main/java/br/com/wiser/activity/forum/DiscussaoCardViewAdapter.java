@@ -68,7 +68,7 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
                 context.getString(objDiscussao.getListaRespostas().size() == 1 ? R.string.resposta : R.string.respostas,
                         objDiscussao.getListaRespostas().size()));
         viewHolder.lblDataHora.setText(UtilsDate.formatDate(objDiscussao.getDataHora(), UtilsDate.DDMMYYYY_HHMMSS));
-        viewHolder.btnDesativar.setText(objDiscussao.isAtiva() ? context.getString(R.string.desativar) : "Reativar");
+        viewHolder.btnDesativar.setText(objDiscussao.isAtiva() ? context.getString(R.string.desativar) : context.getString(R.string.ativar));
 
         if(objDiscussao.getUsuario().getUserID() != Sistema.getUsuario(context).getUserID()){
             viewHolder.btnDesativar.setVisibility(View.INVISIBLE);
@@ -126,7 +126,8 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
             imgPerfil.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DialogPerfilUsuario.mostrarDetalhes(v.getContext(), listaDiscussoes.get(posicao).getUsuario());
+                    DialogPerfilUsuario dialog = new DialogPerfilUsuario();
+                    dialog.mostrarDetalhes(v.getContext(), listaDiscussoes.get(posicao).getUsuario());
                 }
             });
 

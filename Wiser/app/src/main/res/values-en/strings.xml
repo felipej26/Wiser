@@ -76,4 +76,7 @@
     <string name="desativar">Disable</string>
     <string name="nao_lida">Unread</string>
     <string name="nao_lidas">Unread</string>
+    <string name="fluencia_idioma">%1$s in %2$s</string>
+    <string name="ativar">Enable</string>
+    <string name="confirmar_reativar_discussao">Do you really want to enable this discussion?</string>
 </resources>

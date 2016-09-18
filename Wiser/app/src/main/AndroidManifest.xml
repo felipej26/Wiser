@@ -20,6 +20,8 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
+        <service android:name=".services.CarregarConversasService" />
+
         <!-- Activity do Splash Screen -->
         <!-- Activity Main do App -->
         <activity

@@ -28,6 +28,8 @@ public class ChatResultadosActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_resultados);
 
+        final DialogPerfilUsuario perfil = new DialogPerfilUsuario();
+
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         listaUsuarios = new LinkedList<Usuario>((ArrayList<Usuario>) getIntent().getBundleExtra("listaUsuarios").get("listaUsuarios"));
@@ -38,7 +40,7 @@ public class ChatResultadosActivity extends Activity {
         grdResultado.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                DialogPerfilUsuario.mostrarDetalhes(ChatResultadosActivity.this, listaUsuarios.get(position));
+                perfil.mostrarDetalhes(ChatResultadosActivity.this, listaUsuarios.get(position));
             }
         });
     }

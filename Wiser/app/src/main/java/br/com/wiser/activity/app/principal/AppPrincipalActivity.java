@@ -2,6 +2,7 @@ package br.com.wiser.activity.app.principal;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import br.com.wiser.Sistema;
 import br.com.wiser.R;
 import br.com.wiser.enums.Activities;
+import br.com.wiser.services.CarregarConversasService;
 import br.com.wiser.utils.Utils;
 import br.com.wiser.utils.UtilsLocation;
 
@@ -30,13 +32,15 @@ public class AppPrincipalActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        adapter = new AppPrincipalAbas(getSupportFragmentManager(), AppPrincipalActivity.this);
+        adapter = new AppPrincipalAbas(getSupportFragmentManager(), this);
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(1);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        iniciarServico();
     }
 
     @Override
@@ -71,6 +75,11 @@ public class AppPrincipalActivity extends AppCompatActivity {
 
         getMenuInflater().inflate(R.menu.menu_principal, menu);
         return (true);
+    }
+
+    public void iniciarServico() {
+        Intent service = new Intent(this, CarregarConversasService.class);
+        startService(service);
     }
 
     public void verificarConfiguracao() {

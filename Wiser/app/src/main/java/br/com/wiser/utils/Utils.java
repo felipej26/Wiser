@@ -58,11 +58,27 @@ public class Utils {
 
     // TODO: Fazer com que seja carregado estas combos quando o App for startado
     public static String getDescricaoFluencia(int id) {
-        return new Servidor().new App().getIdiomas(false).get(id).getDescricao();
+        List<ComboBoxItem> fluencias = new Servidor().new App().getFluencias(false);
+
+        for (ComboBoxItem item : fluencias) {
+            if (item.getId() == id) {
+                return item.getDescricao();
+            }
+        }
+
+        return "";
     }
 
     public static String getDescricaoIdioma(int id) {
-        return new Servidor().new App().getFluencias(false).get(id).getDescricao();
+        List<ComboBoxItem> idiomas = new Servidor().new App().getIdiomas(false);
+
+        for (ComboBoxItem item : idiomas) {
+            if (item.getId() == id) {
+                return item.getDescricao();
+            }
+        }
+
+        return "";
     }
 
     public static void carregarComboFluencia(Spinner cmbFluencia, Context context, boolean itemTodos) {

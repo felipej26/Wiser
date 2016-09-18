@@ -18,13 +18,16 @@ import java.util.LinkedList;
 import br.com.wiser.Sistema;
 import br.com.wiser.R;
 import br.com.wiser.activity.forum.DiscussaoCardViewAdapter;
+import br.com.wiser.activity.forum.IDiscussaoCardViewAdapterCallback;
 import br.com.wiser.business.forum.discussao.Discussao;
 import br.com.wiser.business.forum.discussao.DiscussaoDAO;
+import br.com.wiser.dialogs.DialogConfirmar;
+import br.com.wiser.dialogs.DialogInformar;
 
 /**
  * Created by Jefferson on 16/05/2016.
  */
-public class ForumPesquisaActivity extends Activity {
+public class ForumPesquisaActivity extends Activity implements IDiscussaoCardViewAdapterCallback {
 
     private EditText txtDiscussao;
     private TextView lblResultados;
@@ -110,5 +113,46 @@ public class ForumPesquisaActivity extends Activity {
                 });
             }
         }).start();
+    }
+
+    @Override
+    public void desativarDiscussao(final Discussao discussao) {
+        DialogConfirmar confirmar = new DialogConfirmar(this);
+
+        confirmar.setYesClick(new DialogConfirmar.DialogInterface() {
+            @Override
+            public void onClick() {
+                desativar(discussao);
+            }
+        });
+
+        if (discussao.isAtiva()) {
+            confirmar.setMensagem(this.getString(R.string.confirmar_desativar_discussao));
+        }
+        else {
+            confirmar.setMensagem(getString(R.string.confirmar_reativar_discussao));
+        }
+
+        confirmar.show();
+    }
+
+    public void desativar(Discussao discussao) {
+        DialogInformar informar = new DialogInformar(this);
+
+        DiscussaoDAO objDiscussao = new DiscussaoDAO();
+
+        objDiscussao.setId(discussao.getId());
+        objDiscussao.setAtiva(!discussao.isAtiva());
+
+        if (objDiscussao.desativarDiscussao(this)) {
+            discussao.setAtiva(objDiscussao.isAtiva());
+
+            informar.setMensagem(getString(R.string.sucesso_discussao_excluida));
+        }
+        else {
+            informar.setMensagem(getString(R.string.erro_excluir_discussao));
+        }
+
+        informar.show();
     }
 }

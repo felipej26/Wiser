@@ -11,8 +11,8 @@ import br.com.wiser.business.chat.mensagem.Mensagem;
  */
 public class Conversas implements Serializable {
 
-    private long id;
-    private Usuario destinatario;
+    private long id = 0;
+    private Usuario destinatario = new Usuario(0);
     private LinkedList<Mensagem> mensagens = new LinkedList<Mensagem>();
 
     public long getId() {
@@ -51,9 +51,5 @@ public class Conversas implements Serializable {
         }
 
         return naoLidos;
-    }
-
-    public Mensagem getLastMensagem() {
-        return mensagens.getLast();
     }
 }

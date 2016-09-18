@@ -25,7 +25,7 @@ import br.com.wiser.utils.Utils;
 public class ChatConversasAdapter extends RecyclerView.Adapter<ChatConversasAdapter.ViewHolder> {
 
     private Context context;
-    private static LinkedList<ConversasDAO> conversas = null;
+    private LinkedList<ConversasDAO> conversas = null;
 
     public ChatConversasAdapter(Context context, LinkedList<ConversasDAO> conversas) {
         this.context = context;
@@ -64,7 +64,12 @@ public class ChatConversasAdapter extends RecyclerView.Adapter<ChatConversasAdap
         return conversas.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public void setItems(LinkedList<ConversasDAO> conversas) {
+        this.conversas = conversas;
+        notifyDataSetChanged();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public View viewSeparator;
 

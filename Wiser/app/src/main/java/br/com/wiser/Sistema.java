@@ -49,8 +49,7 @@ public class Sistema {
         String[] PERMISSIONS = {
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.VIBRATE};
+                Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
         if (!hasPermissions(context, PERMISSIONS)) {
             ActivityCompat.requestPermissions((Activity) context, PERMISSIONS, PERMISSION_ALL);

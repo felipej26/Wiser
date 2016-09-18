@@ -14,12 +14,21 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.EditText;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import br.com.wiser.R;
+import br.com.wiser.business.app.servidor.Servidor;
+import br.com.wiser.business.app.usuario.Usuario;
+import br.com.wiser.business.chat.conversas.Conversas;
 import br.com.wiser.business.chat.conversas.ConversasDAO;
 import br.com.wiser.business.chat.mensagem.Mensagem;
+import br.com.wiser.utils.Utils;
 
 /**
  * Created by Jefferson on 30/05/2016.
@@ -33,6 +42,8 @@ public class ChatMensagensActivity extends Activity {
 
     private EditText txtResposta;
     private Button btnEnviar;
+
+    private boolean checouExiste = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +59,48 @@ public class ChatMensagensActivity extends Activity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(final LinkedList<ConversasDAO> conversas) {
+        for (final ConversasDAO conversa : conversas) {
+
+            if (objConversa.getId() == 0) {
+                if (conversa.getDestinatario().getUserID() == objConversa.getDestinatario().getUserID()) {
+                    objConversa = conversa;
+                }
+                else {
+                    continue;
+                }
+            }
+
+            if (conversa.getId() == objConversa.getId()) {
+                objConversa.setMensagens(conversa.getMensagens());
+
+                ((ChatMensagensAdapter) adapter).setItems(objConversa.getMensagens());
+                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+                if (objConversa.getContMsgNaoLidas() > 0) {
+                    Utils.vibrar(ChatMensagensActivity.this, 150);
+                    objConversa.atualizarLidas(this);
+                }
+            }
+
+            break;
+        }
+
+        checouExiste = true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         onBackPressed();
         return true;
@@ -58,6 +111,10 @@ public class ChatMensagensActivity extends Activity {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        adapter = new ChatMensagensAdapter(ChatMensagensActivity.this, objConversa.getMensagens());
+        recyclerView.setAdapter(adapter);
+        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
 
         txtResposta = (EditText) findViewById(R.id.txtResposta);
         btnEnviar = (Button) findViewById(R.id.btnEnviarResposta);
@@ -86,21 +143,13 @@ public class ChatMensagensActivity extends Activity {
 
     private void carregarDados() {
 
-        final Context context = this;
-        final Handler hCarregar = new Handler();
+        adapter = new ChatMensagensAdapter(this, objConversa.getMensagens());
+        recyclerView.setAdapter(adapter);
+        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
 
-        if (objConversa.getMensagens() == null || objConversa.getMensagens().isEmpty()) {
-            return;
+        if (objConversa.getContMsgNaoLidas() > 0) {
+            Utils.vibrar(this, 150);
         }
-
-        hCarregar.post(new Runnable() {
-            @Override
-            public void run() {
-                adapter = new ChatMensagensAdapter(context, (List) objConversa.getMensagens());
-                recyclerView.setAdapter(adapter);
-                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
-            }
-        });
 
         // TODO: objConversa.atualizarLidas();
     }
@@ -110,7 +159,7 @@ public class ChatMensagensActivity extends Activity {
         String texto = txtResposta.getText().toString();
         Mensagem mensagem;
 
-        if (!texto.isEmpty()) {
+        if (checouExiste && !texto.isEmpty()) {
             mensagem = new Mensagem();
 
             mensagem.setLida(true);
@@ -119,8 +168,6 @@ public class ChatMensagensActivity extends Activity {
             mensagem.setMensagem(texto);
 
             if (objConversa.enviarMensagem(this, mensagem)) {
-                objConversa.getMensagens().add(mensagem);
-
                 txtResposta.setText("");
                 recyclerView.scrollToPosition(adapter.getItemCount() - 1);
             }
