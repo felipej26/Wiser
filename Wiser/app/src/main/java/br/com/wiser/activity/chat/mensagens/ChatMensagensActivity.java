@@ -72,7 +72,7 @@ public class ChatMensagensActivity extends Activity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(final LinkedList<ConversasDAO> conversas) {
-        for (final ConversasDAO conversa : conversas) {
+        for (ConversasDAO conversa : conversas) {
 
             if (objConversa.getId() == 0) {
                 if (conversa.getDestinatario().getUserID() == objConversa.getDestinatario().getUserID()) {
@@ -89,12 +89,12 @@ public class ChatMensagensActivity extends Activity {
                 ((ChatMensagensAdapter) adapter).setItems(objConversa.getMensagens());
                 recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                 if (objConversa.getContMsgNaoLidas() > 0) {
-                    Utils.vibrar(ChatMensagensActivity.this, 150);
+                    Utils.vibrar(this, 150);
                     objConversa.atualizarLidas(this);
                 }
-            }
 
-            break;
+                break;
+            }
         }
 
         checouExiste = true;

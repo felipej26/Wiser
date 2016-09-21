@@ -10,9 +10,12 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -31,6 +34,10 @@ import br.com.wiser.business.forum.resposta.Resposta;
 import br.com.wiser.enums.Models;
 import br.com.wiser.utils.ComboBoxItem;
 import br.com.wiser.utils.UtilsDate;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 
 /**
  * Created by Jefferson on 30/07/2016.
@@ -78,11 +85,11 @@ public class Servidor {
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     json = jsonArray.getJSONObject(i);
-                    ComboBoxItem item = new ComboBoxItem(json.getInt("cod_idioma"), json.getString("descricao"));
+                    ComboBoxItem item = new ComboBoxItem(json.getInt("cod_idioma"), decode(json.getString("descricao")));
                     idiomas.add(item);
                 }
             }
-            catch (JSONException e) {
+            catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -104,11 +111,11 @@ public class Servidor {
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     json = jsonArray.getJSONObject(i);
-                    ComboBoxItem item = new ComboBoxItem(json.getInt("nivel"), json.getString("descricao"));
+                    ComboBoxItem item = new ComboBoxItem(json.getInt("nivel"), decode(json.getString("descricao")));
                     fluencias.add(item);
                 }
             }
-            catch (JSONException e) {
+            catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -143,7 +150,7 @@ public class Servidor {
                 usuario.setSetouConfiguracoes(json.getBoolean("setou_configuracoes"));
                 usuario.setIdioma(json.optInt("idioma"));
                 usuario.setFluencia(json.optInt("fluencia"));
-                usuario.setStatus(json.optString("status"));
+                usuario.setStatus(decode(json.optString("status")));
             }
             catch (Exception e) {
                 throw new Exception(e.getMessage());
@@ -160,7 +167,7 @@ public class Servidor {
                 json.put("id", usuario.getUserID());
                 json.put("idioma", usuario.getIdioma());
                 json.put("fluencia", usuario.getFluencia());
-                json.put("status", URLEncoder.encode(usuario.getStatus(), "UTF-8"));
+                json.put("status", encode(usuario.getStatus()));
 
                 response = requestPOST(Models.USUARIO, "salvarConfiguracoes", json.toString());
 
@@ -252,13 +259,15 @@ public class Servidor {
             super(context);
         }
 
-        public void carregarGeral(LinkedList<ConversasDAO> conversas) {
+        public boolean carregarGeral(LinkedList<ConversasDAO> conversas) {
             GETParametros parametros = new GETParametros();
             Usuario usuario = Sistema.getUsuario(context);
             long id_ultima_mensagem = 0;
 
             Response response;
             JSONArray jsonConversas;
+
+            boolean hasNovaMensagem = false;
 
             try {
                 parametros.put("usuario", usuario.getUserID());
@@ -316,9 +325,13 @@ public class Servidor {
                             mensagem.setDestinatario(json.getLong("usuario") != usuario.getUserID());
                             mensagem.setData(UtilsDate.parseDateJson(json.getString("data")));
                             mensagem.setLida(json.getBoolean("lida"));
-                            mensagem.setMensagem(json.getString("mensagem"));
+                            mensagem.setMensagem(decode(json.getString("mensagem")));
 
                             conversa.getMensagens().add(mensagem);
+
+                            if (mensagem.isDestinatario() && !mensagem.isLida()) {
+                                hasNovaMensagem = true;
+                            }
                         }
                     }
                 }
@@ -326,6 +339,8 @@ public class Servidor {
             catch (Exception ex) {
                 ex.printStackTrace();
             }
+
+            return hasNovaMensagem;
         }
 
         public void atualizarLidas(Conversas conversa) {
@@ -342,7 +357,9 @@ public class Servidor {
 
                 if (response.getCodeResponse() == HttpURLConnection.HTTP_OK) {
                     for (Mensagem m : conversa.getMensagens()) {
-                        m.setLida(true);
+                        if (m.isDestinatario()) {
+                            m.setLida(true);
+                        }
                     }
                 }
             }
@@ -364,7 +381,7 @@ public class Servidor {
                 json.put("usuario", Sistema.getUsuario(context).getUserID());
                 json.put("destinatario", destinatario);
                 json.put("data", mensagem.getData());
-                json.put("mensagem", URLEncoder.encode(mensagem.getMensagem(), "UTF-8"));
+                json.put("mensagem", encode(mensagem.getMensagem()));
 
                 json = new JSONObject(requestPOST(Models.CONVERSA, "enviarMensagem", json.toString()).getMessageResponse());
 
@@ -416,10 +433,11 @@ public class Servidor {
                 jsonParametros = new JSONObject();
                 jsonParametros.put("id", String.valueOf(discussao.getId()));
                 jsonParametros.put("usuario", Sistema.getUsuario(context).getUserID());
-                jsonParametros.put("titulo", URLEncoder.encode(discussao.getTitulo(), "UTF-8"));
-                jsonParametros.put("descricao", URLEncoder.encode(discussao.getDescricao(), "UTF-8"));
+                jsonParametros.put("titulo", encode(discussao.getTitulo()));
+                jsonParametros.put("descricao", encode(discussao.getDescricao()));
                 jsonParametros.put("data", discussao.getDataHora());
 
+                // TODO se der erro, deve ser informado ao Usuario
                 requestPOST(Models.DISCUSSAO, "updateOrCreate", jsonParametros.toString());
             }
             catch (Exception e) {
@@ -432,12 +450,11 @@ public class Servidor {
         public LinkedList<DiscussaoDAO> procurarDiscussoes(String chave) {
             LinkedList<DiscussaoDAO> listaDiscussoes = new LinkedList<DiscussaoDAO>();
             GETParametros parametros;
-            JSONObject json;
             JSONArray jsonDiscussoes;
 
             try {
                 parametros = new GETParametros();
-                parametros.put("chave", URLEncoder.encode(chave, "UTF-8"));
+                parametros.put("chave", encode(chave));
 
                 jsonDiscussoes = new JSONArray(requestGET(Models.DISCUSSAO, "procurarDiscussoes", parametros).getMessageResponse());
 
@@ -480,9 +497,9 @@ public class Servidor {
             try {
                 json = new JSONObject();
                 json.put("id", String.valueOf(discussao.getId()));
-                json.put("usuario", Sistema.getUsuario(context).getUserID()); // todo string
+                json.put("usuario", Sistema.getUsuario(context).getUserID());
                 json.put("data", resposta.getDataHora());
-                json.put("resposta", URLEncoder.encode(resposta.getResposta(), "UTF-8"));
+                json.put("resposta", encode(resposta.getResposta()));
 
                 response = requestPOST(Models.DISCUSSAO, "responderDiscussao", json.toString());
 
@@ -516,7 +533,7 @@ public class Servidor {
             if (usuario.isSetouConfiguracoes()) {
                 usuario.setIdioma(json.getInt("idioma"));
                 usuario.setFluencia(json.getInt("fluencia"));
-                usuario.setStatus(json.getString("status"));
+                usuario.setStatus(decode(json.getString("status")));
             }
 
             if (carregarInfoPessoais) {
@@ -540,8 +557,8 @@ public class Servidor {
 
         discussao.setUsuario(minhasDiscussoes ? Sistema.getUsuario(context) : getUsuarioJSON(json.getJSONObject("usuario"), true, context));
         discussao.setId(json.getLong("id"));
-        discussao.setTitulo(json.getString("titulo"));
-        discussao.setDescricao(json.getString("descricao"));
+        discussao.setTitulo(decode(json.getString("titulo")));
+        discussao.setDescricao(decode(json.getString("descricao")));
         discussao.setAtiva(json.getBoolean("discussao_ativa"));
         discussao.setDataHora(UtilsDate.parseDateJson(json.getString("data")));
 
@@ -555,12 +572,20 @@ public class Servidor {
              */
             resposta.setUsuario(new Usuarios(context).carregarUsuario(new Usuario(jsonResp.getLong("usuario"))));
             resposta.setDataHora(UtilsDate.parseDateJson(jsonResp.getString("data")));
-            resposta.setResposta(jsonResp.getString("resposta"));
+            resposta.setResposta(decode(jsonResp.getString("resposta")));
 
             discussao.getListaRespostas().add(resposta);
         }
 
         return discussao;
+    }
+
+    private String encode(String texto) throws UnsupportedEncodingException {
+        return URLEncoder.encode(texto, "UTF-8");
+    }
+
+    private String decode(String texto) throws UnsupportedEncodingException {
+        return URLDecoder.decode(texto, "UTF-8");
     }
 
     private Response requestGET(Models model) {
@@ -621,43 +646,23 @@ public class Servidor {
     }
 
     private Response requestPOST(Models model, String endPoint, String postParametros) {
-        String url = "http://" + Sistema.SERVIDOR_WS + "/" + model.name() + "/" + endPoint;
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        OkHttpClient client = new OkHttpClient();
         Response response = new Response();
+        okhttp3.Response r;
 
-        URL obj;
-        HttpURLConnection con;
-        DataOutputStream wr;
-        BufferedReader in;
+        String url = "http://" + Sistema.SERVIDOR_WS + "/" + model.name().toLowerCase() + "/" + endPoint;
 
-        StringBuffer stringBuffer;
-        String inputLine;
-
-        response.setMessageResponse("");
-        response.setCodeResponse(0);
+        RequestBody body = RequestBody.create(JSON, postParametros);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
 
         try {
-            obj = new URL(url);
-            con = (HttpURLConnection) obj.openConnection();
-
-            con.setRequestMethod("POST");
-            con.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-            con.setDoOutput(true);
-
-            wr = new DataOutputStream(con.getOutputStream());
-            wr.writeBytes(postParametros);
-            wr.flush();
-            wr.close();
-
-            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            stringBuffer = new StringBuffer();
-
-            while ((inputLine = in.readLine()) != null) {
-                stringBuffer.append(inputLine);
-            }
-            response.setMessageResponse(stringBuffer.toString());
-            response.setCodeResponse(con.getResponseCode());
-
-            in.close();
+            r = client.newCall(request).execute();
+            response.setMessageResponse(r.body().string());
+            response.setCodeResponse(r.code());
         }
         catch (Exception ex) {
             ex.printStackTrace();

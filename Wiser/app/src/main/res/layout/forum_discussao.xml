@@ -36,7 +36,7 @@
                         android:id="@+id/lblIDDiscussao" />
 
                     <include
-                        layout="@layout/frm_imagem_perfil"
+                        layout="@layout/dialog_perfil_usuario"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:id="@+id/frmImgPerfil"

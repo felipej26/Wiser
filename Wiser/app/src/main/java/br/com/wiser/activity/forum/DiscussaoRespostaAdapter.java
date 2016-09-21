@@ -13,6 +13,7 @@ import java.util.LinkedList;
 
 import br.com.wiser.R;
 import br.com.wiser.business.forum.resposta.Resposta;
+import br.com.wiser.dialogs.DialogPerfilUsuario;
 import br.com.wiser.utils.UtilsDate;
 import br.com.wiser.utils.Utils;
 
@@ -41,6 +42,7 @@ public class DiscussaoRespostaAdapter extends RecyclerView.Adapter<DiscussaoResp
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Resposta r = resposta.get(position);
+        final DialogPerfilUsuario perfil = new DialogPerfilUsuario();
 
         holder.viewSeparator.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
 

@@ -10,8 +10,8 @@ import br.com.wiser.business.chat.mensagem.Mensagem;
 
 public class ConversasDAO extends Conversas {
 
-    public void carregarGeral(Context context, LinkedList<ConversasDAO> conversas) {
-        new Servidor().new Chat(context).carregarGeral(conversas);
+    public boolean carregarGeral(Context context, LinkedList<ConversasDAO> conversas) {
+        return new Servidor().new Chat(context).carregarGeral(conversas);
     }
 
     public boolean enviarMensagem(Context context, Mensagem mensagem) {

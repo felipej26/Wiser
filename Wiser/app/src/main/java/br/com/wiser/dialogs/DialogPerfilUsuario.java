@@ -46,9 +46,8 @@ public class DialogPerfilUsuario {
 
         Utils.loadImageInBackground(context, contato.getUrlProfilePicture(), imgPerfil, prgBarra);
         lblNome.setText(contato.getFirstName());
-        lblIdiomaNivel.setText(Utils.getDescricaoIdioma(contato.getIdioma()) + " - " + Utils.getDescricaoFluencia(contato.getFluencia()));
         lblIdiomaNivel.setText(context.getString(R.string.fluencia_idioma,
-                Utils.getDescricaoFluencia(contato.getIdioma()), Utils.getDescricaoIdioma(contato.getIdioma())));
+                Utils.getDescricaoFluencia(contato.getFluencia()), Utils.getDescricaoIdioma(contato.getIdioma())));
         lblStatus.setText(contato.getStatus());
 
         if (Sistema.getUsuario(context).getUserID() == contato.getUserID()) {

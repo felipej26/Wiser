@@ -25,7 +25,7 @@
             android:singleLine="true" />
 
         <include
-            layout="@layout/frm_imagem_perfil"
+            layout="@layout/dialog_perfil_usuario"
             android:id="@id/frmImgPerfil"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -4,8 +4,8 @@ package br.com.wiser.business.app.servidor;
  * Created by Jefferson on 31/07/2016.
  */
 public class Response {
-    private String messageResponse;
-    private int codeResponse;
+    private String messageResponse = "";
+    private int codeResponse = 0;
 
     public String getMessageResponse() {
         return messageResponse;
