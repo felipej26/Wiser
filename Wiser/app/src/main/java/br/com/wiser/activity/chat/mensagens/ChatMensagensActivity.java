@@ -72,6 +72,8 @@ public class ChatMensagensActivity extends Activity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(final LinkedList<ConversasDAO> conversas) {
+        boolean novaMensagem;
+
         for (ConversasDAO conversa : conversas) {
 
             if (objConversa.getId() == 0) {
@@ -84,13 +86,18 @@ public class ChatMensagensActivity extends Activity {
             }
 
             if (conversa.getId() == objConversa.getId()) {
-                objConversa.setMensagens(conversa.getMensagens());
+                novaMensagem = conversa.getMensagens().size() != adapter.getItemCount();
 
+                objConversa.setMensagens(conversa.getMensagens());
                 ((ChatMensagensAdapter) adapter).setItems(objConversa.getMensagens());
-                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
-                if (objConversa.getContMsgNaoLidas() > 0) {
-                    Utils.vibrar(this, 150);
-                    objConversa.atualizarLidas(this);
+
+                if (novaMensagem) {
+                    if (objConversa.getContMsgNaoLidas() > 0) {
+                        Utils.vibrar(this, 150);
+                        objConversa.atualizarLidas(this);
+                    }
+
+                    recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                 }
 
                 break;
@@ -112,9 +119,8 @@ public class ChatMensagensActivity extends Activity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new ChatMensagensAdapter(ChatMensagensActivity.this, objConversa.getMensagens());
+        adapter = new ChatMensagensAdapter(this);
         recyclerView.setAdapter(adapter);
-        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
 
         txtResposta = (EditText) findViewById(R.id.txtResposta);
         btnEnviar = (Button) findViewById(R.id.btnEnviarResposta);
@@ -143,20 +149,14 @@ public class ChatMensagensActivity extends Activity {
 
     private void carregarDados() {
 
-        adapter = new ChatMensagensAdapter(this, objConversa.getMensagens());
-        recyclerView.setAdapter(adapter);
-        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
-
         if (objConversa.getContMsgNaoLidas() > 0) {
             Utils.vibrar(this, 150);
         }
-
-        // TODO: objConversa.atualizarLidas();
     }
 
     public void enviar(View view) {
 
-        String texto = txtResposta.getText().toString();
+        String texto = txtResposta.getText().toString().trim();
         Mensagem mensagem;
 
         if (checouExiste && !texto.isEmpty()) {
@@ -169,7 +169,6 @@ public class ChatMensagensActivity extends Activity {
 
             if (objConversa.enviarMensagem(this, mensagem)) {
                 txtResposta.setText("");
-                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
             }
         }
     }

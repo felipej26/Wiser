@@ -2,6 +2,8 @@ package br.com.wiser.business.app.usuario;
 
 import android.content.Context;
 
+import java.util.LinkedList;
+
 import br.com.wiser.Sistema;
 import br.com.wiser.business.app.servidor.Servidor;
 
@@ -31,5 +33,13 @@ public class UsuarioDAO extends Usuario{
 
     public boolean desativarConta(Context context){
         return new Servidor().new Usuarios(context).desativarConta();
+    }
+
+    public boolean adicionarContato(Context context, Usuario contato) {
+        return new Servidor().new Contatos(context).adicionarContato(contato);
+    }
+
+    public LinkedList<Usuario> carregarContatos(Context context) {
+        return new Servidor().new Contatos(context).carregarContatos();
     }
 }

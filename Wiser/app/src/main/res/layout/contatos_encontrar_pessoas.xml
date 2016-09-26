@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.encontrarusuarios.pesquisa.ChatPesquisaFragment"
+    tools:context=".activity.contatos.encontrarusuarios.pesquisa.ContatosEncontrarUsuariosPesquisaActivity"
     tools:menu="br.br.wiser.res.menu.menu_principal" >
 
     <TextView

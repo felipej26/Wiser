@@ -1,4 +1,4 @@
-package br.com.wiser.activity.encontrarusuarios.resultados;
+package br.com.wiser.activity.contatos.encontrarusuarios.resultados;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -26,7 +26,7 @@ public class ChatResultadosActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.chat_resultados);
+        setContentView(R.layout.contatos_encontrar_usuarios_resultados);
 
         final DialogPerfilUsuario perfil = new DialogPerfilUsuario();
 
@@ -40,7 +40,7 @@ public class ChatResultadosActivity extends Activity {
         grdResultado.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                perfil.mostrarDetalhes(ChatResultadosActivity.this, listaUsuarios.get(position));
+                perfil.show(ChatResultadosActivity.this, listaUsuarios.get(position));
             }
         });
     }
@@ -52,7 +52,7 @@ public class ChatResultadosActivity extends Activity {
     }
 
     private void carregar(){
-        objCustomGridAdapter = new ChatResultadosAdapter(this, R.layout.chat_resultados_grid, listaUsuarios);
+        objCustomGridAdapter = new ChatResultadosAdapter(this, R.layout.contatos_encontrar_pessoas_resultados_grid, listaUsuarios);
         grdResultado.setAdapter(objCustomGridAdapter);
     }
 }

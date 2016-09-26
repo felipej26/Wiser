@@ -1,22 +1,18 @@
-package br.com.wiser.activity.encontrarusuarios.pesquisa;
+package br.com.wiser.activity.contatos.encontrarusuarios.pesquisa;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 
-import br.com.wiser.Sistema;
 import br.com.wiser.R;
-import br.com.wiser.activity.encontrarusuarios.resultados.ChatResultadosActivity;
+import br.com.wiser.activity.contatos.encontrarusuarios.resultados.ChatResultadosActivity;
 
-import br.com.wiser.utils.ComboBoxItem;
 import br.com.wiser.utils.Utils;
 import br.com.wiser.business.encontrarusuarios.pesquisa.PesquisaDAO;
 
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
@@ -27,7 +23,7 @@ import android.widget.Toast;
 /**
  * Created by Jefferson on 31/03/2016.
  */
-public class ChatPesquisaFragment extends Fragment {
+public class ContatosEncontrarUsuariosPesquisaActivity extends Activity {
 
     private Spinner cmbIdioma;
     private Spinner cmbFluencia;
@@ -40,24 +36,28 @@ public class ChatPesquisaFragment extends Fragment {
 
     private static boolean achou = false;
 
-    public static ChatPesquisaFragment newInstance() {
-        return new ChatPesquisaFragment();
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.contatos_encontrar_pessoas);
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        carregarComponentes();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.frag_pesquisa_pessoas, container, false);
-        carregarComponentes(view);
-
-        return view;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        onBackPressed();
+        return true;
     }
 
-    private void carregarComponentes(View view) {
-        cmbIdioma = (Spinner) view.findViewById(R.id.cmbIdiomaProcurar);
-        cmbFluencia = (Spinner) view.findViewById(R.id.cmbFluenciaProcurar);
+    private void carregarComponentes() {
+        cmbIdioma = (Spinner) findViewById(R.id.cmbIdiomaProcurar);
+        cmbFluencia = (Spinner) findViewById(R.id.cmbFluenciaProcurar);
 
-        skrDistancia = (SeekBar) view.findViewById(R.id.skrDistancia);
-        lblDistanciaSelecionada = (TextView) view.findViewById(R.id.lblDistanciaSelecionada);
+        skrDistancia = (SeekBar) findViewById(R.id.skrDistancia);
+        lblDistanciaSelecionada = (TextView) findViewById(R.id.lblDistanciaSelecionada);
 
         skrDistancia.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -72,7 +72,7 @@ public class ChatPesquisaFragment extends Fragment {
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-        btnProcurar = (Button) view.findViewById(R.id.btnProcurar);
+        btnProcurar = (Button) findViewById(R.id.btnProcurar);
         btnProcurar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,16 +80,15 @@ public class ChatPesquisaFragment extends Fragment {
             }
         });
 
-        pgbLoading = (ProgressBar)view.findViewById(R.id.pgbLoading);
+        pgbLoading = (ProgressBar) findViewById(R.id.pgbLoading);
 
-        Utils.carregarComboIdiomas(cmbIdioma, view.getContext(), true);
-        Utils.carregarComboFluencia(cmbFluencia, view.getContext(), true);
+        Utils.carregarComboIdiomas(cmbIdioma, this, true);
+        Utils.carregarComboFluencia(cmbFluencia, this, true);
 
         objProcurar = new PesquisaDAO();
     }
 
-    private void procurar(View view){
-        final Context context = this.getContext();
+    private void procurar (View view) {
         final Handler hCarregar = new Handler();
 
         pgbLoading.setVisibility(View.VISIBLE);
@@ -102,11 +101,11 @@ public class ChatPesquisaFragment extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (objProcurar.procurarUsuarios(context)){
+                if (objProcurar.procurarUsuarios(ContatosEncontrarUsuariosPesquisaActivity.this)){
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("listaUsuarios", objProcurar.getListaResultados());
 
-                    Intent i = new Intent(context, ChatResultadosActivity.class);
+                    Intent i = new Intent(ContatosEncontrarUsuariosPesquisaActivity.this, ChatResultadosActivity.class);
                     i.putExtra("listaUsuarios", bundle);
                     startActivity(i);
 
@@ -119,7 +118,7 @@ public class ChatPesquisaFragment extends Fragment {
                         pgbLoading.setVisibility(View.INVISIBLE);
 
                         if (!achou) {
-                            Toast.makeText(context, getString(R.string.usuarios_nao_encontrados), Toast.LENGTH_LONG).show();
+                            Toast.makeText(ContatosEncontrarUsuariosPesquisaActivity.this, getString(R.string.usuarios_nao_encontrados), Toast.LENGTH_LONG).show();
                         }
                     }
                 });

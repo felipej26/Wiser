@@ -9,7 +9,7 @@ import java.util.LinkedList;
 
 import br.com.wiser.R;
 import br.com.wiser.activity.chat.conversas.ChatConversasFragment;
-import br.com.wiser.activity.encontrarusuarios.pesquisa.ChatPesquisaFragment;
+import br.com.wiser.activity.contatos.principal.ContatosPrincipalFragment;
 import br.com.wiser.activity.forum.principal.ForumPrincipalFragment;
 
 /**
@@ -22,7 +22,7 @@ public class AppPrincipalAbas extends FragmentPagerAdapter {
     public AppPrincipalAbas(FragmentManager fm, Context context) {
         super(fm);
 
-        abasFragmentos.add(0, ChatPesquisaFragment.newInstance());
+        abasFragmentos.add(0, ContatosPrincipalFragment.newInstance());
         abasFragmentos.add(1, ChatConversasFragment.newInstance());
         abasFragmentos.add(2, ForumPrincipalFragment.newInstance());
 

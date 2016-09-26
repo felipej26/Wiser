@@ -14,7 +14,6 @@ import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.activity.chat.mensagens.ChatMensagensActivity;
 import br.com.wiser.business.app.usuario.Usuario;
-import br.com.wiser.business.chat.conversas.Conversas;
 import br.com.wiser.business.chat.conversas.ConversasDAO;
 import br.com.wiser.utils.Utils;
 
@@ -33,10 +32,10 @@ public class DialogPerfilUsuario {
     private TextView lblStatus;
     private Button btnAbrirChat;
 
-    public void mostrarDetalhes(final Context context, final Usuario contato) {
+    public void show(final Context context, final Usuario contato) {
 
         builder = new AlertDialog.Builder(context);
-        viewDetalhes = ((Activity) context).getLayoutInflater().inflate(R.layout.chat_perfil_detalhes, null);
+        viewDetalhes = ((Activity) context).getLayoutInflater().inflate(R.layout.dialog_perfil, null);
         imgPerfil = (ImageView) viewDetalhes.findViewById(R.id.imgPerfil);
         prgBarra = (ProgressBar) viewDetalhes.findViewById(R.id.prgBarra);
         lblNome = (TextView) viewDetalhes.findViewById(R.id.lblNomeDetalhe);
@@ -54,16 +53,39 @@ public class DialogPerfilUsuario {
             btnAbrirChat.setVisibility(View.INVISIBLE);
         }
         else {
-            btnAbrirChat.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i = new Intent(v.getContext(), ChatMensagensActivity.class);
-                    ConversasDAO conversa = new ConversasDAO();
-                    conversa.setDestinatario(contato);
-                    i.putExtra("conversa", conversa);
-                    v.getContext().startActivity(i);
-                }
-            });
+            if (!contato.isContato()) {
+                btnAbrirChat.setText("Adicionar como Contato");
+                btnAbrirChat.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (Sistema.getUsuario(context).adicionarContato(context, contato)) {
+                            btnAbrirChat.setText(context.getString(R.string.enviar_mensagem));
+                            btnAbrirChat.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent i = new Intent(v.getContext(), ChatMensagensActivity.class);
+                                    ConversasDAO conversa = new ConversasDAO();
+                                    conversa.setDestinatario(contato);
+                                    i.putExtra("conversa", conversa);
+                                    v.getContext().startActivity(i);
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+            else {
+                btnAbrirChat.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(v.getContext(), ChatMensagensActivity.class);
+                        ConversasDAO conversa = new ConversasDAO();
+                        conversa.setDestinatario(contato);
+                        i.putExtra("conversa", conversa);
+                        v.getContext().startActivity(i);
+                    }
+                });
+            }
         }
 
         builder.setView(viewDetalhes);

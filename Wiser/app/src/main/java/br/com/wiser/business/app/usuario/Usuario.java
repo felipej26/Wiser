@@ -14,6 +14,7 @@ public class Usuario implements Serializable{
     private String firstName;
     private String urlProfilePicture;
     private int idade;
+    private boolean isContato = false;
 
     private Date dataUltimoAcesso;
     private double latitude;
@@ -76,6 +77,14 @@ public class Usuario implements Serializable{
 
     public void setIdade(int idade) {
         this.idade = idade;
+    }
+
+    public boolean isContato() {
+        return isContato;
+    }
+
+    public void setContato(boolean contato) {
+        isContato = contato;
     }
 
     public Date getDataUltimoAcesso() {

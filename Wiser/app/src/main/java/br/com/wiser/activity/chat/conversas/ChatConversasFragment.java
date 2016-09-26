@@ -1,8 +1,6 @@
 package br.com.wiser.activity.chat.conversas;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +16,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.LinkedList;
 
 import br.com.wiser.R;
-import br.com.wiser.Sistema;
 import br.com.wiser.business.chat.conversas.ConversasDAO;
 
 /**
@@ -38,7 +35,7 @@ public class ChatConversasFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.frag_mensagens, container, false);
+        View view = inflater.inflate(R.layout.chat_principal, container, false);
 
         carregarComponentes(view);
 

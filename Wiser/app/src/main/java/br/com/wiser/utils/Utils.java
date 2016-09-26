@@ -21,9 +21,9 @@ import br.com.wiser.activity.app.configuracoes.AppConfiguracoesActivity;
 import br.com.wiser.activity.app.principal.AppPrincipalActivity;
 import br.com.wiser.activity.app.splashscreen.AppSplashScreenActivity;
 import br.com.wiser.activity.chat.conversas.ChatConversasFragment;
-import br.com.wiser.activity.encontrarusuarios.resultados.ChatResultadosActivity;
+import br.com.wiser.activity.contatos.encontrarusuarios.resultados.ChatResultadosActivity;
 import br.com.wiser.activity.app.login.AppLoginActivity;
-import br.com.wiser.activity.encontrarusuarios.pesquisa.ChatPesquisaFragment;
+import br.com.wiser.activity.contatos.encontrarusuarios.pesquisa.ContatosEncontrarUsuariosPesquisaActivity;
 import br.com.wiser.activity.forum.discussao.ForumDiscussaoActivity;
 import br.com.wiser.activity.forum.minhas_discussoes.ForumMinhasDiscussoesActivity;
 import br.com.wiser.activity.forum.nova_discussao.ForumNovaDiscussaoActivity;
@@ -32,7 +32,6 @@ import br.com.wiser.activity.forum.principal.ForumPrincipalFragment;
 
 import br.com.wiser.activity.app.sobre.AppSobreActivity;
 import br.com.wiser.business.app.servidor.Servidor;
-import br.com.wiser.business.app.usuario.Usuario;
 import br.com.wiser.enums.Activities;
 import android.widget.ImageView;
 
@@ -118,14 +117,15 @@ public class Utils {
                     classe = AppSplashScreenActivity.class;
                     break;
 
-                case CHAT_MENSAGENS:
-                    classe = ChatConversasFragment.class;
-                    break;
                 case CHAT_PESQUISA:
-                    classe = ChatPesquisaFragment.class;
+                    classe = ContatosEncontrarUsuariosPesquisaActivity.class;
                     break;
                 case CHAT_RESULTADOS:
                     classe = ChatResultadosActivity.class;
+                    break;
+
+                case CHAT_MENSAGENS:
+                    classe = ChatConversasFragment.class;
                     break;
 
                 case FORUM_DISCUSSAO:

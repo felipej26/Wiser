@@ -127,7 +127,7 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
                 @Override
                 public void onClick(View v) {
                     DialogPerfilUsuario dialog = new DialogPerfilUsuario();
-                    dialog.mostrarDetalhes(v.getContext(), listaDiscussoes.get(posicao).getUsuario());
+                    dialog.show(v.getContext(), listaDiscussoes.get(posicao).getUsuario());
                 }
             });
 

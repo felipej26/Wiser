@@ -24,6 +24,7 @@ import java.util.List;
 import br.com.wiser.Sistema;
 import br.com.wiser.business.app.facebook.Facebook;
 import br.com.wiser.business.app.usuario.Usuario;
+import br.com.wiser.business.app.usuario.UsuarioDAO;
 import br.com.wiser.business.chat.conversas.Conversas;
 import br.com.wiser.business.chat.conversas.ConversasDAO;
 import br.com.wiser.business.chat.mensagem.Mensagem;
@@ -202,7 +203,81 @@ public class Servidor {
             return true;
         }
 
-        public LinkedList<Usuario> pesquisarUsuarios(Pesquisa pesquisa) {
+        public Usuario carregarUsuario(Usuario usuario) {
+            GETParametros parametros = new GETParametros();
+            JSONObject json;
+
+            try {
+                parametros.put("id", usuario.getUserID());
+
+                json = new JSONObject(requestGET(Models.USUARIO, parametros).getMessageResponse());
+                usuario = getUsuarioJSON(json, true, context);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return usuario;
+        }
+    }
+
+    public class Contatos extends AbstractServidor {
+
+        public Contatos(Context context) {
+            super(context);
+        }
+
+        public boolean adicionarContato(Usuario contato) {
+            Response response;
+            JSONObject json;
+
+            try {
+                json = new JSONObject();
+                json.put("usuario", Sistema.getUsuario(context).getUserID());
+                json.put("contato", contato.getUserID());
+
+                response = requestPOST(Models.CONTATO, "adicionarContato", json.toString());
+
+                if (response.getCodeResponse() != HttpURLConnection.HTTP_OK) {
+                    return false;
+                }
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+                return false;
+            }
+
+            return true;
+        }
+
+        public LinkedList<Usuario> carregarContatos() {
+            JSONArray jsonContatos;
+            Response response;
+            GETParametros parametros = new GETParametros();
+
+            LinkedList<Usuario> contatos = new LinkedList<>();
+
+            try {
+                parametros.put("usuario", Sistema.getUsuario(context).getUserID());
+
+                response = requestGET(Models.CONTATO, "carregarContatos", parametros);
+
+                if (response.getCodeResponse() == HttpURLConnection.HTTP_OK) {
+                    jsonContatos = new JSONArray(response.getMessageResponse());
+
+                    for (int i = 0; i < jsonContatos.length(); i++) {
+                        contatos.add(getUsuarioJSON(jsonContatos.getJSONObject(i).getJSONObject("contato"), true, context));
+                    }
+                }
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            return contatos;
+        }
+
+        public LinkedList<Usuario> encontrarUsuarios(Pesquisa pesquisa) {
             LinkedList<Usuario> listaResultados = new LinkedList<Usuario>();
             GETParametros parametros = new GETParametros();
 
@@ -233,23 +308,6 @@ public class Servidor {
             }
 
             return listaResultados;
-        }
-
-        public Usuario carregarUsuario(Usuario usuario) {
-            GETParametros parametros = new GETParametros();
-            JSONObject json;
-
-            try {
-                parametros.put("id", usuario.getUserID());
-
-                json = new JSONObject(requestGET(Models.USUARIO, parametros).getMessageResponse());
-                usuario = getUsuarioJSON(json, true, context);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return usuario;
         }
     }
 
@@ -312,6 +370,7 @@ public class Servidor {
                                     jsonUsuarios.getJSONObject(j).getLong("usuario") != conversa.getDestinatario().getUserID()) {
                                 destinatario = new Usuario(jsonUsuarios.getJSONObject(j).getLong("usuario"));
                                 destinatario = new Usuarios(context).carregarUsuario(destinatario);
+                                destinatario.setContato(jsonUsuarios.getJSONObject(j).getBoolean("isContato"));
                                 conversa.setDestinatario(destinatario);
                             }
                         }
@@ -409,9 +468,8 @@ public class Servidor {
             JSONArray jsonDiscussoes;
 
             try {
-                if (minhasDiscussoes) {
-                    parametros.put("usuario", Sistema.getUsuario(context).getUserID());
-                }
+                parametros.put("usuario", Sistema.getUsuario(context).getUserID());
+                parametros.put("minhasDiscussoes", minhasDiscussoes);
 
                 jsonDiscussoes = new JSONArray(requestGET(Models.DISCUSSAO, "carregarDiscussoes", parametros).getMessageResponse());
 
@@ -454,6 +512,7 @@ public class Servidor {
 
             try {
                 parametros = new GETParametros();
+                parametros.put("usuario", Sistema.getUsuario(context).getUserID());
                 parametros.put("chave", encode(chave));
 
                 jsonDiscussoes = new JSONArray(requestGET(Models.DISCUSSAO, "procurarDiscussoes", parametros).getMessageResponse());
@@ -529,6 +588,10 @@ public class Servidor {
             usuario.setLongitude(json.getDouble("longitude"));
             usuario.setContaAtiva(json.getBoolean("conta_ativa"));
             usuario.setSetouConfiguracoes(json.getBoolean("setou_configuracoes"));
+
+            if (json.has("isContato")) {
+                usuario.setContato(json.getBoolean("isContato"));
+            }
 
             if (usuario.isSetouConfiguracoes()) {
                 usuario.setIdioma(json.getInt("idioma"));

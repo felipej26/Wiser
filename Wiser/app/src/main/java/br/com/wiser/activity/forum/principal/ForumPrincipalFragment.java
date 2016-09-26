@@ -1,8 +1,6 @@
 package br.com.wiser.activity.forum.principal;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -49,7 +47,7 @@ public class ForumPrincipalFragment extends Fragment implements IDiscussaoCardVi
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.frag_forum, container, false);
+        View view = inflater.inflate(R.layout.forum_principal, container, false);
         carregarComponentes(view);
 
         return view;

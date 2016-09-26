@@ -70,34 +70,36 @@ public class CarregarConversasService extends Service {
     }
 
     private void notificar() {
-        NotificationCompat.Builder mBuilder =
-                (NotificationCompat.Builder) new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.logo_wiser_notificacao)
-                        .setContentTitle("Wiser")
-                        .setContentText("Chegou uma nova mensagem!");
-// Creates an explicit intent for an Activity in your app
+        int notificacaoID = 1;
+
+        String[] events = new String[2];
+
+        NotificationCompat.Builder builder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.logo_wiser_notificacao)
+                .setContentTitle("Wiser")
+                .setContentText("Chegou uma nova mensagem!");
+
+        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+        inboxStyle.setBigContentTitle("Wiser");
+
+        events[0] = "Atchim";
+        events[1] = "Saude";
+
+        for (int i=0; i < events.length; i++) {
+            inboxStyle.addLine(events[i]);
+        }
+
+        builder.setStyle(inboxStyle);
+
         Intent resultIntent = new Intent(this, AppSplashScreenActivity.class);
-
-// The stack builder object will contain an artificial back stack for the
-// started Activity.
-// This ensures that navigating backward from the Activity leads out of
-// your application to the Home screen.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-// Adds the back stack for the Intent (but not the Intent itself)
         stackBuilder.addParentStack(AppSplashScreenActivity.class);
-// Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // mId allows you to update the notification later on.
-        int mId = 0;
-        mNotificationManager.notify(mId, mBuilder.build());
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        mNotificationManager.notify(notificacaoID, builder.build());
     }
 }

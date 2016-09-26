@@ -1,4 +1,4 @@
-package br.com.wiser.activity.encontrarusuarios.resultados;
+package br.com.wiser.activity.contatos.encontrarusuarios.resultados;
 
 import android.app.Activity;
 import android.content.Context;
@@ -54,7 +54,7 @@ public class ChatResultadosAdapter extends ArrayAdapter<Usuario> {
         }
 
         Usuario item = listaItemUsuarios.get(position);
-        objHolder.txtNome.setText(item.getFirstName());
+        objHolder.txtNome.setText(item.getFullName());
         Utils.loadImageInBackground(context, item.getUrlProfilePicture(), objHolder.imgPerfil, objHolder.prgBarra);
 
         return objView;

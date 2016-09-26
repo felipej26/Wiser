@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import br.com.wiser.R;
@@ -20,14 +21,13 @@ import br.com.wiser.utils.Utils;
 public class ChatMensagensAdapter extends RecyclerView.Adapter<ChatMensagensAdapter.ViewHolder> {
 
     private Context context;
-    private List<Mensagem> mensagens;
+    private List<Mensagem> mensagens = new LinkedList<>();
 
     private final int USUARIO = 0;
     private final int CONTATO = 1;
 
-    public ChatMensagensAdapter(Context context, List<Mensagem> mensagens) {
+    public ChatMensagensAdapter(Context context) {
         this.context = context;
-        this.mensagens = mensagens;
     }
 
     @Override

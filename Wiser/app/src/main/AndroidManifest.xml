@@ -66,6 +66,12 @@
             android:label="@string/app_sobre_title"
             android:screenOrientation="portrait" />
 
+        <!-- Activity da Tela Encontrar Usuarios do App -->
+        <activity
+            android:name=".activity.contatos.encontrarusuarios.pesquisa.ContatosEncontrarUsuariosPesquisaActivity"
+            android:label="@string/app_pesquisa_title"
+            android:screenOrientation="portrait" />
+
         <!-- Activity da Tela de Conversas do Chat  -->
         <activity
             android:name="br.com.wiser.activity.chat.mensagens.ChatMensagensActivity"
@@ -74,7 +80,7 @@
 
         <!-- Activity da Tela de Resultados do Chat  -->
         <activity
-            android:name=".activity.encontrarusuarios.resultados.ChatResultadosActivity"
+            android:name=".activity.contatos.encontrarusuarios.resultados.ChatResultadosActivity"
             android:label="@string/chat_resultados_title"
             android:screenOrientation="portrait" />
 
