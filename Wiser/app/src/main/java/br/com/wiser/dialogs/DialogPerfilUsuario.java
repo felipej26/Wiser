@@ -12,6 +12,7 @@ import android.widget.Button;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
+import br.com.wiser.activity.app.perfil.AppPerfilCompleto;
 import br.com.wiser.activity.chat.mensagens.ChatMensagensActivity;
 import br.com.wiser.business.app.usuario.Usuario;
 import br.com.wiser.business.chat.conversas.ConversasDAO;
@@ -31,6 +32,7 @@ public class DialogPerfilUsuario {
     private TextView lblIdiomaNivel;
     private TextView lblStatus;
     private Button btnAbrirChat;
+    private Button btnPerfCompleto;
 
     public void show(final Context context, final Usuario contato) {
 
@@ -42,6 +44,7 @@ public class DialogPerfilUsuario {
         lblIdiomaNivel = (TextView) viewDetalhes.findViewById(R.id.lblIdiomaNivel);
         lblStatus = (TextView) viewDetalhes.findViewById(R.id.lblStatus);
         btnAbrirChat = (Button) viewDetalhes.findViewById(R.id.btnAbrirChat);
+        btnPerfCompleto = (Button) viewDetalhes.findViewById(R.id.btnPerfCompleto);
 
         Utils.loadImageInBackground(context, contato.getUrlProfilePicture(), imgPerfil, prgBarra);
         lblNome.setText(contato.getFirstName());
@@ -54,7 +57,7 @@ public class DialogPerfilUsuario {
         }
         else {
             if (!contato.isContato()) {
-                btnAbrirChat.setText("Adicionar como Contato");
+                btnAbrirChat.setText(R.string.adicionar_amigo);
                 btnAbrirChat.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -87,6 +90,16 @@ public class DialogPerfilUsuario {
                 });
             }
         }
+
+        btnPerfCompleto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), AppPerfilCompleto.class);
+                intent.putExtra("usuario", contato);
+                v.getContext().startActivity(intent);
+                alert.dismiss();
+            }
+        });
 
         builder.setView(viewDetalhes);
         alert = builder.create();

@@ -14,16 +14,6 @@
         android:padding="5dp"
         style="@style/AppTema.AppImgPerfil"/>
 
-    <ProgressBar
-        android:id="@+id/prgBarra"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15sp"
-        android:visibility="visible"
-        android:indeterminate="true" />
-
     <TextView
         android:id="@+id/lblNomeDetalhe"
         android:layout_width="wrap_content"
@@ -55,11 +45,30 @@
         android:textSize="20sp" />
 
     <Button
-        android:id="@+id/btnAbrirChat"
+        android:text="Ver Perfil Completo"
+        android:id="@+id/btnPerfCompleto"
+        style="@style/AppTema.AppBotao.Mensagem"
         android:layout_below="@+id/lblStatus"
-        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        />
+
+    <Button
+        android:id="@+id/btnAbrirChat"
         android:text="@string/enviar_mensagem"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="15sp"
-        style="@style/AppTema.AppBotao.Mensagem" />
+        style="@style/AppTema.AppBotao.Mensagem"
+        android:layout_below="@id/btnPerfCompleto"
+        android:layout_centerHorizontal="true" />
+
+    <ProgressBar
+        android:id="@+id/prgBarra"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:visibility="visible"
+        android:indeterminate="true"
+        android:layout_alignTop="@+id/imgPerfil"
+        android:layout_alignStart="@+id/imgPerfil" />
 
 </RelativeLayout>

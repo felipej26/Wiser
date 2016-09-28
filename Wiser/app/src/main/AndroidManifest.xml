@@ -48,6 +48,11 @@
             android:label="@string/app_configuracoes_title"
             android:screenOrientation="portrait" />
 
+        <!-- Activity da Tela de Visualizar Perfil Completo -->
+        <activity android:name=".activity.app.perfil.AppPerfilCompleto"
+            android:label="@string/app_perfil_title"
+            android:screenOrientation="portrait" />
+
         <!-- Activity da Tela Login do App -->
         <activity
             android:name=".activity.app.login.AppLoginActivity"

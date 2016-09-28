@@ -13,7 +13,7 @@ public class Usuario implements Serializable{
     private String fullName;
     private String firstName;
     private String urlProfilePicture;
-    private int idade;
+    private int idade = 0;
     private boolean isContato = false;
 
     private Date dataUltimoAcesso;

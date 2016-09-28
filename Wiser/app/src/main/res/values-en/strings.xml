@@ -79,4 +79,6 @@
     <string name="fluencia_idioma">%1$s in %2$s</string>
     <string name="ativar">Enable</string>
     <string name="confirmar_reativar_discussao">Do you really want to enable this discussion?</string>
+    <string name="app_perfil_title">Complete Profile</string>
+    <string name="adicionar_amigo">Add As a Contact</string>
 </resources>

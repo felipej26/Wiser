@@ -3,6 +3,7 @@
     <string name="facebook_app_id" translatable="false">570854019757986</string>
     <string name="facebook_user_id" translatable="false">1262642377098040</string>
 
+    <string name="app_perfil_title">Perfil Completo</string>
     <string name="app_configuracoes_title">Configurações</string>
     <string name="app_configuracoes_item_status">Status</string>
     <string name="app_sobre_title">Sobre</string>
@@ -18,6 +19,8 @@
     <string name="forum_pesquisa_title">Pesquisar</string>
     <string name="forum_principal_title">Fórum</string>
     <string name="forum_resultados_title">Resultados</string>
+
+    <string name="adicionar_amigo">Adicionar como Contato</string>
 
     <string name="menu_configuracoes_title">Configurações</string>
     <string name="menu_sobre_title">Sobre</string>

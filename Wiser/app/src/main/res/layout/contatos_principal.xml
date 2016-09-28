@@ -11,13 +11,18 @@
         android:text="@string/app_pesquisa_title"
         android:id="@+id/btnEncontrarUsuarios"
         android:textColor="@color/colorPrimaryInverseText"
-        android:background="@drawable/btncustomshape" />
+        android:background="@drawable/btncustomshape"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        android:layout_below="@id/btnEncontrarUsuarios"/>
+        android:layout_below="@+id/btnEncontrarUsuarios"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

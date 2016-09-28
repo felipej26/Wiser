@@ -43,6 +43,8 @@ public class ContatoAdapter extends RecyclerView.Adapter<ContatoAdapter.ViewHold
     public void onBindViewHolder(ViewHolder holder, int position) {
         Usuario contato = listaContatos.get(position);
 
+        holder.viewSeparator.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
+
         Utils.loadImageInBackground(context, contato.getUrlProfilePicture(), holder.imgPerfil, holder.prgBarra);
         holder.lblNome.setText(contato.getFullName());
     }
@@ -54,6 +56,7 @@ public class ContatoAdapter extends RecyclerView.Adapter<ContatoAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        public View viewSeparator;
         public ImageView imgPerfil;
         public ProgressBar prgBarra;
         public TextView lblNome;
@@ -64,6 +67,7 @@ public class ContatoAdapter extends RecyclerView.Adapter<ContatoAdapter.ViewHold
             imgPerfil = (ImageView) itemView.findViewById(R.id.imgPerfil);
             prgBarra = (ProgressBar) itemView.findViewById(R.id.prgBarra);
             lblNome = (TextView) itemView.findViewById(R.id.lblNome);
+            viewSeparator = itemView.findViewById(R.id.viewSeparator);
         }
     }
 }
