@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 import java.io.ByteArrayOutputStream;
+import java.util.LinkedList;
 import java.util.List;
 
 import br.com.wiser.R;
@@ -42,6 +43,9 @@ import com.squareup.picasso.Picasso;
  */
 public class Utils {
 
+    private static List<ComboBoxItem> listaIdiomas;
+    private static List<ComboBoxItem> listaFluencias;
+
     public static int getIDComboBox(Spinner cmb) {
         return ((ComboBoxItem)cmb.getItemAtPosition(cmb.getSelectedItemPosition())).getId();
     }
@@ -55,11 +59,17 @@ public class Utils {
         return 0;
     }
 
-    // TODO: Fazer com que seja carregado estas combos quando o App for startado
     public static String getDescricaoFluencia(int id) {
-        List<ComboBoxItem> fluencias = new Servidor().new App().getFluencias(false);
+        List<ComboBoxItem> listaAux;
 
-        for (ComboBoxItem item : fluencias) {
+        if (listaFluencias == null) {
+            listaFluencias = new Servidor().new App().getFluencias();
+        }
+
+        listaAux = new LinkedList<>(listaFluencias);
+        listaAux.remove(0);
+
+        for (ComboBoxItem item : listaAux) {
             if (item.getId() == id) {
                 return item.getDescricao();
             }
@@ -69,9 +79,16 @@ public class Utils {
     }
 
     public static String getDescricaoIdioma(int id) {
-        List<ComboBoxItem> idiomas = new Servidor().new App().getIdiomas(false);
+        List<ComboBoxItem> listaAux;
 
-        for (ComboBoxItem item : idiomas) {
+        if (listaIdiomas == null) {
+            listaIdiomas = new Servidor().new App().getIdiomas();
+        }
+
+        listaAux = new LinkedList<>(listaIdiomas);
+        listaAux.remove(0);
+
+        for (ComboBoxItem item : listaAux) {
             if (item.getId() == id) {
                 return item.getDescricao();
             }
@@ -81,11 +98,37 @@ public class Utils {
     }
 
     public static void carregarComboFluencia(Spinner cmbFluencia, Context context, boolean itemTodos) {
-        carregarCombo(new Servidor().new App().getFluencias(itemTodos), cmbFluencia, context);
+        List<ComboBoxItem> listaAux;
+
+        if (listaFluencias == null) {
+            listaFluencias = new Servidor().new App().getFluencias();
+        }
+
+        if (!itemTodos) {
+            listaAux = new LinkedList<>(listaFluencias);
+            listaAux.remove(0);
+            carregarCombo(listaAux, cmbFluencia, context);
+        }
+        else {
+            carregarCombo(listaFluencias, cmbFluencia, context);
+        }
     }
 
     public static void carregarComboIdiomas(Spinner cmbIdioma, Context context, boolean itemTodos) {
-        carregarCombo(new Servidor().new App().getIdiomas(itemTodos), cmbIdioma, context);
+        List<ComboBoxItem> listaAux;
+
+        if (listaIdiomas == null) {
+            listaIdiomas = new Servidor().new App().getIdiomas();
+        }
+
+        if (!itemTodos) {
+            listaAux = new LinkedList<>(listaIdiomas);
+            listaAux.remove(0);
+            carregarCombo(listaAux, cmbIdioma, context);
+        }
+        else {
+            carregarCombo(listaIdiomas, cmbIdioma, context);
+        }
     }
 
     private static void carregarCombo(List<ComboBoxItem> itens, Spinner cmb, Context context) {

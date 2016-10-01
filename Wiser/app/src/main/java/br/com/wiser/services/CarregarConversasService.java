@@ -15,10 +15,12 @@ import android.widget.Toast;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import br.com.wiser.R;
 import br.com.wiser.activity.app.splashscreen.AppSplashScreenActivity;
 import br.com.wiser.business.chat.conversas.ConversasDAO;
+import br.com.wiser.utils.Utils;
 
 /**
  * Created by Jefferson on 18/09/2016.
@@ -42,10 +44,15 @@ public class CarregarConversasService extends Service {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                List<String> listaNovasMensagens;
+
                 while (true) {
 
-                    if (objConversas.carregarGeral(getApplicationContext(), listaConversas)) {
-                        notificar();
+                    listaNovasMensagens = objConversas.carregarGeral(getApplicationContext(), listaConversas);
+
+                    if (listaNovasMensagens.size() > 0) {
+                        notificar(listaNovasMensagens);
+                        Utils.vibrar(CarregarConversasService.this, 150);
                     }
 
                     EventBus.getDefault().post(listaConversas);
@@ -69,24 +76,21 @@ public class CarregarConversasService extends Service {
         return null;
     }
 
-    private void notificar() {
-        int notificacaoID = 1;
+    private void notificar(List<String> listaNovasMensagens) {
 
-        String[] events = new String[2];
+        int notificacaoID = 1;
 
         NotificationCompat.Builder builder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.logo_wiser_notificacao)
-                .setContentTitle("Wiser")
+                .setContentTitle(getString(R.string.app_name))
                 .setContentText("Chegou uma nova mensagem!");
 
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-        inboxStyle.setBigContentTitle("Wiser");
+        inboxStyle.setBigContentTitle(getString(R.string.app_name));
 
-        events[0] = "Atchim";
-        events[1] = "Saude";
-
-        for (int i=0; i < events.length; i++) {
-            inboxStyle.addLine(events[i]);
+        for (String mensagem : listaNovasMensagens) {
+            System.out.println(mensagem);
+            inboxStyle.addLine(mensagem);
         }
 
         builder.setStyle(inboxStyle);

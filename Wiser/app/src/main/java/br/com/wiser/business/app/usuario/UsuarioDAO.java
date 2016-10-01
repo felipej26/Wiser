@@ -10,7 +10,7 @@ import br.com.wiser.business.app.servidor.Servidor;
 /**
  * Created by Jefferson on 07/08/2016.
  */
-public class UsuarioDAO extends Usuario{
+public class UsuarioDAO extends Usuario {
 
     public UsuarioDAO (long userID){
         super(userID);

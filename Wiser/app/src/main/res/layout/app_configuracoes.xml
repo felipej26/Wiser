@@ -70,11 +70,10 @@
         android:maxLength="30"
         android:gravity="top"
         android:singleLine="true"
-        android:textSize="18dp"
+        android:textSize="18sp"
         android:inputType="textCapSentences"
-        android:hint="Digite seus status aqui..."
-        style="@style/AppTema.AppItemFrame"
-        android:capitalize="sentences" />
+        android:hint="@string/digite_status"
+        style="@style/AppTema.AppItemFrame" />
 
     <Button
         android:text="@string/desativar_conta"
@@ -84,14 +83,5 @@
         android:layout_marginTop="10dp"
         style="@style/AppTema.AppBotao.Atencao" />
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/pgbLoading"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:progressDrawable="@drawable/circular_loading"
-        android:visibility="invisible"
-        style="?android:attr/progressBarStyleLarge" />
 
 </RelativeLayout>

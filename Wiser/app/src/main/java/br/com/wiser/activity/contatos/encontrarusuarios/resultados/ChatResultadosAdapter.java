@@ -36,7 +36,7 @@ public class ChatResultadosAdapter extends ArrayAdapter<Usuario> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         View objView = convertView;;
-        RecordHolder objHolder = null;
+        RecordHolder objHolder;
 
         if (objView == null) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
@@ -54,7 +54,7 @@ public class ChatResultadosAdapter extends ArrayAdapter<Usuario> {
         }
 
         Usuario item = listaItemUsuarios.get(position);
-        objHolder.txtNome.setText(item.getFullName());
+        objHolder.txtNome.setText(item.getFirstName());
         Utils.loadImageInBackground(context, item.getUrlProfilePicture(), objHolder.imgPerfil, objHolder.prgBarra);
 
         return objView;

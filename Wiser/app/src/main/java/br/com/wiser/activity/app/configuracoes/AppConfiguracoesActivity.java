@@ -28,7 +28,6 @@ public class AppConfiguracoesActivity extends Activity {
     private Spinner cmbFluencia;
     private TextView lblContLetras;
     private EditText txtStatus;
-    private ProgressBar pgbLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +36,17 @@ public class AppConfiguracoesActivity extends Activity {
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
+        carregarComponentes();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        onBackPressed();
+        salvar();
+        return true;
+    }
+
+    private void carregarComponentes() {
         cmbIdioma = (Spinner) findViewById(R.id.cmbIdiomaConfig);
         cmbFluencia = (Spinner) findViewById(R.id.cmbFluenciaConfig);
 
@@ -52,35 +62,10 @@ public class AppConfiguracoesActivity extends Activity {
             }
         });
 
-        pgbLoading = (ProgressBar) findViewById(R.id.pgbLoading);
-        pgbLoading.setVisibility(View.VISIBLE);
-        pgbLoading.bringToFront();
+        Utils.carregarComboIdiomas(cmbIdioma, AppConfiguracoesActivity.this, false);
+        Utils.carregarComboFluencia(cmbFluencia, AppConfiguracoesActivity.this, false);
 
-        final Handler hCarregar = new Handler();
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Utils.carregarComboIdiomas(cmbIdioma, AppConfiguracoesActivity.this, false);
-                Utils.carregarComboFluencia(cmbFluencia, AppConfiguracoesActivity.this, false);
-
-                carregarDados();
-
-                hCarregar.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        pgbLoading.setVisibility(View.INVISIBLE);
-                    }
-                });
-            }
-        });
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        onBackPressed();
-        salvar();
-        return true;
+        carregarDados();
     }
 
     private void carregarDados() {
@@ -136,7 +121,7 @@ public class AppConfiguracoesActivity extends Activity {
             dialogo.setMessage(R.string.sucesso_conta_desativada);
             dialogo.setPositiveButton(getString(R.string.sim), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    logout();
+                    Utils.logout(AppConfiguracoesActivity.this);
                 }
             });
         }
@@ -147,9 +132,5 @@ public class AppConfiguracoesActivity extends Activity {
         }
 
         dialogo.show();
-    }
-
-    private void logout(){
-        Utils.logout(this);
     }
 }

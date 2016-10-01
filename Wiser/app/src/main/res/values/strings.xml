@@ -60,7 +60,7 @@
     <string name="boas_vindas">Olá %1$s ;)</string>
 
 
-
+    <string name="digite_status">Digite seus status aqui...</string>
     <string name="falha_login">Login Falhou. Tente novamente!</string>
     <string name="indisponivel_configuracao">Não foi possível carregar as configurações.</string>
     <string name="erro_desativar_conta">Um erro ocorreu ao desativar a conta.</string>

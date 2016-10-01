@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Bundle;
 
+import android.text.format.DateUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -28,11 +29,14 @@ import com.facebook.login.LoginResult;
 import org.json.JSONObject;
 
 import java.security.MessageDigest;
+import java.util.Date;
 import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
 
 import br.com.wiser.Sistema;
 import br.com.wiser.R;
 import br.com.wiser.business.app.usuario.Usuario;
+import br.com.wiser.utils.UtilsDate;
 
 /**
  * Created by Jefferson on 03/04/2016.
@@ -111,13 +115,14 @@ public class Facebook {
         });
     }
 
-    private JSONObject request(final String node, final Bundle parametros) {
+    private JSONObject request(final Usuario usuario, final String node, final Bundle parametros) {
         final JSONObject[] json = {new JSONObject()};
         final boolean[] requisitando = {true};
 
         new Thread() {
             public void run() {
-                new GraphRequest(Sistema.ACCESS_TOKEN, "/" + node, parametros, HttpMethod.GET,
+                new GraphRequest(createAccessToken(usuario),
+                        "/" + usuario.getFacebookID() + "/" + node, parametros, HttpMethod.GET,
                         new GraphRequest.Callback() {
 
                             @Override
@@ -137,19 +142,48 @@ public class Facebook {
         return json[0];
     }
 
-    public String getFacebookID() {
+    public AccessToken getAccessToken() {
         try {
-            return AccessToken.getCurrentAccessToken().getUserId();
+            return AccessToken.getCurrentAccessToken();
         }
         catch (Exception e) {
-            return "";
+            return null;
         }
     }
 
-    public Usuario getProfile(Usuario usuario) {
-        LinkedList<Usuario> conts = new LinkedList<Usuario>();
-        conts.add(0, usuario);
-        return getProfiles(conts).get(0);
+    public void getProfile(Usuario usuario) {
+        Bundle parametros = new Bundle();
+
+        try {
+            usuario.setFirstName(nomeIndisponivel);
+            usuario.setFullName(nomeIndisponivel);
+
+            parametros.putString("fields", "first_name,name,picture.width(1000).height(1000){url},birthday,age_range");
+
+            JSONObject json = request(usuario, "", parametros);
+
+            if (json != null) {
+                if (json.has("first_name"))
+                    usuario.setFirstName(json.getString("first_name"));
+
+                if (json.has("name"))
+                    usuario.setFullName(json.getString("name"));
+
+                if (json.has("picture"))
+                    usuario.setUrlProfilePicture(json.getJSONObject("picture")
+                        .getJSONObject("data").optString("url"));
+
+
+                // TODO colocar o Age_Range caso não tenha o Birthday ou não tenha o ano do Birthday,
+                if (json.has("birthday")) {
+                    long diferenca = new Date().getTime() - UtilsDate.parseDate(json.getString("birthday"), UtilsDate.MMDDYYYY).getTime();
+                    usuario.setIdade((int) Math.floor(diferenca / 86400000 / 365));
+                }
+            }
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public LinkedList<Usuario> getProfiles(final LinkedList<Usuario> usuarios) {
@@ -165,29 +199,37 @@ public class Facebook {
 
         Bundle parametros = new Bundle();
         parametros.putString("ids", listUsersID);
-        parametros.putString("fields", "name,first_name,picture.width(250).height(250){url}");
+        parametros.putString("fields", "name,first_name,picture.width(1000).height(1000){url},birthday");
 
         try {
-            JSONObject jsonUsuarios = request("", parametros);
+            JSONObject jsonUsuarios = null; //request("", parametros);
             JSONObject json;
 
-            for (Usuario c : usuarios) {
-                if (jsonUsuarios.has(c.getFacebookID())) {
-                    json = jsonUsuarios.getJSONObject(c.getFacebookID());
+            if (jsonUsuarios != null) {
+                for (Usuario c : usuarios) {
+                    if (jsonUsuarios.has(c.getFacebookID())) {
+                        json = jsonUsuarios.getJSONObject(c.getFacebookID());
 
-                    if (json.has("name")) {
-                        c.setFullName(json.getString("name"));
-                    }
+                        if (json.has("name")) {
+                            c.setFullName(json.getString("name"));
+                        }
 
-                    if (json.has("first_name")) {
-                        c.setFirstName(json.getString("first_name"));
-                    }
 
-                    if (json.has("picture")) {
-                        c.setUrlProfilePicture(json
-                                .getJSONObject("picture")
-                                .getJSONObject("data")
-                                .optString("url"));
+                        if (json.has("first_name")) {
+                            c.setFirstName(json.getString("first_name"));
+                        }
+
+                        if (json.has("picture")) {
+                            c.setUrlProfilePicture(json
+                                    .getJSONObject("picture")
+                                    .getJSONObject("data")
+                                    .optString("url"));
+                        }
+
+                        if (json.has("birthday")) {
+                            long diferenca = new Date().getTime() - UtilsDate.parseDate(json.getString("birthday"), UtilsDate.MMDDYYYY).getTime();
+                            c.setIdade((int) Math.floor(diferenca / 86400000 / 365));
+                        }
                     }
                 }
             }
@@ -197,6 +239,21 @@ public class Facebook {
         }
 
         return usuarios;
+    }
+
+    private static AccessToken createAccessToken(Usuario usuario) {
+        AccessToken mAccessToken = null;
+
+        try {
+            mAccessToken = new AccessToken(usuario.getAccessToken(),
+                    Sistema.ACCESS_TOKEN.getApplicationId(),
+                    usuario.getFacebookID(),
+                    null, null, null, null, null);
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return mAccessToken;
     }
 
     public boolean isLogado() {

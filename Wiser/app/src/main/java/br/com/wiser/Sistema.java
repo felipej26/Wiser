@@ -86,10 +86,12 @@ public class Sistema {
     public static boolean logar(Context context, boolean salvarLogin) {
         UsuarioDAO usuario = new UsuarioDAO(0);
 
+        UtilsLocation.atualizarLocalizacao(context);
         UtilsLocation.atualizarCoordenadas(context);
 
         Facebook facebook = new Facebook(context);
-        usuario.setFacebookID(facebook.getFacebookID());
+        usuario.setFacebookID(facebook.getAccessToken().getUserId());
+        usuario.setAccessToken(facebook.getAccessToken().getToken());
         usuario.setDataUltimoAcesso(new Date());
         usuario.setLatitude(UtilsLocation.getLatitude());
         usuario.setLongitude(UtilsLocation.getLongitude());

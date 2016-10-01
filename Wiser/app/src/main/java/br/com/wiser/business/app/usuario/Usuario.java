@@ -1,5 +1,7 @@
 package br.com.wiser.business.app.usuario;
 
+import com.facebook.AccessToken;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -10,10 +12,11 @@ public class Usuario implements Serializable{
 
     private long userID;
     private String facebookID;
+    private String accessToken;
     private String fullName;
     private String firstName;
     private String urlProfilePicture;
-    private int idade = 0;
+    private int idade = 18;
     private boolean isContato = false;
 
     private Date dataUltimoAcesso;
@@ -45,6 +48,14 @@ public class Usuario implements Serializable{
 
     public void setFacebookID(String facebookID) {
         this.facebookID = facebookID;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
     public String getFullName() {

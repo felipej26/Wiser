@@ -7,6 +7,7 @@ import java.util.Date;
 public class UtilsDate {
 
     public static final String DDMMYYYY = "dd/MM/yyyy";
+    public static final String MMDDYYYY = "MM/dd/yyyy";
     public static final String DDMMYYYY_HHMM = "dd/MM/yyyy HH:mm";
     public static final String DDMMYYYY_HHMMSS = "dd/MM/yyyy HH:mm:ss";
     public static final String HHMM = "HH:mm";
@@ -14,6 +15,10 @@ public class UtilsDate {
 
     public static String formatDate(Date data, String formatData) {
         return new SimpleDateFormat(formatData).format(data);
+    }
+
+    public static Date parseDate(String data, String formatData) throws ParseException {
+        return new SimpleDateFormat(formatData).parse(data);
     }
 
     public static Date parseDateJson(String data) throws ParseException {

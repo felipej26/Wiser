@@ -92,7 +92,7 @@ public class AppPerfilCompleto extends Activity implements IDiscussaoCardViewAda
             btnAbrirChat.setVisibility(View.INVISIBLE);
         }
         else {
-            if (!usuario.isContato()) {//se user selecionado já é contato
+            if (!usuario.isContato()) {
                 btnAbrirChat.setText(getString(R.string.adicionar_amigo));
                 btnAbrirChat.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -113,7 +113,7 @@ public class AppPerfilCompleto extends Activity implements IDiscussaoCardViewAda
                     }
                 });
             }
-            else {//senão...
+            else {
                 btnAbrirChat.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -132,7 +132,7 @@ public class AppPerfilCompleto extends Activity implements IDiscussaoCardViewAda
 
     private void carregarDados(){
         lblNomeDetalhe.setText(usuario.getFullName());
-        //lblIdade.setText(usuario.getIdade());
+        lblIdade.setText(", " + usuario.getIdade());
         lblIdiomaNivel.setText(getString(R.string.fluencia_idioma,
                 Utils.getDescricaoFluencia(usuario.getFluencia()), Utils.getDescricaoIdioma(usuario.getIdioma())));
         lblStatus.setText(usuario.getStatus());

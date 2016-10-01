@@ -52,10 +52,6 @@ public class ChatConversasAdapter extends RecyclerView.Adapter<ChatConversasAdap
         holder.lblMensagens.setText(m.getMensagens().getLast().getMensagem());
         holder.lblContMensagens.setText(m.getContMsgNaoLidas() + " " + context.getString(m.getContMsgNaoLidas() <= 1 ? R.string.nao_lida : R.string.nao_lidas));
 
-        if (m.getContMsgNaoLidas() != 0) {
-            // TODO: Utils.vibrar(context, 150);
-        }
-
         holder.setPosicao(position);
     }
 

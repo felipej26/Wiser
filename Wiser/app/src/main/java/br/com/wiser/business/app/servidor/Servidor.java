@@ -71,7 +71,7 @@ public class Servidor {
             return accessToken;
         }
 
-        public List<ComboBoxItem> getIdiomas(boolean itemTodos) {
+        public List<ComboBoxItem> getIdiomas() {
             List<ComboBoxItem> idiomas = new LinkedList<ComboBoxItem>();
             GETParametros parametros = new GETParametros();
 
@@ -80,7 +80,8 @@ public class Servidor {
 
             try {
                 parametros.put("linguagem", Sistema.APP_LINGUAGEM);
-                parametros.put("todos", itemTodos);
+                // TODO REMOVER esta linha
+                parametros.put("todos", true);
 
                 jsonArray = new JSONArray(requestGET(Models.IDIOMA, "getIdiomas", parametros).getMessageResponse());
 
@@ -97,7 +98,7 @@ public class Servidor {
             return idiomas;
         }
 
-        public List<ComboBoxItem> getFluencias(boolean itemTodos) {
+        public List<ComboBoxItem> getFluencias() {
             List<ComboBoxItem> fluencias = new LinkedList<ComboBoxItem>();
             GETParametros parametros = new GETParametros();
 
@@ -106,7 +107,8 @@ public class Servidor {
 
             try {
                 parametros.put("linguagem", Sistema.APP_LINGUAGEM);
-                parametros.put("todos", itemTodos);
+                // TODO REMOVER esta linha
+                parametros.put("todos", true);
 
                 jsonArray = new JSONArray(requestGET(Models.FLUENCIA, "getFluencias", parametros).getMessageResponse());
 
@@ -136,6 +138,7 @@ public class Servidor {
 
             try {
                 json.put("facebook_id", usuario.getFacebookID());
+                json.put("access_token", usuario.getAccessToken());
                 json.put("data_ultimo_acesso", usuario.getDataUltimoAcesso());
                 json.put("latitude", usuario.getLatitude());
                 json.put("longitude", usuario.getLongitude());
@@ -317,10 +320,17 @@ public class Servidor {
             super(context);
         }
 
-        public boolean carregarGeral(LinkedList<ConversasDAO> conversas) {
+        /**
+         *
+         * @param conversas
+         * @return Retorna uma Lista contendo as Novas Mensagens
+         */
+        public List<String> carregarGeral(LinkedList<ConversasDAO> conversas) {
             GETParametros parametros = new GETParametros();
             Usuario usuario = Sistema.getUsuario(context);
             long id_ultima_mensagem = 0;
+
+            List<String> listaNovasMensagens = new LinkedList<>();
 
             Response response;
             JSONArray jsonConversas;
@@ -331,8 +341,10 @@ public class Servidor {
                 parametros.put("usuario", usuario.getUserID());
 
                 for (ConversasDAO conversa : conversas) {
-                    if (conversa.getMensagens().getLast().getId() > id_ultima_mensagem) {
-                        id_ultima_mensagem = conversa.getMensagens().getLast().getId();
+                    if (conversa.getMensagens().size() > 0) {
+                        if (conversa.getMensagens().getLast().getId() > id_ultima_mensagem) {
+                            id_ultima_mensagem = conversa.getMensagens().getLast().getId();
+                        }
                     }
                 }
                 parametros.put("mensagem", id_ultima_mensagem);
@@ -348,7 +360,7 @@ public class Servidor {
                         JSONArray jsonMensagens = jsonConversa.getJSONArray("mensagens");
                         ConversasDAO conversa = null;
                         Mensagem mensagem;
-                        Usuario destinatario;
+                        Usuario destinatario = null;
 
                         // Verifica se a Conversa já esta na Lista
                         for (ConversasDAO c : conversas) {
@@ -389,7 +401,7 @@ public class Servidor {
                             conversa.getMensagens().add(mensagem);
 
                             if (mensagem.isDestinatario() && !mensagem.isLida()) {
-                                hasNovaMensagem = true;
+                                listaNovasMensagens.add(conversa.getDestinatario().getFirstName() + ": " + mensagem.getMensagem());
                             }
                         }
                     }
@@ -399,7 +411,7 @@ public class Servidor {
                 ex.printStackTrace();
             }
 
-            return hasNovaMensagem;
+            return listaNovasMensagens;
         }
 
         public void atualizarLidas(Conversas conversa) {
@@ -583,14 +595,32 @@ public class Servidor {
 
         try {
             usuario.setFacebookID(json.getString("facebook_id"));
+            usuario.setAccessToken(json.getString("access_token"));
             usuario.setDataUltimoAcesso(UtilsDate.parseDateJson(json.getString("data_ultimo_acesso")));
             usuario.setLatitude(json.getDouble("latitude"));
             usuario.setLongitude(json.getDouble("longitude"));
-            usuario.setContaAtiva(json.getBoolean("conta_ativa"));
-            usuario.setSetouConfiguracoes(json.getBoolean("setou_configuracoes"));
+
+            try {
+                usuario.setContaAtiva(json.getBoolean("conta_ativa"));
+            }
+            catch (JSONException e) {
+                usuario.setContaAtiva(json.getInt("conta_ativa") == 1);
+            }
+
+            try {
+                usuario.setSetouConfiguracoes(json.getBoolean("setou_configuracoes"));
+            }
+            catch (JSONException e) {
+                usuario.setSetouConfiguracoes(json.getInt("setou_configuracoes") == 1);
+            }
 
             if (json.has("isContato")) {
-                usuario.setContato(json.getBoolean("isContato"));
+                try {
+                    usuario.setContato(json.getBoolean("isContato"));
+                }
+                catch (JSONException e) {
+                    usuario.setContato(json.getInt("isContato") == 1);
+                }
             }
 
             if (usuario.isSetouConfiguracoes()) {
