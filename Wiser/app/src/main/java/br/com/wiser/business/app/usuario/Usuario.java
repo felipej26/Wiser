@@ -12,7 +12,7 @@ public class Usuario implements Serializable{
 
     private long userID;
     private String facebookID;
-    private String accessToken;
+    private String accessToken = "";
     private String fullName;
     private String firstName;
     private String urlProfilePicture;

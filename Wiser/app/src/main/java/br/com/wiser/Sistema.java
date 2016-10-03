@@ -90,6 +90,11 @@ public class Sistema {
         UtilsLocation.atualizarCoordenadas(context);
 
         Facebook facebook = new Facebook(context);
+
+        if (facebook.getAccessToken() == null) {
+            return false;
+        }
+
         usuario.setFacebookID(facebook.getAccessToken().getUserId());
         usuario.setAccessToken(facebook.getAccessToken().getToken());
         usuario.setDataUltimoAcesso(new Date());

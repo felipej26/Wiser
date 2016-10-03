@@ -142,6 +142,32 @@ public class Facebook {
         return json[0];
     }
 
+    private JSONObject requestViaAppAccessToken(final String node, final Bundle parametros) {
+        final JSONObject[] json = {new JSONObject()};
+        final boolean[] requisitando = {true};
+
+        new Thread() {
+            public void run() {
+                new GraphRequest(Sistema.ACCESS_TOKEN, "/" + node, parametros, HttpMethod.GET,
+                        new GraphRequest.Callback() {
+
+                            @Override
+                            public void onCompleted(GraphResponse graphResponse) {
+                                if (graphResponse != null) {
+                                    json[0] = graphResponse.getJSONObject();
+                                }
+                                requisitando[0] = false;
+                            }
+
+                        }).executeAndWait();
+            }
+        }.start();
+
+        while (requisitando[0]);
+
+        return json[0];
+    }
+
     public AccessToken getAccessToken() {
         try {
             return AccessToken.getCurrentAccessToken();
@@ -158,9 +184,25 @@ public class Facebook {
             usuario.setFirstName(nomeIndisponivel);
             usuario.setFullName(nomeIndisponivel);
 
-            parametros.putString("fields", "first_name,name,picture.width(1000).height(1000){url},birthday,age_range");
+            /* TODO
+                Fazer com que informações como first_name, name, picture sejam pegas com o App Access Token
+                E informações como birthday venham com o User Access Token
+             */
 
-            JSONObject json = request(usuario, "", parametros);
+            JSONObject json;
+
+            if (usuario.getAccessToken().equals("") || usuario.getAccessToken().equals("null")) {
+                parametros.putString("ids", usuario.getFacebookID());
+                parametros.putString("fields", "first_name,name,picture.width(1000).height(1000){url},age_range");
+
+                json = requestViaAppAccessToken("", parametros);
+                json = json.getJSONObject(usuario.getFacebookID());
+            }
+            else {
+                parametros.putString("fields", "first_name,name,picture.width(1000).height(1000){url},birthday,age_range");
+
+                json = request(usuario, "", parametros);
+            }
 
             if (json != null) {
                 if (json.has("first_name"))
@@ -266,7 +308,6 @@ public class Facebook {
     }
 
     public void logout() {
-
         try {
             LoginManager.getInstance().logOut();
         }

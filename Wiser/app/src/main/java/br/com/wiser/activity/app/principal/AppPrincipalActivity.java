@@ -39,14 +39,14 @@ public class AppPrincipalActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
-
-        iniciarServico();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        UtilsLocation.atualizarLocalizacao(this);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        getMenuInflater().inflate(R.menu.menu_principal, menu);
+        return (true);
     }
 
     @Override
@@ -62,33 +62,16 @@ public class AppPrincipalActivity extends AppCompatActivity {
                 Utils.chamarActivity(this, Activities.APP_SOBRE);
                 break;
             case R.id.itmSair:
-                logout();
+                Utils.logout(this);
                 break;
         }
 
         return (true);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-
-        getMenuInflater().inflate(R.menu.menu_principal, menu);
-        return (true);
-    }
-
-    public void iniciarServico() {
-        Intent service = new Intent(this, CarregarConversasService.class);
-        startService(service);
-    }
-
     public void verificarConfiguracao() {
         if (!Sistema.getUsuario(this).isSetouConfiguracoes()){
             Utils.chamarActivity(this, Activities.APP_CONFIGURACOES);
         }
-    }
-
-    protected void logout() {
-        Utils.logout(this);
     }
 }

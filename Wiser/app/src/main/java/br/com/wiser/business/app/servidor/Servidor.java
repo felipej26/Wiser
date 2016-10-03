@@ -335,8 +335,6 @@ public class Servidor {
             Response response;
             JSONArray jsonConversas;
 
-            boolean hasNovaMensagem = false;
-
             try {
                 parametros.put("usuario", usuario.getUserID());
 

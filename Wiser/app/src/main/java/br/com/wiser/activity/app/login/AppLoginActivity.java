@@ -13,6 +13,7 @@ import br.com.wiser.Sistema;
 import br.com.wiser.R;
 import br.com.wiser.business.app.facebook.Facebook;
 import br.com.wiser.enums.Activities;
+import br.com.wiser.services.CarregarConversasService;
 import br.com.wiser.utils.Utils;
 
 public class AppLoginActivity extends Activity {
@@ -45,7 +46,7 @@ public class AppLoginActivity extends Activity {
 
         facebook.setBtnLogin(this, (Button) super.findViewById(R.id.btnLogin));
 
-        if (facebook.isLogado() && salvar()) {
+        if (facebook.isLogado() && Sistema.checkPermissoes(this) && salvar()) {
             loginSucesso();
             return;
         }
@@ -94,6 +95,8 @@ public class AppLoginActivity extends Activity {
     }
 
     private void loginSucesso() {
+        startService(new Intent(this, CarregarConversasService.class));
+
         Toast.makeText(this, getString(R.string.boas_vindas, Sistema.getUsuario(this).getFirstName()), Toast.LENGTH_SHORT).show();
         Utils.chamarActivity(this, Activities.APP_PRINCIPAL);
         finish();

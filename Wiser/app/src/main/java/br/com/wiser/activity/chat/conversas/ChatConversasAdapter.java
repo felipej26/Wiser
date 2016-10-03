@@ -16,6 +16,7 @@ import br.com.wiser.R;
 import br.com.wiser.activity.chat.mensagens.ChatMensagensActivity;
 import br.com.wiser.business.chat.conversas.Conversas;
 import br.com.wiser.business.chat.conversas.ConversasDAO;
+import br.com.wiser.utils.IClickListener;
 import br.com.wiser.utils.UtilsDate;
 import br.com.wiser.utils.Utils;
 
@@ -25,7 +26,9 @@ import br.com.wiser.utils.Utils;
 public class ChatConversasAdapter extends RecyclerView.Adapter<ChatConversasAdapter.ViewHolder> {
 
     private Context context;
-    private LinkedList<ConversasDAO> conversas = null;
+    private LinkedList<ConversasDAO> conversas;
+
+    private IClickListener clickListener;
 
     public ChatConversasAdapter(Context context, LinkedList<ConversasDAO> conversas) {
         this.context = context;
@@ -51,8 +54,6 @@ public class ChatConversasAdapter extends RecyclerView.Adapter<ChatConversasAdap
         holder.lblDataHora.setText(UtilsDate.formatDate(m.getMensagens().getLast().getData(), UtilsDate.HHMM));
         holder.lblMensagens.setText(m.getMensagens().getLast().getMensagem());
         holder.lblContMensagens.setText(m.getContMsgNaoLidas() + " " + context.getString(m.getContMsgNaoLidas() <= 1 ? R.string.nao_lida : R.string.nao_lidas));
-
-        holder.setPosicao(position);
     }
 
     @Override
@@ -65,6 +66,10 @@ public class ChatConversasAdapter extends RecyclerView.Adapter<ChatConversasAdap
         notifyDataSetChanged();
     }
 
+    public void setClickListener(IClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public View viewSeparator;
@@ -75,8 +80,6 @@ public class ChatConversasAdapter extends RecyclerView.Adapter<ChatConversasAdap
         public TextView lblDataHora;
         public TextView lblMensagens;
         public TextView lblContMensagens;
-
-        private int posicao = 0;
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
@@ -94,13 +97,9 @@ public class ChatConversasAdapter extends RecyclerView.Adapter<ChatConversasAdap
 
         @Override
         public void onClick(View view) {
-            Intent i = new Intent(view.getContext(), ChatMensagensActivity.class);
-            i.putExtra("conversa", conversas.get(posicao));
-            view.getContext().startActivity(i);
-        }
-
-        public void setPosicao(int posicao) {
-            this.posicao = posicao;
+            if (clickListener != null) {
+                clickListener.itemClicked(view, getAdapterPosition());
+            }
         }
     }
 }

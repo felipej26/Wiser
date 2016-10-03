@@ -53,13 +53,6 @@ public class ForumPrincipalFragment extends Fragment implements IDiscussaoCardVi
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        carregarComponentes(this.getView());
-    }
-
     private void carregarComponentes(View view) {
         btnNovaDiscussao = (Button) view.findViewById(R.id.btnNovaDiscussao);
         btnProcurarDiscussao = (Button) view.findViewById(R.id.btnProcurarDiscussao);
