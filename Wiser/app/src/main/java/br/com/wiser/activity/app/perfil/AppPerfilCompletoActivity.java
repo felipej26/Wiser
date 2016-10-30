@@ -3,39 +3,40 @@ package br.com.wiser.activity.app.perfil;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.activity.chat.mensagens.ChatMensagensActivity;
 import br.com.wiser.activity.forum.DiscussaoCardViewAdapter;
-import br.com.wiser.activity.forum.IDiscussaoCardViewAdapterCallback;
-import br.com.wiser.activity.forum.minhas_discussoes.ForumMinhasDiscussoesActivity;
+import br.com.wiser.activity.forum.IDiscussao;
+import br.com.wiser.activity.forum.discussao.ForumDiscussaoActivity;
 import br.com.wiser.business.app.usuario.Usuario;
-import br.com.wiser.business.app.usuario.UsuarioDAO;
 import br.com.wiser.business.chat.conversas.ConversasDAO;
 import br.com.wiser.business.forum.discussao.Discussao;
 import br.com.wiser.business.forum.discussao.DiscussaoDAO;
+import br.com.wiser.dialogs.DialogConfirmar;
+import br.com.wiser.dialogs.DialogInformar;
 import br.com.wiser.dialogs.DialogPerfilUsuario;
+import br.com.wiser.dialogs.IDialog;
 import br.com.wiser.utils.Utils;
 
 /**
  * Created by Lucas on 25/09/2016.
  */
 
-public class AppPerfilCompleto extends Activity implements IDiscussaoCardViewAdapterCallback{
+public class AppPerfilCompletoActivity extends Activity implements IDiscussao {
 
     private ImageView imgPerfil;
     private ProgressBar prgBarra;
@@ -48,10 +49,7 @@ public class AppPerfilCompleto extends Activity implements IDiscussaoCardViewAda
     private RecyclerView.Adapter adapter;
 
     private Usuario usuario;
-
-    Toolbar toolbar;
-    CollapsingToolbarLayout collapsingToolbarLayout;
-
+    private List<DiscussaoDAO> listaDiscussoes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,13 +77,15 @@ public class AppPerfilCompleto extends Activity implements IDiscussaoCardViewAda
         lblStatus = (TextView) findViewById(R.id.lblStatus);
         btnAbrirChat = (Button) findViewById(R.id.btnAbrirChat);
 
-        Utils.loadImageInBackground(this, usuario.getUrlProfilePicture(), imgPerfil, prgBarra);
+        Utils.loadImageInBackground(this, usuario.getPerfil().getUrlProfilePicture(), imgPerfil, prgBarra);
+
+        listaDiscussoes = new LinkedList<>();
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
 
-        adapter = new DiscussaoCardViewAdapter(this, new LinkedList<DiscussaoDAO>());
+        adapter = new DiscussaoCardViewAdapter(this, listaDiscussoes);
         recyclerView.setAdapter(adapter);
 
         if (Sistema.getUsuario(this).getUserID() == usuario.getUserID()) {
@@ -97,8 +97,8 @@ public class AppPerfilCompleto extends Activity implements IDiscussaoCardViewAda
                 btnAbrirChat.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (Sistema.getUsuario(AppPerfilCompleto.this).adicionarContato(AppPerfilCompleto.this, usuario)) {
-                            btnAbrirChat.setText(AppPerfilCompleto.this.getString(R.string.enviar_mensagem));
+                        if (Sistema.getUsuario(AppPerfilCompletoActivity.this).adicionarContato(AppPerfilCompletoActivity.this, usuario)) {
+                            btnAbrirChat.setText(AppPerfilCompletoActivity.this.getString(R.string.enviar_mensagem));
                             btnAbrirChat.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -131,15 +131,72 @@ public class AppPerfilCompleto extends Activity implements IDiscussaoCardViewAda
     }
 
     private void carregarDados(){
-        lblNomeDetalhe.setText(usuario.getFullName());
-        lblIdade.setText(", " + usuario.getIdade());
+        lblNomeDetalhe.setText(usuario.getPerfil().getFullName());
+        lblIdade.setText(", " + usuario.getPerfil().getIdade());
         lblIdiomaNivel.setText(getString(R.string.fluencia_idioma,
                 Utils.getDescricaoFluencia(usuario.getFluencia()), Utils.getDescricaoIdioma(usuario.getIdioma())));
         lblStatus.setText(usuario.getStatus());
     }
 
-    @Override
-    public void desativarDiscussao(Discussao discussao) {
+    public void desativar(Discussao discussao) {
+        DialogInformar informar = new DialogInformar(this);
 
+        DiscussaoDAO objDiscussao = new DiscussaoDAO();
+
+        objDiscussao.setId(discussao.getId());
+        objDiscussao.setAtiva(!discussao.isAtiva());
+
+        if (objDiscussao.desativarDiscussao(this)) {
+            discussao.setAtiva(objDiscussao.isAtiva());
+
+            informar.setMensagem(getString(R.string.sucesso_discussao_excluida));
+        }
+        else {
+            informar.setMensagem(getString(R.string.erro_excluir_discussao));
+        }
+
+        informar.show();
+    }
+
+    @Override
+    public void onClick(int posicao) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("discussao", listaDiscussoes.get(posicao));
+
+        Intent i = new Intent(this, ForumDiscussaoActivity.class);
+        i.putExtra("discussoes", bundle);
+        startActivity(i);
+    }
+
+    @Override
+    public void onClickPerfil(int posicao) {
+        DialogPerfilUsuario dialog = new DialogPerfilUsuario();
+        dialog.show(this, listaDiscussoes.get(posicao).getUsuario());
+    }
+
+    @Override
+    public void desativarDiscussao(final int posicao) {
+        DialogConfirmar confirmar = new DialogConfirmar(this);
+
+        confirmar.setYesClick(new IDialog() {
+            @Override
+            public void onClick() {
+                desativar(listaDiscussoes.get(posicao));
+            }
+        });
+
+        if (listaDiscussoes.get(posicao).isAtiva()) {
+            confirmar.setMensagem(getString(R.string.confirmar_desativar_discussao));
+        }
+        else {
+            confirmar.setMensagem(getString(R.string.confirmar_reativar_discussao));
+        }
+
+        confirmar.show();
+    }
+
+    @Override
+    public void compartilharDiscussao(View view) {
+        Utils.compartilharComoImagem(view);
     }
 }

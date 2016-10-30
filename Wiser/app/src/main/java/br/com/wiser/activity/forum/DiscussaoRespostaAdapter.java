@@ -13,7 +13,6 @@ import java.util.LinkedList;
 
 import br.com.wiser.R;
 import br.com.wiser.business.forum.resposta.Resposta;
-import br.com.wiser.dialogs.DialogPerfilUsuario;
 import br.com.wiser.utils.UtilsDate;
 import br.com.wiser.utils.Utils;
 
@@ -23,11 +22,11 @@ import br.com.wiser.utils.Utils;
 public class DiscussaoRespostaAdapter extends RecyclerView.Adapter<DiscussaoRespostaAdapter.ViewHolder> {
 
     private Context context;
-    private LinkedList<Resposta> resposta = null;
+    private LinkedList<Resposta> listaRespostas;
 
-    public DiscussaoRespostaAdapter(Context context, LinkedList<Resposta> resposta) {
+    public DiscussaoRespostaAdapter(Context context, LinkedList<Resposta> listaRespostas) {
         this.context = context;
-        this.resposta = resposta;
+        this.listaRespostas = listaRespostas;
     }
 
     @Override
@@ -41,21 +40,20 @@ public class DiscussaoRespostaAdapter extends RecyclerView.Adapter<DiscussaoResp
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final Resposta r = resposta.get(position);
-        final DialogPerfilUsuario perfil = new DialogPerfilUsuario();
+        final Resposta r = listaRespostas.get(position);
 
         holder.viewSeparator.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
 
-        Utils.loadImageInBackground(context, r.getUsuario().getUrlProfilePicture(), holder.imgPerfil, holder.prgBarra);
+        Utils.loadImageInBackground(context, r.getUsuario().getPerfil().getUrlProfilePicture(), holder.imgPerfil, holder.prgBarra);
         holder.lblIDResposta.setText("#" + (position + 1));
-        holder.lblAutor.setText(r.getUsuario().getFirstName());
+        holder.lblAutor.setText(r.getUsuario().getPerfil().getFirstName());
         holder.lblDataHora.setText(UtilsDate.formatDate(r.getDataHora(), UtilsDate.DDMMYYYY_HHMMSS));
         holder.lblResposta.setText(r.getResposta());
     }
 
     @Override
     public int getItemCount() {
-        return resposta.size();
+        return listaRespostas.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -69,17 +67,17 @@ public class DiscussaoRespostaAdapter extends RecyclerView.Adapter<DiscussaoResp
         public TextView lblDataHora;
         public TextView lblResposta;
 
-        public ViewHolder(View itemLayoutView) {
-            super(itemLayoutView);
+        public ViewHolder(View view) {
+            super(view);
 
-            viewSeparator = itemLayoutView.findViewById(R.id.viewSeparator);
+            viewSeparator = view.findViewById(R.id.viewSeparator);
 
-            imgPerfil = (ImageView) itemLayoutView.findViewById(R.id.imgPerfil);
-            prgBarra = (ProgressBar) itemLayoutView.findViewById(R.id.prgBarra);
-            lblIDResposta = (TextView) itemLayoutView.findViewById(R.id.lblIDResposta);
-            lblAutor = (TextView) itemLayoutView.findViewById(R.id.lblAutor);
-            lblDataHora = (TextView) itemLayoutView.findViewById(R.id.lblDataHora);
-            lblResposta = (TextView) itemLayoutView.findViewById(R.id.lblResposta);
+            imgPerfil = (ImageView) view.findViewById(R.id.imgPerfil);
+            prgBarra = (ProgressBar) view.findViewById(R.id.prgBarra);
+            lblIDResposta = (TextView) view.findViewById(R.id.lblIDResposta);
+            lblAutor = (TextView) view.findViewById(R.id.lblAutor);
+            lblDataHora = (TextView) view.findViewById(R.id.lblDataHora);
+            lblResposta = (TextView) view.findViewById(R.id.lblResposta);
         }
     }
 }

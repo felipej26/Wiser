@@ -15,10 +15,6 @@ import br.com.wiser.R;
  */
 public class DialogInformar {
 
-    public interface DialogInterface {
-        void onClick();
-    }
-
     private TextView txtInformacao;
     private Button btnOk;
 
@@ -26,14 +22,14 @@ public class DialogInformar {
     private AlertDialog alert;
     private AlertDialog.Builder builder;
 
-    private DialogInterface mOnOkClick;
+    private IDialog mOnOkClick;
     private String mensagem;
 
     public DialogInformar(Activity activity) {
         this.activity = activity;
     }
 
-    public void setOkClick(final DialogInterface dialogInterface) {
+    public void setOkClick(final IDialog dialogInterface) {
         mOnOkClick = dialogInterface;
     }
 

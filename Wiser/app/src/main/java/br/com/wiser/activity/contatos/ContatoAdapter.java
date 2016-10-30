@@ -45,8 +45,8 @@ public class ContatoAdapter extends RecyclerView.Adapter<ContatoAdapter.ViewHold
 
         holder.viewSeparator.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
 
-        Utils.loadImageInBackground(context, contato.getUrlProfilePicture(), holder.imgPerfil, holder.prgBarra);
-        holder.lblNome.setText(contato.getFullName());
+        Utils.loadImageInBackground(context, contato.getPerfil().getUrlProfilePicture(), holder.imgPerfil, holder.prgBarra);
+        holder.lblNome.setText(contato.getPerfil().getFullName());
     }
 
     @Override

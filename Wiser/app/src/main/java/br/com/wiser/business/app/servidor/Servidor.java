@@ -9,8 +9,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -18,13 +16,14 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import br.com.wiser.Sistema;
 import br.com.wiser.business.app.facebook.Facebook;
 import br.com.wiser.business.app.usuario.Usuario;
-import br.com.wiser.business.app.usuario.UsuarioDAO;
 import br.com.wiser.business.chat.conversas.Conversas;
 import br.com.wiser.business.chat.conversas.ConversasDAO;
 import br.com.wiser.business.chat.mensagem.Mensagem;
@@ -51,12 +50,11 @@ public class Servidor {
             AccessToken accessToken;
             JSONObject json;
 
-            //TODO colocar try/catch
             Response response = requestGET(Models.FACEBOOK, "getAccessToken");
 
             if (response.getCodeResponse() != HttpURLConnection.HTTP_OK)
             {
-                throw new Exception();
+                throw new Exception("Não foi possível receber as configurações de Acesso a API do Facebook!");
             }
 
             json = new JSONObject(response.getMessageResponse());
@@ -399,7 +397,7 @@ public class Servidor {
                             conversa.getMensagens().add(mensagem);
 
                             if (mensagem.isDestinatario() && !mensagem.isLida()) {
-                                listaNovasMensagens.add(conversa.getDestinatario().getFirstName() + ": " + mensagem.getMensagem());
+                                listaNovasMensagens.add(conversa.getDestinatario().getPerfil().getFirstName() + ": " + mensagem.getMensagem());
                             }
                         }
                     }
@@ -629,7 +627,7 @@ public class Servidor {
 
             if (carregarInfoPessoais) {
                 facebook = new Facebook(context);
-                facebook.getProfile(usuario);
+                facebook.carregarPerfil(usuario);
             }
         }
         catch (Exception e) {
@@ -645,8 +643,11 @@ public class Servidor {
 
     private DiscussaoDAO getDiscussaoJSON(JSONObject json, boolean minhasDiscussoes, Context context) throws Exception {
         DiscussaoDAO discussao = new DiscussaoDAO();
+        Map<Long, Usuario> mapUsuarios = new HashMap<>();
 
         discussao.setUsuario(minhasDiscussoes ? Sistema.getUsuario(context) : getUsuarioJSON(json.getJSONObject("usuario"), true, context));
+        mapUsuarios.put(discussao.getUsuario().getUserID(), discussao.getUsuario());
+
         discussao.setId(json.getLong("id"));
         discussao.setTitulo(decode(json.getString("titulo")));
         discussao.setDescricao(decode(json.getString("descricao")));
@@ -658,10 +659,11 @@ public class Servidor {
             Resposta resposta = new Resposta();
 
             resposta.setId(jsonResp.getLong("id"));
-            /* TODO Arrumar isso
-                Isso deixará lento quando tiver muitos usuarios
-             */
-            resposta.setUsuario(new Usuarios(context).carregarUsuario(new Usuario(jsonResp.getLong("usuario"))));
+
+            if (!mapUsuarios.containsKey(jsonResp.getLong("usuario"))) {
+                mapUsuarios.put(jsonResp.getLong("usuario"), new Usuarios(context).carregarUsuario(new Usuario(jsonResp.getLong("usuario"))));
+            }
+            resposta.setUsuario(mapUsuarios.get(jsonResp.getLong("usuario")));
             resposta.setDataHora(UtilsDate.parseDateJson(jsonResp.getString("data")));
             resposta.setResposta(decode(jsonResp.getString("resposta")));
 
@@ -677,10 +679,6 @@ public class Servidor {
 
     private String decode(String texto) throws UnsupportedEncodingException {
         return URLDecoder.decode(texto, "UTF-8");
-    }
-
-    private Response requestGET(Models model) {
-        return requestGET(model, "", new GETParametros());
     }
 
     private Response requestGET(Models model, String endPoint) {
@@ -730,10 +728,6 @@ public class Servidor {
         }
 
         return response;
-    }
-
-    private Response requestPOST(Models model, String postParametros) {
-        return requestPOST(model, "", postParametros);
     }
 
     private Response requestPOST(Models model, String endPoint, String postParametros) {

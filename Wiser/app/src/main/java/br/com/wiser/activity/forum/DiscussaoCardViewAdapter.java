@@ -2,9 +2,6 @@ package br.com.wiser.activity.forum;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +14,8 @@ import java.util.List;
 
 import br.com.wiser.Sistema;
 import br.com.wiser.R;
-import br.com.wiser.activity.forum.discussao.ForumDiscussaoActivity;
 import br.com.wiser.business.forum.discussao.Discussao;
 import br.com.wiser.business.forum.discussao.DiscussaoDAO;
-import br.com.wiser.dialogs.DialogPerfilUsuario;
 import br.com.wiser.utils.UtilsDate;
 import br.com.wiser.utils.Utils;
 import android.widget.ProgressBar;
@@ -30,19 +25,19 @@ import android.widget.ProgressBar;
  */
 public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCardViewAdapter.ViewHolder> {
 
-    private IDiscussaoCardViewAdapterCallback mCallback;
+    private IDiscussao mCallback;
     private Context context;
     private List<DiscussaoDAO> listaDiscussoes;
 
     public DiscussaoCardViewAdapter(Activity activity, List<DiscussaoDAO> listaDiscussoes) {
-        this.mCallback = (IDiscussaoCardViewAdapterCallback) activity;
-        this.context = (Context) activity;
+        this.mCallback = (IDiscussao) activity;
+        this.context = activity;
         this.listaDiscussoes = listaDiscussoes;
     }
 
     public DiscussaoCardViewAdapter(Activity activity, Object fragment, List<DiscussaoDAO> listaDiscussoes) {
-        this.mCallback = (IDiscussaoCardViewAdapterCallback) fragment;
-        this.context = (Context) activity;
+        this.mCallback = (IDiscussao) fragment;
+        this.context = activity;
         this.listaDiscussoes = listaDiscussoes;
     }
 
@@ -59,9 +54,9 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         Discussao objDiscussao = listaDiscussoes.get(position);
 
-        Utils.loadImageInBackground(context, objDiscussao.getUsuario().getUrlProfilePicture(), viewHolder.imgPerfil, viewHolder.prgBarra);
+        Utils.loadImageInBackground(context, objDiscussao.getUsuario().getPerfil().getUrlProfilePicture(), viewHolder.imgPerfil, viewHolder.prgBarra);
         viewHolder.lblIDDiscussao.setText("#" + objDiscussao.getId());
-        viewHolder.lblAutorDiscussao.setText(objDiscussao.getUsuario().getFirstName());
+        viewHolder.lblAutorDiscussao.setText(objDiscussao.getUsuario().getPerfil().getFirstName());
         viewHolder.lblTituloDiscussao.setText(objDiscussao.getTitulo());
         viewHolder.lblDescricaoDiscussao.setText(objDiscussao.getDescricao());
         viewHolder.lblContRespostas.setText(
@@ -82,11 +77,7 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
         return listaDiscussoes.size();
     }
 
-    public Discussao getDiscussao(int posicao) {
-        return listaDiscussoes.get(posicao);
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         private int posicao;
 
@@ -101,57 +92,47 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
         public Button btnDesativar;
         public Button btnCompartilhar;
 
-        public ViewHolder(View itemLayoutView) {
-            super(itemLayoutView);
-            itemLayoutView.setOnClickListener(this);
+        public ViewHolder(View view) {
+            super(view);
 
-            lblIDDiscussao = (TextView) itemLayoutView.findViewById(R.id.lblIDDiscussao);
-            imgPerfil = (ImageView) itemLayoutView.findViewById(R.id.imgPerfil);
-            prgBarra = (ProgressBar) itemLayoutView.findViewById(R.id.prgBarra);
-            lblAutorDiscussao = (TextView) itemLayoutView.findViewById(R.id.lblAutorDiscussao);
-            lblTituloDiscussao = (TextView) itemLayoutView.findViewById(R.id.lblTituloDiscussao);
-            lblDescricaoDiscussao = (TextView) itemLayoutView.findViewById(R.id.lblDescricaoDiscussao);
-            lblContRespostas = (TextView) itemLayoutView.findViewById(R.id.lblContRespostas);
-            lblDataHora = (TextView) itemLayoutView.findViewById(R.id.lblDataHora);
-            btnDesativar = (Button) itemLayoutView.findViewById(R.id.btnDesativar);
-            btnCompartilhar = (Button) itemLayoutView.findViewById(R.id.btnCompartilhar);
+            lblIDDiscussao = (TextView) view.findViewById(R.id.lblIDDiscussao);
+            imgPerfil = (ImageView) view.findViewById(R.id.imgPerfil);
+            prgBarra = (ProgressBar) view.findViewById(R.id.prgBarra);
+            lblAutorDiscussao = (TextView) view.findViewById(R.id.lblAutorDiscussao);
+            lblTituloDiscussao = (TextView) view.findViewById(R.id.lblTituloDiscussao);
+            lblDescricaoDiscussao = (TextView) view.findViewById(R.id.lblDescricaoDiscussao);
+            lblContRespostas = (TextView) view.findViewById(R.id.lblContRespostas);
+            lblDataHora = (TextView) view.findViewById(R.id.lblDataHora);
+            btnDesativar = (Button) view.findViewById(R.id.btnDesativar);
+            btnCompartilhar = (Button) view.findViewById(R.id.btnCompartilhar);
 
-            btnDesativar.setOnClickListener(new View.OnClickListener(){
+            view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mCallback.desativarDiscussao(listaDiscussoes.get(posicao));
+                    mCallback.onClick(posicao);
                 }
             });
 
             imgPerfil.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DialogPerfilUsuario dialog = new DialogPerfilUsuario();
-                    dialog.show(v.getContext(), listaDiscussoes.get(posicao).getUsuario());
+                    mCallback.onClickPerfil(posicao);
                 }
             });
 
-            btnCompartilhar.setTag(itemLayoutView);
-
-            View.OnClickListener btnCompartilharListener = new View.OnClickListener(){
+            btnDesativar.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    Utils.compartilharComoImagem((CardView) v.getTag());
+                    mCallback.desativarDiscussao(posicao);
                 }
-            };
+            });
 
-            btnCompartilhar.setOnClickListener(btnCompartilharListener);
-        }
-
-        @Override
-        public void onClick(View view) {
-
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("discussao", listaDiscussoes.get(posicao));
-
-            Intent i = new Intent(view.getContext(), ForumDiscussaoActivity.class);
-            i.putExtra("discussoes", bundle);
-            view.getContext().startActivity(i);
+            btnCompartilhar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mCallback.compartilharDiscussao(v);
+                }
+            });
         }
 
         public void setPosicao(int posicao) {
