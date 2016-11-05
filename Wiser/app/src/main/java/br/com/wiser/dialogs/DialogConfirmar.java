@@ -15,6 +15,10 @@ import br.com.wiser.R;
  */
 public class DialogConfirmar {
 
+    public interface DialogInterface {
+        void onClick();
+    }
+
     private TextView txtConfirmacao;
     private Button btnSim;
     private Button btnNao;
@@ -23,19 +27,19 @@ public class DialogConfirmar {
     private AlertDialog alert;
     private AlertDialog.Builder builder;
 
-    private IDialog mOnYesClick;
-    private IDialog mOnNoClick;
+    private DialogInterface mOnYesClick;
+    private DialogInterface mOnNoClick;
     private String mensagem;
 
     public DialogConfirmar(Activity activity) {
         this.activity = activity;
     }
 
-    public void setYesClick(final IDialog dialogInterface) {
+    public void setYesClick(final DialogInterface dialogInterface) {
         mOnYesClick = dialogInterface;
     }
 
-    public void setNoClick(final IDialog dialogInterface) {
+    public void setNoClick(final DialogInterface dialogInterface) {
         mOnNoClick = dialogInterface;
     }
 
