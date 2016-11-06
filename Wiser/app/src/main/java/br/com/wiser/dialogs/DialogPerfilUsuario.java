@@ -12,7 +12,7 @@ import android.widget.Button;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.activity.app.perfil.AppPerfilCompleto;
+import br.com.wiser.activity.app.perfil.AppPerfilCompletoActivity;
 import br.com.wiser.activity.chat.mensagens.ChatMensagensActivity;
 import br.com.wiser.business.app.usuario.Usuario;
 import br.com.wiser.business.chat.conversas.ConversasDAO;
@@ -46,8 +46,8 @@ public class DialogPerfilUsuario {
         btnAbrirChat = (Button) viewDetalhes.findViewById(R.id.btnAbrirChat);
         btnPerfCompleto = (Button) viewDetalhes.findViewById(R.id.btnPerfCompleto);
 
-        Utils.loadImageInBackground(context, contato.getUrlProfilePicture(), imgPerfil, prgBarra);
-        lblNome.setText(contato.getFirstName());
+        Utils.loadImageInBackground(context, contato.getPerfil().getUrlProfilePicture(), imgPerfil, prgBarra);
+        lblNome.setText(contato.getPerfil().getFirstName());
         lblIdiomaNivel.setText(context.getString(R.string.fluencia_idioma,
                 Utils.getDescricaoFluencia(contato.getFluencia()), Utils.getDescricaoIdioma(contato.getIdioma())));
         lblStatus.setText(contato.getStatus());
@@ -94,7 +94,7 @@ public class DialogPerfilUsuario {
         btnPerfCompleto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), AppPerfilCompleto.class);
+                Intent intent = new Intent(v.getContext(), AppPerfilCompletoActivity.class);
                 intent.putExtra("usuario", contato);
                 v.getContext().startActivity(intent);
                 alert.dismiss();

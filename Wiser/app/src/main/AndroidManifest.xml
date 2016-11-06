@@ -49,7 +49,7 @@
             android:screenOrientation="portrait" />
 
         <!-- Activity da Tela de Visualizar Perfil Completo -->
-        <activity android:name=".activity.app.perfil.AppPerfilCompleto"
+        <activity android:name=".activity.app.perfil.AppPerfilCompletoActivity"
             android:label="@string/app_perfil_title"
             android:screenOrientation="portrait" />
 

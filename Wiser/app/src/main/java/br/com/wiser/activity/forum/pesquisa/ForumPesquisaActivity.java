@@ -2,8 +2,10 @@ package br.com.wiser.activity.forum.pesquisa;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -15,19 +17,22 @@ import android.widget.Toast;
 
 import java.util.LinkedList;
 
-import br.com.wiser.Sistema;
 import br.com.wiser.R;
 import br.com.wiser.activity.forum.DiscussaoCardViewAdapter;
-import br.com.wiser.activity.forum.IDiscussaoCardViewAdapterCallback;
+import br.com.wiser.activity.forum.IDiscussao;
+import br.com.wiser.activity.forum.discussao.ForumDiscussaoActivity;
 import br.com.wiser.business.forum.discussao.Discussao;
 import br.com.wiser.business.forum.discussao.DiscussaoDAO;
 import br.com.wiser.dialogs.DialogConfirmar;
 import br.com.wiser.dialogs.DialogInformar;
+import br.com.wiser.dialogs.DialogPerfilUsuario;
+import br.com.wiser.dialogs.IDialog;
+import br.com.wiser.utils.Utils;
 
 /**
  * Created by Jefferson on 16/05/2016.
  */
-public class ForumPesquisaActivity extends Activity implements IDiscussaoCardViewAdapterCallback {
+public class ForumPesquisaActivity extends Activity implements IDiscussao {
 
     private EditText txtDiscussao;
     private TextView lblResultados;
@@ -39,6 +44,7 @@ public class ForumPesquisaActivity extends Activity implements IDiscussaoCardVie
     private ProgressBar pgbLoading;
 
     private DiscussaoDAO objDiscussao;
+    private LinkedList<DiscussaoDAO> listaDiscussoes;
 
     @Override
     protected void onCreate(Bundle saveInstanceState) {
@@ -78,7 +84,7 @@ public class ForumPesquisaActivity extends Activity implements IDiscussaoCardVie
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final LinkedList<DiscussaoDAO> listaDiscussoes = objDiscussao.procurarDiscussoes(context, procurar);
+                listaDiscussoes = objDiscussao.procurarDiscussoes(context, procurar);
 
                 hRecycleView.post(new Runnable() {
                     @Override
@@ -100,40 +106,17 @@ public class ForumPesquisaActivity extends Activity implements IDiscussaoCardVie
                         lblContResultados.setVisibility(View.VISIBLE);
 
                         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-                        recyclerView.setVisibility(View.INVISIBLE);
                         recyclerView.setHasFixedSize(true);
                         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
                         adapter = new DiscussaoCardViewAdapter(ForumPesquisaActivity.this, listaDiscussoes);
                         recyclerView.setAdapter(adapter);
-                        recyclerView.setVisibility(View.VISIBLE);
 
                         pgbLoading.setVisibility(View.INVISIBLE);
                     }
                 });
             }
         }).start();
-    }
-
-    @Override
-    public void desativarDiscussao(final Discussao discussao) {
-        DialogConfirmar confirmar = new DialogConfirmar(this);
-
-        confirmar.setYesClick(new DialogConfirmar.DialogInterface() {
-            @Override
-            public void onClick() {
-                desativar(discussao);
-            }
-        });
-
-        if (discussao.isAtiva()) {
-            confirmar.setMensagem(this.getString(R.string.confirmar_desativar_discussao));
-        }
-        else {
-            confirmar.setMensagem(getString(R.string.confirmar_reativar_discussao));
-        }
-
-        confirmar.show();
     }
 
     public void desativar(Discussao discussao) {
@@ -154,5 +137,47 @@ public class ForumPesquisaActivity extends Activity implements IDiscussaoCardVie
         }
 
         informar.show();
+    }
+
+    @Override
+    public void onClick(int posicao) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("discussao", listaDiscussoes.get(posicao));
+
+        Intent i = new Intent(this, ForumDiscussaoActivity.class);
+        i.putExtra("discussoes", bundle);
+        startActivity(i);
+    }
+
+    @Override
+    public void onClickPerfil(int posicao) {
+        DialogPerfilUsuario dialog = new DialogPerfilUsuario();
+        dialog.show(this, listaDiscussoes.get(posicao).getUsuario());
+    }
+
+    @Override
+    public void desativarDiscussao(final int posicao) {
+        DialogConfirmar confirmar = new DialogConfirmar(this);
+
+        confirmar.setYesClick(new IDialog() {
+            @Override
+            public void onClick() {
+                desativar(listaDiscussoes.get(posicao));
+            }
+        });
+
+        if (listaDiscussoes.get(posicao).isAtiva()) {
+            confirmar.setMensagem(this.getString(R.string.confirmar_desativar_discussao));
+        }
+        else {
+            confirmar.setMensagem(getString(R.string.confirmar_reativar_discussao));
+        }
+
+        confirmar.show();
+    }
+
+    @Override
+    public void compartilharDiscussao(View view) {
+        Utils.compartilharComoImagem(view);
     }
 }

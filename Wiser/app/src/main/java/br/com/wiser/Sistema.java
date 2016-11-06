@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.hardware.camera2.params.Face;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 
@@ -15,7 +14,6 @@ import java.util.HashSet;
 
 import br.com.wiser.business.app.facebook.Facebook;
 import br.com.wiser.business.app.servidor.Servidor;
-import br.com.wiser.business.app.usuario.Usuario;
 import br.com.wiser.business.app.usuario.UsuarioDAO;
 import br.com.wiser.business.chat.assunto.Assunto;
 import br.com.wiser.utils.UtilsLocation;
@@ -23,6 +21,7 @@ import br.com.wiser.utils.UtilsLocation;
 public class Sistema {
 
     public static String SERVIDOR_WS = "nodejs-wiserserver.rhcloud.com";
+
     public static AccessToken ACCESS_TOKEN;
     public static String APP_LINGUAGEM;
 
@@ -34,6 +33,7 @@ public class Sistema {
     public static boolean PERMITIR_PAGINAS_NAO_VERIFICADAS = false;
 
     public static boolean inicializar(Context context) {
+
         try {
             APP_LINGUAGEM = context.getResources().getConfiguration().locale.getLanguage();
 
@@ -112,7 +112,7 @@ public class Sistema {
             }
         }
 
-        facebook.getProfile(usuario);
+        facebook.carregarPerfil(usuario);
         Sistema.USUARIO = usuario;
         return true;
     }

@@ -53,9 +53,9 @@ public class ChatResultadosAdapter extends ArrayAdapter<Usuario> {
             objHolder = (RecordHolder) objView.getTag();
         }
 
-        Usuario item = listaItemUsuarios.get(position);
-        objHolder.txtNome.setText(item.getFirstName());
-        Utils.loadImageInBackground(context, item.getUrlProfilePicture(), objHolder.imgPerfil, objHolder.prgBarra);
+        Usuario usuario = listaItemUsuarios.get(position);
+        objHolder.txtNome.setText(usuario.getPerfil().getFirstName());
+        Utils.loadImageInBackground(context, usuario.getPerfil().getUrlProfilePicture(), objHolder.imgPerfil, objHolder.prgBarra);
 
         return objView;
     }

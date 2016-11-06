@@ -97,8 +97,9 @@ public class AppLoginActivity extends Activity {
     private void loginSucesso() {
         startService(new Intent(this, CarregarConversasService.class));
 
-        Toast.makeText(this, getString(R.string.boas_vindas, Sistema.getUsuario(this).getFirstName()), Toast.LENGTH_SHORT).show();
         Utils.chamarActivity(this, Activities.APP_PRINCIPAL);
+
+        Toast.makeText(this, getString(R.string.boas_vindas, Sistema.getUsuario(this).getPerfil().getFirstName()), Toast.LENGTH_SHORT).show();
         finish();
     }
 }

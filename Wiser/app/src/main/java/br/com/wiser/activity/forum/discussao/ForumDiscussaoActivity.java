@@ -125,8 +125,8 @@ public class ForumDiscussaoActivity extends Activity {
         lblIDDiscussao.setText("#" + objDiscussao.getId());
         lblTituloDiscussao.setText(objDiscussao.getTitulo());
         lblDescricaoDiscussao.setText(objDiscussao.getDescricao());
-        lblAutor.setText(objDiscussao.getUsuario().getFirstName());
-        Utils.loadImageInBackground(this, objDiscussao.getUsuario().getUrlProfilePicture(), imgPerfil, prgBarra);
+        lblAutor.setText(objDiscussao.getUsuario().getPerfil().getFirstName());
+        Utils.loadImageInBackground(this, objDiscussao.getUsuario().getPerfil().getUrlProfilePicture(), imgPerfil, prgBarra);
         lblDataHora.setText(UtilsDate.formatDate(objDiscussao.getDataHora(), UtilsDate.DDMMYYYY_HHMMSS));
         lblRespostas.setText(getString(objDiscussao.getListaRespostas().size() == 1 ? R.string.resposta : R.string.respostas, objDiscussao.getListaRespostas().size()));
 
