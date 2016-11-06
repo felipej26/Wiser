@@ -20,7 +20,6 @@ import br.com.wiser.business.app.usuario.Usuario;
 import br.com.wiser.business.forum.discussao.DiscussaoDAO;
 import br.com.wiser.dialogs.DialogConfirmar;
 import br.com.wiser.dialogs.DialogInformar;
-import br.com.wiser.dialogs.IDialog;
 import br.com.wiser.enums.Activities;
 import br.com.wiser.utils.Utils;
 
@@ -94,7 +93,7 @@ public class ForumNovaDiscussaoActivity extends Activity {
         objDiscussao.setDataHora(new Date());
 
         confirmar.setMensagem(getString(R.string.confirmar_salvar));
-        confirmar.setYesClick(new IDialog() {
+        confirmar.setYesClick(new DialogConfirmar.DialogInterface() {
             @Override
             public void onClick() {
                 salvar();
@@ -108,7 +107,7 @@ public class ForumNovaDiscussaoActivity extends Activity {
 
         if (objDiscussao.salvarDiscussao(this)) {
             informar.setMensagem(getString(R.string.sucesso_criar_discussao));
-            informar.setOkClick(new IDialog() {
+            informar.setOkClick(new DialogInformar.DialogInterface() {
                 @Override
                 public void onClick() {
                     Utils.chamarActivity(ForumNovaDiscussaoActivity.this, Activities.FORUM_MINHAS_DISCUSSOES);

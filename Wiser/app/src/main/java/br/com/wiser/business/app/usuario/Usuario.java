@@ -5,17 +5,18 @@ import com.facebook.AccessToken;
 import java.io.Serializable;
 import java.util.Date;
 
-import br.com.wiser.business.app.perfil.Perfil;
-
 /**
  * Created by Jefferson on 06/04/2016.
  */
-public class Usuario implements Serializable {
+public class Usuario implements Serializable{
 
     private long userID;
     private String facebookID;
     private String accessToken = "";
-    private Perfil perfil;
+    private String fullName;
+    private String firstName;
+    private String urlProfilePicture;
+    private int idade = 18;
     private boolean isContato = false;
 
     private Date dataUltimoAcesso;
@@ -57,13 +58,36 @@ public class Usuario implements Serializable {
         this.accessToken = accessToken;
     }
 
-    public Perfil getPerfil() {
-        while (perfil == null);
-        return perfil;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setPerfil(Perfil perfil) {
-        this.perfil = perfil;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getUrlProfilePicture() {
+        return urlProfilePicture;
+    }
+
+    public void setUrlProfilePicture(String urlProfilePicture) {
+        this.urlProfilePicture = urlProfilePicture;
+    }
+
+    public int getIdade() {
+        return idade;
+    }
+
+    public void setIdade(int idade) {
+        this.idade = idade;
     }
 
     public boolean isContato() {

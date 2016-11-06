@@ -56,8 +56,7 @@ public class ChatMensagensActivity extends Activity {
         objConversa = (ConversasDAO) getIntent().getSerializableExtra("conversa");
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setTitle(objConversa.getDestinatario().getPerfil().getFullName());
-        getActionBar().setLogo(R.drawable.logo_wiser);
+        getActionBar().setTitle(objConversa.getDestinatario().getFullName());
 
         carregarComponentes();
     }

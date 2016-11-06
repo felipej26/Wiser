@@ -1,11 +1,9 @@
 package br.com.wiser.activity.forum.principal;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,21 +16,18 @@ import java.util.LinkedList;
 
 import br.com.wiser.R;
 import br.com.wiser.activity.forum.DiscussaoCardViewAdapter;
-import br.com.wiser.activity.forum.IDiscussao;
-import br.com.wiser.activity.forum.discussao.ForumDiscussaoActivity;
+import br.com.wiser.activity.forum.IDiscussaoCardViewAdapterCallback;
 import br.com.wiser.business.forum.discussao.Discussao;
 import br.com.wiser.business.forum.discussao.DiscussaoDAO;
 import br.com.wiser.dialogs.DialogConfirmar;
 import br.com.wiser.dialogs.DialogInformar;
-import br.com.wiser.dialogs.DialogPerfilUsuario;
-import br.com.wiser.dialogs.IDialog;
 import br.com.wiser.enums.Activities;
 import br.com.wiser.utils.Utils;
 
 /**
  * Created by Jefferson on 16/05/2016.
  */
-public class ForumPrincipalFragment extends Fragment implements IDiscussao {
+public class ForumPrincipalFragment extends Fragment implements IDiscussaoCardViewAdapterCallback {
 
     private Button btnNovaDiscussao;
     private Button btnProcurarDiscussao;
@@ -138,6 +133,27 @@ public class ForumPrincipalFragment extends Fragment implements IDiscussao {
         carregarDados(view);
     }
 
+    @Override
+    public void desativarDiscussao(final Discussao discussao) {
+        DialogConfirmar confirmar = new DialogConfirmar(this.getActivity());
+
+        if (discussao.isAtiva()) {
+            confirmar.setMensagem(this.getContext().getString(R.string.confirmar_desativar_discussao));
+        }
+        else {
+            confirmar.setMensagem(this.getContext().getString(R.string.confirmar_reativar_discussao));
+        }
+
+        confirmar.setYesClick(new DialogConfirmar.DialogInterface() {
+            @Override
+            public void onClick() {
+                desativar(discussao);
+            }
+        });
+
+        confirmar.show();
+    }
+
     public void desativar(Discussao discussao) {
         DialogInformar informar = new DialogInformar(this.getActivity());
         DiscussaoDAO objDiscussao = new DiscussaoDAO();
@@ -155,47 +171,5 @@ public class ForumPrincipalFragment extends Fragment implements IDiscussao {
         }
 
         informar.show();
-    }
-
-    @Override
-    public void onClick(int posicao) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("discussao", listaDiscussoes.get(posicao));
-
-        Intent i = new Intent(this.getContext(), ForumDiscussaoActivity.class);
-        i.putExtra("discussoes", bundle);
-        startActivity(i);
-    }
-
-    @Override
-    public void onClickPerfil(int posicao) {
-        DialogPerfilUsuario dialog = new DialogPerfilUsuario();
-        dialog.show(this.getActivity(), listaDiscussoes.get(posicao).getUsuario());
-    }
-
-    @Override
-    public void desativarDiscussao(final int posicao) {
-        DialogConfirmar confirmar = new DialogConfirmar(this.getActivity());
-
-        confirmar.setYesClick(new IDialog() {
-            @Override
-            public void onClick() {
-                desativar(listaDiscussoes.get(posicao));
-            }
-        });
-
-        if (listaDiscussoes.get(posicao).isAtiva()) {
-            confirmar.setMensagem(getContext().getString(R.string.confirmar_desativar_discussao));
-        }
-        else {
-            confirmar.setMensagem(getContext().getString(R.string.confirmar_reativar_discussao));
-        }
-
-        confirmar.show();
-    }
-
-    @Override
-    public void compartilharDiscussao(View view) {
-        Utils.compartilharComoImagem(view);
     }
 }
