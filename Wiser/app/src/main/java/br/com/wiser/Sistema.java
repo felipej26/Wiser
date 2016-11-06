@@ -10,10 +10,12 @@ import android.support.v4.app.ActivityCompat;
 import com.facebook.AccessToken;
 
 import java.util.Date;
+import java.util.HashSet;
 
 import br.com.wiser.business.app.facebook.Facebook;
 import br.com.wiser.business.app.servidor.Servidor;
 import br.com.wiser.business.app.usuario.UsuarioDAO;
+import br.com.wiser.business.chat.assunto.Assunto;
 import br.com.wiser.utils.UtilsLocation;
 
 public class Sistema {
@@ -24,8 +26,11 @@ public class Sistema {
     public static String APP_LINGUAGEM;
 
     private static UsuarioDAO USUARIO;
+    public static HashSet<Assunto> ASSUNTOS;
 
     public static final int PERMISSION_ALL = 0;
+
+    public static boolean PERMITIR_PAGINAS_NAO_VERIFICADAS = false;
 
     public static boolean inicializar(Context context) {
 

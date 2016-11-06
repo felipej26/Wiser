@@ -28,6 +28,7 @@ import br.com.wiser.business.app.usuario.Usuario;
 import br.com.wiser.business.chat.conversas.Conversas;
 import br.com.wiser.business.chat.conversas.ConversasDAO;
 import br.com.wiser.business.chat.mensagem.Mensagem;
+import br.com.wiser.dialogs.DialogSugestoes;
 import br.com.wiser.utils.Utils;
 
 /**
@@ -44,6 +45,8 @@ public class ChatMensagensActivity extends Activity {
     private Button btnEnviar;
 
     private boolean checouExiste = false;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,5 +175,15 @@ public class ChatMensagensActivity extends Activity {
                 txtResposta.setText("");
             }
         }
+    }
+
+    public void abrirSugestao(View view) {
+        DialogSugestoes sugestoes = new DialogSugestoes(this);
+
+        if (!objConversa.isCarregouSugestoes()) {
+
+        }
+
+        sugestoes.show(objConversa.getSugestoes());
     }
 }

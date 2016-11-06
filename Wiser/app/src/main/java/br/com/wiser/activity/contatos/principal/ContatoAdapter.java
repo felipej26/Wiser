@@ -1,6 +1,5 @@
-package br.com.wiser.activity.contatos;
+package br.com.wiser.activity.contatos.principal;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,7 +13,7 @@ import java.util.List;
 
 import br.com.wiser.R;
 import br.com.wiser.business.app.usuario.Usuario;
-import br.com.wiser.business.forum.discussao.DiscussaoDAO;
+import br.com.wiser.utils.IClickListener;
 import br.com.wiser.utils.Utils;
 
 /**
@@ -24,6 +23,8 @@ public class ContatoAdapter extends RecyclerView.Adapter<ContatoAdapter.ViewHold
 
     private Context context;
     private List<Usuario> listaContatos;
+
+    private IClickListener clickListener;
 
     public ContatoAdapter(Context context, List<Usuario> listaContatos) {
         this.context = context;
@@ -54,7 +55,11 @@ public class ContatoAdapter extends RecyclerView.Adapter<ContatoAdapter.ViewHold
         return listaContatos.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public void setClickListener(IClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public View viewSeparator;
         public ImageView imgPerfil;
@@ -63,11 +68,19 @@ public class ContatoAdapter extends RecyclerView.Adapter<ContatoAdapter.ViewHold
 
         public ViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
 
             imgPerfil = (ImageView) itemView.findViewById(R.id.imgPerfil);
             prgBarra = (ProgressBar) itemView.findViewById(R.id.prgBarra);
             lblNome = (TextView) itemView.findViewById(R.id.lblNome);
             viewSeparator = itemView.findViewById(R.id.viewSeparator);
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (clickListener != null) {
+                clickListener.itemClicked(view, getAdapterPosition());
+            }
         }
     }
 }

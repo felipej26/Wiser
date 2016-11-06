@@ -17,22 +17,28 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import br.com.wiser.Sistema;
 import br.com.wiser.business.app.facebook.Facebook;
+import br.com.wiser.business.app.facebook.ICallbackPaginas;
 import br.com.wiser.business.app.usuario.Usuario;
+import br.com.wiser.business.chat.assunto.Assunto;
 import br.com.wiser.business.chat.conversas.Conversas;
 import br.com.wiser.business.chat.conversas.ConversasDAO;
 import br.com.wiser.business.chat.mensagem.Mensagem;
+import br.com.wiser.business.chat.paginas.Pagina;
 import br.com.wiser.business.encontrarusuarios.pesquisa.Pesquisa;
 import br.com.wiser.business.forum.discussao.Discussao;
 import br.com.wiser.business.forum.discussao.DiscussaoDAO;
 import br.com.wiser.business.forum.resposta.Resposta;
 import br.com.wiser.enums.Models;
 import br.com.wiser.utils.ComboBoxItem;
+import br.com.wiser.utils.Utils;
 import br.com.wiser.utils.UtilsDate;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -461,6 +467,43 @@ public class Servidor {
             }
 
             return true;
+        }
+
+        public void carregarSugestoesAssuntos(final Conversas conversa) {
+            Facebook facebook = new Facebook(context);
+            ICallbackPaginas callbackPaginas;
+
+            try {
+                callbackPaginas = new ICallbackPaginas() {
+                    @Override
+                    public void setResponse(HashSet<Pagina> paginas) {
+                        Map<String, Assunto> mapAssuntos = new HashMap<>();
+
+                        for (Assunto assunto : Sistema.ASSUNTOS) {
+                            for (String categoria : assunto.getCategorias()) {
+                                mapAssuntos.put(categoria, assunto);
+                            }
+                        }
+
+                        for (Pagina pagina : paginas) {
+                            if (mapAssuntos.containsKey(pagina.getCategoria())) {
+                                Assunto assunto = mapAssuntos.get(pagina.getCategoria());
+
+                                int item = new Random().nextInt(assunto.getItens().size());
+                                conversa.getSugestoes().add(assunto.getItens().get(item)
+                                        .replace("%a", pagina.getNome())
+                                        .replace("%i", Utils.getDescricaoIdioma(Sistema.getUsuario(context).getIdioma()))
+                                        .replace("%u", conversa.getDestinatario().getPerfil().getFirstName()));
+                            }
+                        }
+                    }
+                };
+
+                facebook.carregarPaginasEmComum(Sistema.getUsuario(context), conversa, callbackPaginas);
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

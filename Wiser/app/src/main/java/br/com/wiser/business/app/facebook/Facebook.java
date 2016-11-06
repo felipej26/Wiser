@@ -25,15 +25,19 @@ import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.security.MessageDigest;
 import java.util.Date;
+import java.util.HashSet;
 
 import br.com.wiser.Sistema;
 import br.com.wiser.R;
 import br.com.wiser.business.app.perfil.Perfil;
 import br.com.wiser.business.app.usuario.Usuario;
+import br.com.wiser.business.chat.conversas.Conversas;
+import br.com.wiser.business.chat.paginas.Pagina;
 import br.com.wiser.utils.UtilsDate;
 
 /**
@@ -163,11 +167,13 @@ public class Facebook {
         Bundle parametros = new Bundle();
         final Perfil perfil = new Perfil();
 
+        ICallback callback;
+
         try {
             perfil.setFirstName(nomeIndisponivel);
             perfil.setFullName(nomeIndisponivel);
 
-            ICallback callback = new ICallback() {
+            callback = new ICallback() {
                 @Override
                 public void setResponse(GraphResponse response) {
                     JSONObject json = response.getJSONObject();
@@ -214,6 +220,51 @@ public class Facebook {
 
                 request(usuario, "", parametros, callback);
             }
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void carregarPaginasEmComum(Usuario usuario, Conversas conversa, final ICallbackPaginas callbackPaginas) {
+        Bundle parametros = new Bundle();
+        ICallback callback;
+
+        try {
+            callback = new ICallback() {
+                @Override
+                public void setResponse(GraphResponse response) {
+                    JSONArray json;
+                    HashSet<Pagina> paginas = new HashSet<>();
+
+                    try {
+                        json = response.getJSONObject().getJSONObject("context").getJSONObject("mutual_likes").getJSONArray("data");
+
+                        if (json != null) {
+                            for (int i = 0; i < json.length(); i++) {
+                                JSONObject jsonPagina = json.getJSONObject(i);
+
+                                if (Sistema.PERMITIR_PAGINAS_NAO_VERIFICADAS || jsonPagina.getBoolean("is_verified")) {
+                                    Pagina pagina = new Pagina();
+                                    pagina.setNome(jsonPagina.getString("name"));
+                                    pagina.setCategoria(jsonPagina.getString("category"));
+                                    pagina.setVerificada(jsonPagina.getBoolean("is_verified"));
+
+                                    paginas.add(pagina);
+                                }
+                            }
+                        }
+
+                        callbackPaginas.setResponse(paginas);
+                    }
+                    catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            };
+
+            parametros.putString("fields", "context.fields(mutual_likes.fields(category,name,id,is_verified.limit(25)))");
+            request(usuario, conversa.getDestinatario().getFacebookID(), parametros, callback);
         }
         catch (Exception ex) {
             ex.printStackTrace();
