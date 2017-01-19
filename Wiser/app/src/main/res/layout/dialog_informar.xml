@@ -26,6 +26,7 @@
         android:text="@string/ok"
         android:id="@+id/btnOk"
         android:layout_below="@id/txtInformacao"
-        android:layout_centerHorizontal="true"/>
+        android:layout_marginBottom="5dp"
+        style="@style/AppTema.AppBotao" />
 
 </RelativeLayout>

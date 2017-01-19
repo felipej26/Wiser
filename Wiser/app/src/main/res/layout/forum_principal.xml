@@ -12,10 +12,11 @@
         android:text="@string/nova"
         android:onClick="chamarNovaDiscussao"
         android:id="@+id/btnNovaDiscussao"
-        android:textColor="@color/colorPrimaryInverseText"
-        android:background="@drawable/btncustomshape"
+        android:layout_centerHorizontal="false"
         android:layout_marginTop="5dp"
-        android:layout_marginLeft="10dp" />
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="0dp"
+        style="@style/AppTema.AppBotao" />
 
     <Button
         android:layout_width="wrap_content"
@@ -25,11 +26,10 @@
         android:onClick="chamarProcurarDiscussao"
         android:layout_toEndOf="@id/btnNovaDiscussao"
         android:layout_toStartOf="@+id/btnAtualizarDiscussoes"
-        android:textColor="@color/colorPrimaryInverseText"
-        android:background="@drawable/btncustomshape"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        style="@style/AppTema.AppBotao" />
 
     <Button
         android:layout_width="wrap_content"
@@ -37,11 +37,11 @@
         android:text="@string/atualizar"
         android:id="@+id/btnAtualizarDiscussoes"
         android:onClick="atualizarDiscussoes"
-        android:textColor="@color/colorPrimaryInverseText"
-        android:background="@drawable/btncustomshape"
         android:layout_marginTop="5dp"
+        android:layout_marginLeft="0dp"
         android:layout_marginRight="10dp"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignParentEnd="true"
+        style="@style/AppTema.AppBotao" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
@@ -49,7 +49,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/btnProcurarDiscussao"
         android:scrollbars="vertical"
-        android:layout_marginTop="5dp"/>
+        android:layout_marginTop="5dp" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"

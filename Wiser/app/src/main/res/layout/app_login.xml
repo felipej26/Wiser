@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.app.login.AppLoginActivity" >
+    tools:context=".activity.app.login.AppLoginActivity"
+    android:background="@color/colorPrimary" >
 
     <ImageView
         android:layout_width="wrap_content"
@@ -12,9 +13,9 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:id="@+id/imgLogo"
-        android:src="@mipmap/logo_wiser_1"
-        android:minWidth="300dp"
-        android:minHeight="300dp"
+        android:src="@mipmap/logo_wiser_2"
+        android:minWidth="100dp"
+        android:minHeight="100dp"
         android:layout_alignParentTop="true"
         android:layout_above="@+id/btnLogin"
         android:nestedScrollingEnabled="true" />

@@ -22,4 +22,8 @@ public class ConversasDAO extends Conversas {
     public void atualizarLidas(Context context) {
         new Servidor().new Chat(context).atualizarLidas(this);
     }
+
+    public void carregarSugestoesAssuntos(Context context) {
+        new Servidor().new Chat(context).carregarSugestoesAssuntos(this);
+    }
 }

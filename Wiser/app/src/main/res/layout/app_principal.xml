@@ -23,9 +23,25 @@
 
         app:tabBackground="@color/colorPrimary"
         app:tabIndicatorColor="@color/colorPrimaryText"
-        app:tabSelectedTextColor="@color/colorPrimaryText"
-        app:tabTextColor="@color/colorAccent"
-        app:tabMode="fixed" />
+        app:tabMode="fixed"
+        style="@style/MyCustomTabLayout">
+
+        <android.support.design.widget.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/tab_contatos" />
+
+        <android.support.design.widget.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@mipmap/ic_tab_chat_selected" />
+
+        <android.support.design.widget.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@mipmap/ic_tab_forum_selected" />
+
+    </android.support.design.widget.TabLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"

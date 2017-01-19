@@ -12,6 +12,9 @@ import android.view.MenuItem;
 import br.com.wiser.Sistema;
 import br.com.wiser.R;
 import br.com.wiser.business.app.usuario.UsuarioDAO;
+import br.com.wiser.dialogs.DialogConfirmar;
+import br.com.wiser.dialogs.DialogInformar;
+import br.com.wiser.dialogs.IDialog;
 import br.com.wiser.utils.ComboBoxItem;
 import br.com.wiser.utils.Utils;
 
@@ -100,37 +103,35 @@ public class AppConfiguracoesActivity extends Activity {
     }
 
     public void desativar(View view){
-        AlertDialog.Builder dialogo = new AlertDialog.Builder(this);
+        DialogConfirmar confirmar = new DialogConfirmar(this);
 
-        dialogo.setTitle(getString(R.string.confirmar));
-        dialogo.setMessage(getString(R.string.confirmar_desativar_conta));
-        dialogo.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
+        confirmar.setMensagem(getString(R.string.confirmar_desativar_conta));
+        confirmar.setYesClick(new IDialog() {
+            @Override
+            public void onClick() {
                 desativar();
             }
         });
-        dialogo.setNegativeButton(getString(R.string.nao), null);
-        dialogo.show();
+
+        confirmar.show();
     }
 
     private void desativar() {
-        AlertDialog.Builder dialogo = new AlertDialog.Builder(this);
+        DialogInformar informar = new DialogInformar(this);
 
         if (Sistema.getUsuario(this).desativarConta(this)) {
-            dialogo.setTitle(getString(R.string.sucesso));
-            dialogo.setMessage(R.string.sucesso_conta_desativada);
-            dialogo.setPositiveButton(getString(R.string.sim), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
+            informar.setMensagem(getString(R.string.sucesso_conta_desativada));
+            informar.setOkClick(new IDialog() {
+                @Override
+                public void onClick() {
                     Utils.logout(AppConfiguracoesActivity.this);
                 }
             });
         }
         else {
-            dialogo.setTitle(getString(R.string.erro));
-            dialogo.setMessage(getString(R.string.erro_desativar_conta));
-            dialogo.setNeutralButton(getString(R.string.ok), null);
+            informar.setMensagem(getString(R.string.erro_desativar_conta));
         }
 
-        dialogo.show();
+        informar.show();
     }
 }

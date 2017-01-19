@@ -128,7 +128,44 @@ public class Servidor {
 
             return fluencias;
         }
-    }
+
+        public void getAssuntos(HashSet<Assunto> assuntos) {
+            GETParametros parametros = new GETParametros();
+            JSONArray json;
+            Response response;
+
+            try {
+                parametros.put("linguagem", Sistema.APP_LINGUAGEM);
+
+                response = requestGET(Models.ASSUNTOS, "carregarAssuntos", parametros);
+
+                if (response.getCodeResponse() != HttpURLConnection.HTTP_OK) {
+                    throw new Exception("Não foi possível carregar os parametros das Sugestões de Assuntos!");
+                }
+
+                json = new JSONArray(response.getMessageResponse());
+
+                for (int i = 0; i < json.length(); i++) {
+                    JSONObject jsonAssunto = json.getJSONObject(i);
+                    Assunto assunto = new Assunto();
+
+                    assunto.setTitulo(jsonAssunto.getJSONArray("titulos").get(0).toString());
+
+                    for (int j = 0; j < jsonAssunto.getJSONArray("subcategorias").length(); j++) {
+                        assunto.getCategorias().add(jsonAssunto.getJSONArray("subcategorias").get(j).toString());
+                    }
+
+                    for (int j = 0; j < jsonAssunto.getJSONArray("itens").length(); j++) {
+                        assunto.getItens().add(jsonAssunto.getJSONArray("itens").get(j).toString());
+                    }
+
+                    assuntos.add(assunto);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+     }
 
     public class Usuarios extends AbstractServidor {
 
@@ -325,7 +362,6 @@ public class Servidor {
         }
 
         /**
-         *
          * @param conversas
          * @return Retorna uma Lista contendo as Novas Mensagens
          */
@@ -496,6 +532,8 @@ public class Servidor {
                                         .replace("%u", conversa.getDestinatario().getPerfil().getFirstName()));
                             }
                         }
+
+                        conversa.setCarregouSugestoes(true);
                     }
                 };
 

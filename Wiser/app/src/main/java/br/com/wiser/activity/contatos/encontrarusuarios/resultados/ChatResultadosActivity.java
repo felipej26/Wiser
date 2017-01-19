@@ -19,30 +19,18 @@ import br.com.wiser.dialogs.DialogPerfilUsuario;
  */
 public class ChatResultadosActivity extends Activity {
 
-    private GridView grdResultado = null;
-    private ChatResultadosAdapter objCustomGridAdapter = null;
-    private LinkedList<Usuario> listaUsuarios = null;
+    private GridView grdResultado;
+    private ChatResultadosAdapter objCustomGridAdapter;
+    private LinkedList<Usuario> listaUsuarios;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contatos_encontrar_usuarios_resultados);
 
-        final DialogPerfilUsuario perfil = new DialogPerfilUsuario();
-
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        listaUsuarios = new LinkedList<Usuario>((ArrayList<Usuario>) getIntent().getBundleExtra("listaUsuarios").get("listaUsuarios"));
-        grdResultado = (GridView) findViewById(R.id.grdResultado);
-
-        carregar();
-
-        grdResultado.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                perfil.show(ChatResultadosActivity.this, listaUsuarios.get(position));
-            }
-        });
+        carregarComponentes();
     }
 
     @Override
@@ -51,7 +39,22 @@ public class ChatResultadosActivity extends Activity {
         return true;
     }
 
-    private void carregar(){
+    private void carregarComponentes() {
+        final DialogPerfilUsuario perfil = new DialogPerfilUsuario();
+
+        listaUsuarios = new LinkedList<>((ArrayList<Usuario>) getIntent().getBundleExtra("listaUsuarios").get("listaUsuarios"));
+        grdResultado = (GridView) findViewById(R.id.grdResultado);
+        grdResultado.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                perfil.show(ChatResultadosActivity.this, listaUsuarios.get(position));
+            }
+        });
+
+        carregarDados();
+    }
+
+    private void carregarDados(){
         objCustomGridAdapter = new ChatResultadosAdapter(this, R.layout.contatos_encontrar_pessoas_resultados_grid, listaUsuarios);
         grdResultado.setAdapter(objCustomGridAdapter);
     }

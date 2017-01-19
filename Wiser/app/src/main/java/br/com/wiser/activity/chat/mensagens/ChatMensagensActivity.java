@@ -17,6 +17,7 @@ import android.widget.EditText;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.w3c.dom.Text;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -34,19 +35,18 @@ import br.com.wiser.utils.Utils;
 /**
  * Created by Jefferson on 30/05/2016.
  */
-public class ChatMensagensActivity extends Activity {
+public class ChatMensagensActivity extends Activity implements DialogSugestoes.CallbackSugestao {
 
     private ConversasDAO objConversa;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
 
+    private TextView lblSugestao;
     private EditText txtResposta;
     private Button btnEnviar;
 
     private boolean checouExiste = false;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +57,6 @@ public class ChatMensagensActivity extends Activity {
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setTitle(objConversa.getDestinatario().getPerfil().getFullName());
-        getActionBar().setLogo(R.drawable.logo_wiser);
 
         carregarComponentes();
     }
@@ -126,6 +125,10 @@ public class ChatMensagensActivity extends Activity {
         adapter = new ChatMensagensAdapter(this);
         recyclerView.setAdapter(adapter);
 
+        lblSugestao = (TextView) findViewById(R.id.lblSugestao);
+        lblSugestao.setText("");
+        lblSugestao.setVisibility(View.INVISIBLE);
+
         txtResposta = (EditText) findViewById(R.id.txtResposta);
         btnEnviar = (Button) findViewById(R.id.btnEnviarResposta);
         btnEnviar.setOnClickListener(new View.OnClickListener() {
@@ -173,17 +176,26 @@ public class ChatMensagensActivity extends Activity {
 
             if (objConversa.enviarMensagem(this, mensagem)) {
                 txtResposta.setText("");
+                lblSugestao.setText("");
+                lblSugestao.setVisibility(View.INVISIBLE);
             }
         }
     }
 
     public void abrirSugestao(View view) {
-        DialogSugestoes sugestoes = new DialogSugestoes(this);
+        DialogSugestoes sugestoes = new DialogSugestoes(this, this);
 
         if (!objConversa.isCarregouSugestoes()) {
-
+            objConversa.carregarSugestoesAssuntos(this);
         }
 
         sugestoes.show(objConversa.getSugestoes());
+    }
+
+    @Override
+    public void setSugestao(String sugestao) {
+        lblSugestao.setVisibility(View.VISIBLE);
+        lblSugestao.setText(sugestao);
+        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
 }

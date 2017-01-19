@@ -12,7 +12,8 @@ public enum Models {
     FLUENCIA(7),
     IDIOMA(8),
     LINGUAGEM(9),
-    USUARIO(10);
+    USUARIO(10),
+    ASSUNTOS(11);
 
     public int getEnmModels;
     Models(int valor) {

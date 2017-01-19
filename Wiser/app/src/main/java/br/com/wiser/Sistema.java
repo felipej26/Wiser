@@ -34,12 +34,22 @@ public class Sistema {
 
     public static boolean inicializar(Context context) {
 
+        final Servidor.App servidorApp = new Servidor().new App();
+
         try {
             APP_LINGUAGEM = context.getResources().getConfiguration().locale.getLanguage();
 
             if (ACCESS_TOKEN == null) {
-                ACCESS_TOKEN = new Servidor().new App().getAccessToken();
+                ACCESS_TOKEN = servidorApp.getAccessToken();
             }
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    ASSUNTOS = new HashSet<>();
+                    servidorApp.getAssuntos(ASSUNTOS);
+                }
+            }).start();
 
             new Facebook(context);
         }

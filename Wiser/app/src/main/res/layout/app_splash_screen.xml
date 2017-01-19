@@ -3,16 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.app.splashscreen.AppSplashScreenActivity" >
+    tools:context=".activity.app.splashscreen.AppSplashScreenActivity"
+    android:background="@color/colorPrimary" >
 
     <ImageView
         android:id="@+id/imgSplashScreen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:minHeight="100dp"
+        android:minWidth="100dp"
+        android:src="@mipmap/logo_wiser_2"
         android:layout_centerVertical="true"
-        android:minWidth="300dp"
-        android:minHeight="300dp"
-        android:src="@mipmap/logo_wiser_1" />
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

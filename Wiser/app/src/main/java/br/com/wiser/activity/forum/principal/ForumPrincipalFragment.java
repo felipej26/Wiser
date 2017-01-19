@@ -127,11 +127,11 @@ public class ForumPrincipalFragment extends Fragment implements IDiscussao {
     }
 
     public void chamarNovaDiscussao(View view) {
-        Utils.chamarActivity((Activity) view.getContext(), Activities.FORUM_NOVA_DISCUSSAO);
+        Utils.chamarActivity(getActivity(), Activities.FORUM_NOVA_DISCUSSAO);
     }
 
     public void chamarProcurarDiscussao(View view) {
-        Utils.chamarActivity((Activity) view.getContext(), Activities.FORUM_PESQUISA);
+        Utils.chamarActivity(getActivity(), Activities.FORUM_PESQUISA);
     }
 
     public void atualizarDiscussoes(View view) {
@@ -139,7 +139,7 @@ public class ForumPrincipalFragment extends Fragment implements IDiscussao {
     }
 
     public void desativar(Discussao discussao) {
-        DialogInformar informar = new DialogInformar(this.getActivity());
+        DialogInformar informar = new DialogInformar(getActivity());
         DiscussaoDAO objDiscussao = new DiscussaoDAO();
 
         objDiscussao.setId(discussao.getId());
@@ -151,7 +151,7 @@ public class ForumPrincipalFragment extends Fragment implements IDiscussao {
             informar.setMensagem(getString(R.string.sucesso_discussao_excluida));
         }
         else {
-            informar.setMensagem(this.getContext().getString(R.string.erro_excluir_discussao));
+            informar.setMensagem(getContext().getString(R.string.erro_excluir_discussao));
         }
 
         informar.show();
@@ -162,15 +162,14 @@ public class ForumPrincipalFragment extends Fragment implements IDiscussao {
         Bundle bundle = new Bundle();
         bundle.putSerializable("discussao", listaDiscussoes.get(posicao));
 
-        Intent i = new Intent(this.getContext(), ForumDiscussaoActivity.class);
+        Intent i = new Intent(getContext(), ForumDiscussaoActivity.class);
         i.putExtra("discussoes", bundle);
         startActivity(i);
     }
 
     @Override
     public void onClickPerfil(int posicao) {
-        DialogPerfilUsuario dialog = new DialogPerfilUsuario();
-        dialog.show(this.getActivity(), listaDiscussoes.get(posicao).getUsuario());
+        new DialogPerfilUsuario().show(getActivity(), listaDiscussoes.get(posicao).getUsuario());
     }
 
     @Override

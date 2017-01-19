@@ -6,15 +6,26 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Sugestão de Assunto"
+        android:id="@+id/lblSugestao"
+        android:textColor="@color/colorPrimaryInverseText"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Responder"
-        android:id="@+id/lblResponder" />
+        android:id="@+id/lblResponder"
+        android:layout_below="@id/lblSugestao" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0 / 250"
         android:id="@+id/lblContResposta"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/lblSugestao" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -27,7 +38,7 @@
         android:maxLines="5"
         android:hint="Digite sua mensagem aqui..."
         android:textColor="#414040"
-        android:capitalize="sentences" />
+        android:inputType="textCapSentences" />
 
     <Button
         android:layout_width="50dp"

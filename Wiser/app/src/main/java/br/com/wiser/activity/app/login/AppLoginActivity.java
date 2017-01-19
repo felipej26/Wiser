@@ -18,13 +18,15 @@ import br.com.wiser.utils.Utils;
 
 public class AppLoginActivity extends Activity {
 
+    private Intent carregarConversasServices;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (getIntent().getBooleanExtra("LOGOUT", false)) {
             getIntent().removeExtra("LOGOUT");
-            Sistema.logout(this);
+            logout();
         }
         else {
             if (AccessToken.getCurrentAccessToken() != null && salvar()) {
@@ -77,7 +79,7 @@ public class AppLoginActivity extends Activity {
 
             if (!permissoesAceitas) {
                 Toast.makeText(this, getString(R.string.necessario_permitir), Toast.LENGTH_SHORT).show();
-                Sistema.logout(this);
+                logout();
             }
         }
         else {
@@ -95,11 +97,18 @@ public class AppLoginActivity extends Activity {
     }
 
     private void loginSucesso() {
-        startService(new Intent(this, CarregarConversasService.class));
+        carregarConversasServices = new Intent(this, CarregarConversasService.class);
+        startService(carregarConversasServices);
 
         Utils.chamarActivity(this, Activities.APP_PRINCIPAL);
 
         Toast.makeText(this, getString(R.string.boas_vindas, Sistema.getUsuario(this).getPerfil().getFirstName()), Toast.LENGTH_SHORT).show();
         finish();
+    }
+
+    private void logout()
+    {
+        stopService(carregarConversasServices);
+        Sistema.logout(this);
     }
 }

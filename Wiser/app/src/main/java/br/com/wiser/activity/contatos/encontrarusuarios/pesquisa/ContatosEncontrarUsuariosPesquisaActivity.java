@@ -34,8 +34,6 @@ public class ContatosEncontrarUsuariosPesquisaActivity extends Activity {
 
     private PesquisaDAO objProcurar;
 
-    private static boolean achou = false;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,8 +86,8 @@ public class ContatosEncontrarUsuariosPesquisaActivity extends Activity {
         objProcurar = new PesquisaDAO();
     }
 
-    private void procurar (View view) {
-        final Handler hCarregar = new Handler();
+    private void procurar(View view) {
+        Bundle bundle = new Bundle();
 
         pgbLoading.setVisibility(View.VISIBLE);
         pgbLoading.bringToFront();
@@ -98,31 +96,19 @@ public class ContatosEncontrarUsuariosPesquisaActivity extends Activity {
         objProcurar.setFluencia(Utils.getIDComboBox(cmbFluencia));
         objProcurar.setDistancia(skrDistancia.getProgress());
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (objProcurar.procurarUsuarios(ContatosEncontrarUsuariosPesquisaActivity.this)){
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("listaUsuarios", objProcurar.getListaResultados());
+        objProcurar.procurarUsuarios(this);
 
-                    Intent i = new Intent(ContatosEncontrarUsuariosPesquisaActivity.this, ChatResultadosActivity.class);
-                    i.putExtra("listaUsuarios", bundle);
-                    startActivity(i);
+        if (objProcurar.getListaResultados().size() > 0) {
+            bundle.putSerializable("listaUsuarios", objProcurar.getListaResultados());
 
-                    achou = true;
-                }
+            Intent i = new Intent(this, ChatResultadosActivity.class);
+            i.putExtra("listaUsuarios", bundle);
+            startActivity(i);
+        }
+        else {
+            Toast.makeText(this, getString(R.string.usuarios_nao_encontrados), Toast.LENGTH_LONG).show();
+        }
 
-                hCarregar.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        pgbLoading.setVisibility(View.INVISIBLE);
-
-                        if (!achou) {
-                            Toast.makeText(ContatosEncontrarUsuariosPesquisaActivity.this, getString(R.string.usuarios_nao_encontrados), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-            }
-        }).start();
+        pgbLoading.setVisibility(View.INVISIBLE);
     }
 }

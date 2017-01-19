@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -46,7 +47,6 @@ public class ForumDiscussaoActivity extends Activity {
     private TextView lblRespostas;
     private EditText txtResposta;
     private ProgressBar pgbLoading;
-    private Button btnEnviarMensagem;
     private TextView lblContResposta;
 
     @Override
@@ -101,6 +101,9 @@ public class ForumDiscussaoActivity extends Activity {
         txtResposta = (EditText) findViewById(R.id.txtResposta);
 
         lblContResposta = (TextView) findViewById(R.id.lblContResposta);
+
+        View lblSugestao = findViewById(R.id.lblSugestao);
+        ((ViewGroup) lblSugestao.getParent()).removeView(lblSugestao);
 
         txtResposta.addTextChangedListener(new TextWatcher() {
 

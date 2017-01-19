@@ -6,15 +6,10 @@
     tools:context=".activity.contatos.principal.ContatosPrincipalFragment">
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="@string/app_pesquisa_title"
         android:id="@+id/btnEncontrarUsuarios"
-        android:textColor="@color/colorPrimaryInverseText"
-        android:background="@drawable/btncustomshape"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"/>
+        android:layout_marginTop="5dp"
+        style="@style/AppTema.AppBotao" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"

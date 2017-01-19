@@ -18,7 +18,7 @@ public class Conversas implements Serializable {
     private LinkedList<Mensagem> mensagens = new LinkedList<Mensagem>();
 
     private boolean carregouSugestoes;
-    private HashSet<String> sugestoes;
+    private HashSet<String> sugestoes = new HashSet<>();
 
     public long getId() {
         return id;

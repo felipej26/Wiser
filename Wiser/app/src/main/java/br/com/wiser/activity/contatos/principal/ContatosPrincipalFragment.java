@@ -65,7 +65,7 @@ public class ContatosPrincipalFragment extends Fragment implements IClickListene
     }
 
     public void encontrarUsuarios(View view) {
-        Utils.chamarActivity((Activity) view.getContext(), Activities.CHAT_PESQUISA);
+        Utils.chamarActivity(getActivity(), Activities.CHAT_PESQUISA);
     }
 
     @Override

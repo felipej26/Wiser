@@ -32,7 +32,11 @@
             android:layout_height="wrap_content"
             android:text="@string/sim"
             android:id="@+id/btnSim"
-            android:layout_below="@id/txtConfirmacao" />
+            android:layout_below="@id/txtConfirmacao"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginBottom="5dp"
+            style="@style/AppTema.AppBotao" />
 
         <Button
             android:layout_width="wrap_content"
@@ -40,7 +44,11 @@
             android:text="@string/nao"
             android:id="@+id/btnNao"
             android:layout_below="@id/txtConfirmacao"
-            android:layout_toEndOf="@id/btnSim" />
+            android:layout_toEndOf="@id/btnSim"
+            android:layout_marginRight="0dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
+            style="@style/AppTema.AppBotao" />
 
     </LinearLayout>
 
