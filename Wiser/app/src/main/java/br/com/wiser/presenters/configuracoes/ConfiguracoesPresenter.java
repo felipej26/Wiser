@@ -1,0 +1,158 @@
+package br.com.wiser.presenters.configuracoes;
+
+import android.util.Log;
+
+import java.net.HttpURLConnection;
+
+import br.com.wiser.R;
+import br.com.wiser.Sistema;
+import br.com.wiser.interfaces.ICallback;
+import br.com.wiser.models.configuracoes.Configuracoes;
+import br.com.wiser.models.usuario.IUsuarioService;
+import br.com.wiser.utils.Utils;
+import br.com.wiser.views.configuracoes.IConfiguracoesView;
+import br.com.wiser.APIClient;
+import br.com.wiser.dialogs.DialogConfirmar;
+import br.com.wiser.dialogs.DialogInformar;
+import br.com.wiser.dialogs.IDialog;
+import br.com.wiser.presenters.Presenter;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+/**
+ * Created by Jefferson on 22/01/2017.
+ */
+public class ConfiguracoesPresenter extends Presenter<IConfiguracoesView> {
+
+    private IUsuarioService service;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        view.onInitView();
+
+        service = APIClient.getClient().create(IUsuarioService.class);
+
+        if (Sistema.getUsuario().isSetouConfiguracoes()) {
+            view.onSetSelectionCmbIdioma(Sistema.getPosicaoItemComboBox(view.getCmbIdioma(),
+                    Sistema.getUsuario().getIdioma()));
+
+            view.onSetSelectionCmbFluencia(Sistema.getPosicaoItemComboBox(view.getCmbFluencia(),
+                    Sistema.getUsuario().getFluencia()));
+
+            view.onSetTextTxtStatus(Utils.decode(Sistema.getUsuario().getStatus()));
+            view.onSetSelectionTxtStatus(view.getTextTxtStatus().length());
+        }
+    }
+
+    public void setTextChangedTxtStatus(int tamanho) {
+        view.onSetTextLblContLetras(tamanho + " / 30");
+    }
+
+    public void salvar(){
+        final Configuracoes configuracoes = new Configuracoes();
+
+        configuracoes.setId(Sistema.getUsuario().getUserID());
+        configuracoes.setIdioma(view.onGetItemIdCmbIdioma());
+        configuracoes.setFluencia(String.valueOf(view.onGetItemIdCmbFluencia()));
+        configuracoes.setStatus(Utils.encode(view.onGetTextTxtStatus()));
+
+        salvar(configuracoes, new ICallback() {
+            @Override
+            public void onSuccess() {
+                Sistema.getUsuario().setIdioma(view.onGetItemIdCmbIdioma());
+                Sistema.getUsuario().setFluencia(view.onGetItemIdCmbFluencia());
+                Sistema.getUsuario().setStatus(view.onGetTextTxtStatus());
+                Sistema.getUsuario().setSetouConfiguracoes(true);
+            }
+
+            @Override
+            public void onError(String mensagemErro) {
+                Log.e("Salvar Configurações", mensagemErro);
+            }
+        });
+    }
+
+    private void salvar(Configuracoes configuracoes, final ICallback callback) {
+
+        Call<Object> call = service.salvarConfiguracoes(configuracoes);
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess();
+                }
+                else {
+                    callback.onError(response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+    public void confirmarDesativarConta() {
+        DialogConfirmar confirmar = new DialogConfirmar(view.getActivity());
+
+        confirmar.setMensagem(view.getContext().getString(R.string.confirmar_desativar_conta));
+        confirmar.setYesClick(new IDialog() {
+            @Override
+            public void onClick() {
+                desativarConta();
+            }
+        });
+
+        confirmar.show();
+    }
+
+    private void desativarConta() {
+        final DialogInformar informar = new DialogInformar(view.getActivity());
+
+        desativarConta(Sistema.getUsuario().getUserID(), new ICallback() {
+            @Override
+            public void onSuccess() {
+                informar.setMensagem(view.getContext().getString(R.string.sucesso_conta_desativada));
+                informar.setOkClick(new IDialog() {
+                    @Override
+                    public void onClick() {
+                        Sistema.logout(view.getActivity());
+                    }
+                });
+                informar.show();
+            }
+
+            @Override
+            public void onError(String mensagemErro) {
+                Log.e("Desativar Conta", mensagemErro);
+                informar.setMensagem(view.getContext().getString(R.string.erro_desativar_conta));
+                informar.show();
+            }
+        });
+    }
+
+    private void desativarConta(long userID, final ICallback callback) {
+
+        Call<Object> call = service.desativarConta(userID);
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                if (response.code() == HttpURLConnection.HTTP_OK) {
+                    callback.onSuccess();
+                }
+                else {
+                    callback.onError(response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+
+    }
+}

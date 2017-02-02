@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.app.configuracoes.AppConfiguracoesActivity">
+    tools:context=".views.configuracoes.ConfiguracoesActivity">
 
     <TextView
         android:text="@string/idioma"

@@ -1,9 +1,15 @@
 package br.com.wiser.utils;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ComboBoxItem {
 
     private int id;
     private String descricao;
+
+    public ComboBoxItem() {
+
+    }
 
     public ComboBoxItem(int id, String descricao) {
         this.id = id;

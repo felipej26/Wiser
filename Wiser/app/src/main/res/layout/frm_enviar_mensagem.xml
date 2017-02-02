@@ -46,7 +46,6 @@
         android:id="@+id/btnEnviarResposta"
         android:background="@mipmap/ic_enviar"
         android:layout_below="@+id/lblResponder"
-        android:layout_alignParentEnd="true"
-        android:onClick="enviar" />
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    tools:context=".activity.contatos.encontrarusuarios.resultados.ChatResultadosActivity">
+    tools:context=".views.usuariosencontrados.UsuariosEncontradosActivity">
 
     <GridView
         android:layout_width="wrap_content"

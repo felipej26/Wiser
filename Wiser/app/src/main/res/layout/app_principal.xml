@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    tools:context=".activity.app.principal.AppPrincipalActivity"
+    tools:context=".views.principal.PrincipalActivity"
     tools:menu="br.br.wiser.res.menu.menu_principal" >
 
     <android.support.v7.widget.Toolbar
@@ -20,11 +20,11 @@
         android:id="@+id/sliding_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="top"
 
         app:tabBackground="@color/colorPrimary"
         app:tabIndicatorColor="@color/colorPrimaryText"
-        app:tabMode="fixed"
-        style="@style/MyCustomTabLayout">
+        app:tabMode="fixed" >
 
         <android.support.design.widget.TabItem
             android:layout_width="wrap_content"
@@ -34,12 +34,12 @@
         <android.support.design.widget.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:icon="@mipmap/ic_tab_chat_selected" />
+            android:icon="@drawable/tab_chat" />
 
         <android.support.design.widget.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:icon="@mipmap/ic_tab_forum_selected" />
+            android:icon="@drawable/tab_forum" />
 
     </android.support.design.widget.TabLayout>
 

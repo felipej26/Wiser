@@ -12,10 +12,10 @@ import android.widget.Button;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.activity.app.perfil.AppPerfilCompletoActivity;
-import br.com.wiser.activity.chat.mensagens.ChatMensagensActivity;
-import br.com.wiser.business.app.usuario.Usuario;
-import br.com.wiser.business.chat.conversas.ConversasDAO;
+import br.com.wiser.models.conversas.Conversas;
+import br.com.wiser.views.perfilcompleto.PerfilCompletoActivity;
+import br.com.wiser.views.mensagens.MensagensActivity;
+import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.utils.Utils;
 
 /**
@@ -49,10 +49,10 @@ public class DialogPerfilUsuario {
         Utils.loadImageInBackground(context, contato.getPerfil().getUrlProfilePicture(), imgPerfil, prgBarra);
         lblNome.setText(contato.getPerfil().getFirstName());
         lblIdiomaNivel.setText(context.getString(R.string.fluencia_idioma,
-                Utils.getDescricaoFluencia(contato.getFluencia()), Utils.getDescricaoIdioma(contato.getIdioma())));
-        lblStatus.setText(contato.getStatus());
+                Sistema.getDescricaoFluencia(contato.getFluencia()), Sistema.getDescricaoIdioma(contato.getIdioma())));
+        lblStatus.setText(Utils.decode(contato.getStatus()));
 
-        if (Sistema.getUsuario(context).getUserID() == contato.getUserID()) {
+        if (Sistema.getUsuario().getUserID() == contato.getUserID()) {
             btnAbrirChat.setVisibility(View.INVISIBLE);
         }
         else {
@@ -61,19 +61,21 @@ public class DialogPerfilUsuario {
                 btnAbrirChat.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (Sistema.getUsuario(context).adicionarContato(context, contato)) {
+                        /*
+                        if (Sistema.getUsuario().adicionarContato(context, contato)) {
                             btnAbrirChat.setText(context.getString(R.string.enviar_mensagem));
                             btnAbrirChat.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Intent i = new Intent(v.getContext(), ChatMensagensActivity.class);
-                                    ConversasDAO conversa = new ConversasDAO();
+                                    Intent i = new Intent(v.getContext(), MensagensActivity.class);
+                                    Conversas conversa = new Conversas();
                                     conversa.setDestinatario(contato);
-                                    i.putExtra("conversa", conversa);
+                                    i.putExtra(Sistema.CONVERSA, conversa);
                                     v.getContext().startActivity(i);
                                 }
                             });
                         }
+                        */
                     }
                 });
             }
@@ -81,10 +83,10 @@ public class DialogPerfilUsuario {
                 btnAbrirChat.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent i = new Intent(v.getContext(), ChatMensagensActivity.class);
-                        ConversasDAO conversa = new ConversasDAO();
+                        Intent i = new Intent(v.getContext(), MensagensActivity.class);
+                        Conversas conversa = new Conversas();
                         conversa.setDestinatario(contato);
-                        i.putExtra("conversa", conversa);
+                        i.putExtra(Sistema.CONVERSA, conversa);
                         v.getContext().startActivity(i);
                     }
                 });
@@ -94,8 +96,8 @@ public class DialogPerfilUsuario {
         btnPerfCompleto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), AppPerfilCompletoActivity.class);
-                intent.putExtra("usuario", contato);
+                Intent intent = new Intent(v.getContext(), PerfilCompletoActivity.class);
+                intent.putExtra(Sistema.CONTATO, contato);
                 v.getContext().startActivity(intent);
                 alert.dismiss();
             }

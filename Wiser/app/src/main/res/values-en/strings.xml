@@ -82,4 +82,5 @@
     <string name="app_perfil_title">Complete Profile</string>
     <string name="adicionar_amigo">Add As a Contact</string>
     <string name="digite_status">Type your status here...</string>
+    <string name="app_servidor_manutencao">Server in Maintenance</string>
 </resources>

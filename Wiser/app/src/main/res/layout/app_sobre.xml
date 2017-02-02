@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.app.sobre.AppSobreActivity">
+    tools:context=".views.sobre.SobreActivity">
 
     <ImageView
         android:layout_height="match_parent"
@@ -69,7 +69,6 @@
         android:textColor="#8B8989"
         android:layout_alignBottom="@+id/imageView"
         android:layout_alignStart="@+id/lblVersao"
-        android:layout_marginBottom="10dp"
-        android:onClick="compartilhar"/>
+        android:layout_marginBottom="10dp" />
 
 </RelativeLayout>

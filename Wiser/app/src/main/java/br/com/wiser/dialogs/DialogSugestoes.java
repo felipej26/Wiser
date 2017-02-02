@@ -13,17 +13,17 @@ import android.widget.LinearLayout;
 import java.util.HashSet;
 
 import br.com.wiser.R;
+import br.com.wiser.views.IView;
 
 /**
  * Created by Jefferson on 30/10/2016.
  */
 public class DialogSugestoes {
 
-    public interface CallbackSugestao {
+    public interface CallbackSugestao extends IView {
         void setSugestao(String sugestao);
     }
 
-    private Activity activity;
     private CallbackSugestao callback;
 
     private LinearLayout lytBotoes;
@@ -31,13 +31,12 @@ public class DialogSugestoes {
     private AlertDialog alert;
     private AlertDialog.Builder builder;
 
-    public DialogSugestoes(Activity activity, CallbackSugestao callback) {
-        this.activity = activity;
+    public DialogSugestoes(CallbackSugestao callback) {
         this.callback = callback;
     }
 
     public void show(HashSet<String> assuntos) {
-        LayoutInflater inflater = activity.getLayoutInflater();
+        LayoutInflater inflater = callback.getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_sugestao, null);
 
         lytBotoes = (LinearLayout) view.findViewById(R.id.lytBotoes);
@@ -46,7 +45,7 @@ public class DialogSugestoes {
             carregaBotoes(assuntos);
         }
 
-        builder = new AlertDialog.Builder(activity);
+        builder = new AlertDialog.Builder(callback.getContext());
         builder.setView(view);
 
         alert = builder.create();
@@ -61,13 +60,13 @@ public class DialogSugestoes {
         layoutParams.gravity = Gravity.CENTER;
 
         for (final String assunto : assuntos) {
-            final Button button = new Button(activity);
+            final Button button = new Button(callback.getContext());
             ViewGroup.MarginLayoutParams margin;
 
             button.setText(assunto);
             button.setTextSize(10);
             button.setLayoutParams(layoutParams);
-            button.setBackground(activity.getDrawable(R.drawable.btndefaultshape));
+            button.setBackground(callback.getContext().getDrawable(R.drawable.btndefaultshape));
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
