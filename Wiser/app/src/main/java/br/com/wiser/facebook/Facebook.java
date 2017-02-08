@@ -198,18 +198,6 @@ public class Facebook {
         }).start();
     }
 
-    public void carregarContatos(List<Contato> listaContatos, ICallback callback) {
-
-        List<GraphRequest> listaRequest = new ArrayList<>();
-
-        for (final Contato contato : listaContatos) {
-            contato.getUsuario().setPerfil(new Perfil());
-            listaRequest.add(getGraphRequestCarregarPerfil(contato.getUsuario(), null));
-        }
-
-        requestBatch(listaRequest, callback);
-    }
-
     public void carregarUsuarios(Collection<Usuario> listaUsuarios, ICallback callback) {
 
         List<GraphRequest> listaRequest = new ArrayList<>();
@@ -224,7 +212,7 @@ public class Facebook {
                 usuario.setPerfil(new Perfil());
             }
 
-            if (usuario.getPerfil().getUrlProfilePicture().equals("")) {
+            if (!usuario.isPerfilLoaded()) {
                 listaRequest.add(getGraphRequestCarregarPerfil(usuario, null));
             }
         }
@@ -237,60 +225,71 @@ public class Facebook {
         }
     }
 
-    public void carregarPaginasEmComum(Usuario usuario, Conversas conversa, final ICallbackPaginas callbackPaginas) {
-        Bundle parametros = new Bundle();
-        GraphCallback callback;
-
+    public void carregarPaginasEmComum(final Long destinatario, final ICallbackPaginas callbackPaginas) {
         final HashSet<Pagina> paginas = new HashSet<>();
-        final int[] qntdRequisicoesCarregando = {0};
+        final Bundle parametros = new Bundle();
 
-        try {
-            callback = new GraphCallback() {
+        parametros.putString("fields", "context.fields(mutual_likes.fields(category,name,id,is_verified))");
 
-                @Override
-                public void setResponse(GraphResponse response) {
-                    JSONArray json;
+        final GraphRequest.Callback graphCallback = new GraphRequest.Callback() {
+            @Override
+            public void onCompleted(GraphResponse response) {
+                JSONArray json;
 
+                try {
                     if (response != null) {
-                        try {
-                            qntdRequisicoesCarregando[0]++;
+                        if (response.getError() != null) {
+                            Log.e("Facebook", "Erro ao carregar as Paginas em Comum.", response.getError().getException());
+                            callbackPaginas.setResponse(paginas);
+                            return;
+                        }
 
-                            json = response.getJSONObject().getJSONObject("context").getJSONObject("mutual_likes").getJSONArray("data");
+                        json = response.getJSONObject()
+                                .getJSONObject("context")
+                                .getJSONObject("mutual_likes")
+                                .getJSONArray("data");
 
-                            if (json != null) {
-                                for (int i = 0; i < json.length(); i++) {
-                                    JSONObject jsonPagina = json.getJSONObject(i);
+                        if (json != null) {
+                            for (int i = 0; i < json.length(); i++) {
+                                JSONObject jsonPagina = json.getJSONObject(i);
 
-                                    if (Sistema.PERMITIR_PAGINAS_NAO_VERIFICADAS || jsonPagina.getBoolean("is_verified")) {
-                                        Pagina pagina = new Pagina();
-                                        pagina.setNome(jsonPagina.getString("name"));
-                                        pagina.setCategoria(jsonPagina.getString("category"));
-                                        pagina.setVerificada(jsonPagina.getBoolean("is_verified"));
+                                if (Sistema.PERMITIR_PAGINAS_NAO_VERIFICADAS || jsonPagina.getBoolean("is_verified")) {
+                                    Pagina pagina = new Pagina();
+                                    pagina.setNome(jsonPagina.getString("name"));
+                                    pagina.setCategoria(jsonPagina.getString("category"));
+                                    pagina.setVerificada(jsonPagina.getBoolean("is_verified"));
 
-                                        paginas.add(pagina);
-                                    }
+                                    paginas.add(pagina);
                                 }
                             }
-
-                            qntdRequisicoesCarregando[0]--;
-                        }
-                        catch (Exception ex) {
-                            ex.printStackTrace();
                         }
                     }
+
+                    GraphRequest nextRequest = response.getRequestForPagedResults(GraphResponse.PagingDirection.NEXT);
+                    if (nextRequest != null) {
+                        nextRequest.setCallback(this);
+                        nextRequest.executeAndWait();
+                    }
                     else {
-                        while (qntdRequisicoesCarregando[0] > 0);
                         callbackPaginas.setResponse(paginas);
                     }
                 }
-            };
+                catch (Exception e) {
+                    Log.e("Facebook", "Erro ao carregar as Paginas em Comum", e);
+                }
+            }
+        };
 
-            parametros.putString("fields", "context.fields(mutual_likes.fields(category,name,id,is_verified))");
-            requestCallback(usuario, conversa.getDestinatario().getFacebookID(), parametros, callback);
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                new GraphRequest(createAccessToken(Sistema.getUsuario()),
+                        "/" + Sistema.getListaUsuarios().get(destinatario).getFacebookID(),
+                        parametros,
+                        HttpMethod.GET,
+                        graphCallback).executeAndWait();
+            }
+        }).start();
     }
 
     private GraphRequest getGraphRequestCarregarPerfil(final Usuario usuario, final ICallback callback) {
@@ -334,33 +333,35 @@ public class Facebook {
                             try {
                                 JSONObject json = graphResponse.getJSONObject();
 
-                                if (usuario.getAccessToken() == null) {
-                                    json = json.getJSONObject(usuario.getFacebookID());
-                                }
+                                if (json != null) {
+                                    if (usuario.getAccessToken() == null) {
+                                        json = json.getJSONObject(usuario.getFacebookID());
+                                    }
 
-                                if (json.has("first_name"))
-                                    perfil.setFirstName(json.getString("first_name"));
+                                    if (json.has("first_name"))
+                                        perfil.setFirstName(json.getString("first_name"));
 
-                                if (json.has("name"))
-                                    perfil.setFullName(json.getString("name"));
+                                    if (json.has("name"))
+                                        perfil.setFullName(json.getString("name"));
 
-                                if (json.has("picture"))
-                                    perfil.setUrlProfilePicture(json.getJSONObject("picture")
-                                            .getJSONObject("data").optString("url"));
+                                    if (json.has("picture"))
+                                        perfil.setUrlProfilePicture(json.getJSONObject("picture")
+                                                .getJSONObject("data").optString("url"));
 
-                                if (json.has("birthday") && json.optString("birthday").length() == 10) {
-                                    long diferenca = new Date().getTime() - UtilsDate.parseDate(json.getString("birthday"), UtilsDate.MMDDYYYY).getTime();
-                                    perfil.setIdade((int) Math.floor(diferenca / 86400000 / 365));
-                                }
-                                else {
-                                    if (json.has("age_range"))
-                                        perfil.setIdade(json.getJSONObject("age_range").getInt("min"));
+                                    if (json.has("birthday") && json.optString("birthday").length() == 10) {
+                                        long diferenca = new Date().getTime() - UtilsDate.parseDate(json.getString("birthday"), UtilsDate.MMDDYYYY).getTime();
+                                        perfil.setIdade((int) Math.floor(diferenca / 86400000 / 365));
+                                    } else {
+                                        if (json.has("age_range"))
+                                            perfil.setIdade(json.getJSONObject("age_range").getInt("min"));
+                                    }
                                 }
                             }
                             catch (Exception e) {
-                                e.printStackTrace();
+                                Log.e("Facebook", "Erro ao carregar o Perfil do Usuario: " + usuario.getUserID(), e);
                             }
 
+                            usuario.setPerfilLoaded(true);
                             usuario.setPerfil(perfil);
 
                             if (callback != null) {

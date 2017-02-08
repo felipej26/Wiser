@@ -1,20 +1,28 @@
 package br.com.wiser.presenters.mensagens;
 
 import android.util.Log;
+import android.view.View;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Random;
 
 import br.com.wiser.Sistema;
 import br.com.wiser.APIClient;
+import br.com.wiser.facebook.Facebook;
+import br.com.wiser.facebook.ICallbackPaginas;
+import br.com.wiser.models.assunto.Assunto;
+import br.com.wiser.models.assunto.Pagina;
 import br.com.wiser.models.conversas.Conversas;
 import br.com.wiser.models.mensagens.Mensagem;
 import br.com.wiser.dialogs.DialogSugestoes;
 import br.com.wiser.models.mensagens.IMensagensService;
+import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.presenters.Presenter;
 import br.com.wiser.utils.Utils;
 import br.com.wiser.views.mensagens.IMensagensView;
@@ -37,8 +45,15 @@ public class MensagensPresenter extends Presenter<IMensagensView> {
         service = APIClient.getClient().create(IMensagensService.class);
         this.conversa = conversa;
 
-        view.onSetTitleActionBar(conversa.getDestinatario().getPerfil().getFullName());
+        view.onSetTitleActionBar(Sistema.getListaUsuarios().get(conversa.getDestinatario()).getPerfil().getFullName());
+
+
         carregarMensagens();
+
+        if (!conversa.isCarregouSugestoes()) {
+            view.onSetVisibilityBtnSugestoes(View.INVISIBLE);
+            carregarSugestoesAssuntos();
+        }
     }
 
     public void onStart() {
@@ -52,7 +67,8 @@ public class MensagensPresenter extends Presenter<IMensagensView> {
     public void onEvent(LinkedList<Conversas> conversas) {
 
         for (Conversas conversa : conversas) {
-            if (this.conversa.getDestinatario().getUserID() == conversa.getDestinatario().getUserID()) {
+            Usuario usuario = Sistema.getListaUsuarios().get(conversa.getDestinatario());
+            if (Sistema.getListaUsuarios().get(this.conversa.getDestinatario()).getUserID() == usuario.getUserID()) {
                 this.conversa = conversa;
                 carregarMensagens();
                 break;
@@ -67,7 +83,7 @@ public class MensagensPresenter extends Presenter<IMensagensView> {
 
         if (hasNewMessages) {
             vibrar();
-            view.onSetPositionRecyclerView(view.onGetQntMensagens());
+            view.onSetPositionRecyclerView(view.onGetQntMensagens() - 1);
             atualizarMensagensLidas();
         }
     }
@@ -105,7 +121,7 @@ public class MensagensPresenter extends Presenter<IMensagensView> {
         if (!textoMensagem.trim().isEmpty()) {
             map.put("conversa", String.valueOf(conversa.getId()));
             map.put("usuario", String.valueOf(Sistema.getUsuario().getUserID()));
-            map.put("destinatario", String.valueOf(conversa.getDestinatario().getUserID()));
+            map.put("destinatario", String.valueOf(conversa.getDestinatario()));
             map.put("data", new Date().toString());
             map.put("mensagem", textoMensagem.trim());
 
@@ -113,8 +129,6 @@ public class MensagensPresenter extends Presenter<IMensagensView> {
             call.enqueue(new Callback<Object>() {
                 @Override
                 public void onResponse(Call<Object> call, Response<Object> response) {
-                    // TODO tratar retorno
-
                     view.onClearCampos();
                 }
 
@@ -138,52 +152,41 @@ public class MensagensPresenter extends Presenter<IMensagensView> {
 
     public void mostrarSugestoes() {
         DialogSugestoes sugestoes = new DialogSugestoes(view);
-
-        if (!conversa.isCarregouSugestoes()) {
-            carregarSugestoesAssuntos();
-        }
-
         sugestoes.show(conversa.getSugestoes());
     }
 
     private void carregarSugestoesAssuntos() {
+        Facebook facebook = new Facebook(getContext());
 
-        // TODO Refazer
-//        Facebook facebook = new Facebook(context);
-//        ICallbackPaginas callbackPaginas;
-//
-//        try {
-//            callbackPaginas = new ICallbackPaginas() {
-//                @Override
-//                public void setResponse(HashSet<Pagina> paginas) {
-//                    Map<String, Assunto> mapAssuntos = new HashMap<>();
-//
-//                    for (Assunto assunto : Sistema.assuntos) {
-//                        for (String categoria : assunto.getCategorias()) {
-//                            mapAssuntos.put(categoria, assunto);
-//                        }
-//                    }
-//
-//                    for (Pagina pagina : paginas) {
-//                        if (mapAssuntos.containsKey(pagina.getCategoria())) {
-//                            Assunto assunto = mapAssuntos.get(pagina.getCategoria());
-//
-//                            int item = new Random().nextInt(assunto.getItens().size());
-//                            conversa.getSugestoes().add(assunto.getItens().get(item)
-//                                    .replace("%a", pagina.getNome())
-//                                    .replace("%i", Utils.getDescricaoIdioma(Sistema.getUsuario(context).getIdioma()))
-//                                    .replace("%u", conversa.getDestinatario().getPerfil().getFirstName()));
-//                        }
-//                    }
-//
-//                    conversa.setCarregouSugestoes(true);
-//                }
-//            };
-//
-//            facebook.carregarPaginasEmComum(Sistema.getUsuario(context), conversa, callbackPaginas);
-//        }
-//        catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
+        facebook.carregarPaginasEmComum(conversa.getDestinatario(), new ICallbackPaginas() {
+            @Override
+            public void setResponse(HashSet<Pagina> paginas) {
+                Map<String, Assunto> mapAssuntos = new HashMap<>();
+
+                for (Assunto assunto : Sistema.getAssuntos()) {
+                    for (String categoria : assunto.getCategorias()) {
+                        mapAssuntos.put(categoria, assunto);
+                    }
+                }
+
+                for (Pagina pagina : paginas) {
+                    if (mapAssuntos.containsKey(pagina.getCategoria())) {
+                        Assunto assunto = mapAssuntos.get(pagina.getCategoria());
+
+                        int item = new Random().nextInt(assunto.getItens().size());
+                        conversa.getSugestoes().add(assunto.getItens().get(item)
+                            .replace("%a", pagina.getNome())
+                            .replace("%i", Sistema.getDescricaoIdioma(Sistema.getUsuario().getIdioma()))
+                            .replace("%u", Sistema.getListaUsuarios().get(conversa.getDestinatario()).getPerfil().getFirstName()));
+                    }
+                }
+
+                if (conversa.getSugestoes().size() > 0) {
+                    view.onSetVisibilityBtnSugestoes(View.VISIBLE);
+                }
+
+                conversa.setCarregouSugestoes(true);
+            }
+        });
     }
 }

@@ -1,11 +1,13 @@
 package br.com.wiser.views.principal;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import br.com.wiser.R;
 import br.com.wiser.presenters.principal.PrincipalPresenter;
@@ -20,6 +22,8 @@ public class PrincipalActivity extends AbstractAppCompatActivity implements IPri
     private Toolbar toolbar;
     private ViewPager viewPager;
     private TabLayout tabLayout;
+
+    private View snackBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,5 +73,12 @@ public class PrincipalActivity extends AbstractAppCompatActivity implements IPri
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         viewPager.setCurrentItem(1);
+
+        snackBar = findViewById(R.id.snackbar_view);
+    }
+
+    @Override
+    public View onGetSnackBarView() {
+        return snackBar;
     }
 }

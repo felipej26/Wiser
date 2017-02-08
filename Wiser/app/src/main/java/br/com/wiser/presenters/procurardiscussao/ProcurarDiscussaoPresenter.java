@@ -2,15 +2,22 @@ package br.com.wiser.presenters.procurardiscussao;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.APIClient;
+import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.models.forum.Discussao;
 import br.com.wiser.models.forum.IForumService;
+import br.com.wiser.models.forum.Resposta;
+import br.com.wiser.models.usuario.IUsuarioService;
+import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.presenters.Presenter;
 import br.com.wiser.views.discussao.DiscussaoActivity;
 import br.com.wiser.views.procurardiscussao.IProcurarDiscussaoActivity;
@@ -24,6 +31,7 @@ import retrofit2.Response;
 public class ProcurarDiscussaoPresenter extends Presenter<IProcurarDiscussaoActivity> {
 
     private IForumService service;
+    private IUsuarioService usuarioService;
 
     private LinkedList<Discussao> listaDiscussoes;
 
@@ -33,6 +41,7 @@ public class ProcurarDiscussaoPresenter extends Presenter<IProcurarDiscussaoActi
         view.onInitView();
 
         service = APIClient.getClient().create(IForumService.class);
+        usuarioService = APIClient.getClient().create(IUsuarioService.class);
     }
 
     public void startDiscussao(int posicao) {
@@ -53,9 +62,8 @@ public class ProcurarDiscussaoPresenter extends Presenter<IProcurarDiscussaoActi
             public void onResponse(Call<LinkedList<Discussao>> call, Response<LinkedList<Discussao>> response) {
                 if (response.isSuccessful()) {
                     listaDiscussoes = response.body();
-                    long quantidadeEncontrada = listaDiscussoes.size();
 
-                    view.onLoadListaDiscussoes(listaDiscussoes);
+                    long quantidadeEncontrada = listaDiscussoes.size();
 
                     view.onSetTextLblResultados(getContext().getString(R.string.resultados_para, chave));
                     view.onSetTextLblContResultados(getContext().getString(R.string.cont_discussoes, quantidadeEncontrada) + " " +
@@ -65,6 +73,8 @@ public class ProcurarDiscussaoPresenter extends Presenter<IProcurarDiscussaoActi
                     view.onSetVisibilityLblResultados(View.VISIBLE);
                     view.onSetVisibilityLblContResultados(View.VISIBLE);
                     view.onSetVisibilityProgressBar(View.INVISIBLE);
+
+                    carregarDiscussoes();
                 }
                 else {
                     onFailure(call, null);
@@ -79,5 +89,35 @@ public class ProcurarDiscussaoPresenter extends Presenter<IProcurarDiscussaoActi
         });
 
 
+    }
+
+    private void carregarDiscussoes() {
+        List<Long> usuariosParaCarregarAPI = new ArrayList<>();
+
+        for (Discussao discussao : listaDiscussoes) {
+            if (!Sistema.getListaUsuarios().containsKey(discussao.getUsuario())) {
+                Sistema.getListaUsuarios().put(discussao.getUsuario(), new Usuario(discussao.getUsuario()));
+                usuariosParaCarregarAPI.add(discussao.getUsuario());
+            }
+
+            for (Resposta resposta : discussao.getListaRespostas()) {
+                if (!Sistema.getListaUsuarios().containsKey(resposta.getUsuario())) {
+                    Sistema.getListaUsuarios().put(resposta.getUsuario(), new Usuario(resposta.getUsuario()));
+                    usuariosParaCarregarAPI.add(resposta.getUsuario());
+                }
+            }
+        }
+
+        Sistema.carregarUsuarios(getContext(), usuariosParaCarregarAPI, new ICallback() {
+            @Override
+            public void onSuccess() {
+                view.onLoadListaDiscussoes(listaDiscussoes);
+            }
+
+            @Override
+            public void onError(String mensagemErro) {
+                Log.e("Carregar Perfis", mensagemErro);
+            }
+        });
     }
 }

@@ -77,9 +77,9 @@ public class ForumPresenter extends Presenter<IForumView> {
         List<Long> usuariosParaCarregarAPI = new ArrayList<>();
 
         for (Discussao discussao : listaDiscussoes) {
-            if (!Sistema.getListaUsuarios().containsKey(discussao.getUsuario().getUserID())) {
-                Sistema.getListaUsuarios().put(discussao.getUsuario().getUserID(), discussao.getUsuario());
-                usuariosParaCarregarAPI.add(discussao.getUsuario().getUserID());
+            if (!Sistema.getListaUsuarios().containsKey(discussao.getUsuario())) {
+                Sistema.getListaUsuarios().put(discussao.getUsuario(), new Usuario(discussao.getUsuario()));
+                usuariosParaCarregarAPI.add(discussao.getUsuario());
             }
 
             for (Resposta resposta : discussao.getListaRespostas()) {
@@ -90,39 +90,7 @@ public class ForumPresenter extends Presenter<IForumView> {
             }
         }
 
-        if (usuariosParaCarregarAPI.size() > 0) {
-            Call<List<Usuario>> call = usuarioService.carregarUsuarios(Sistema.getUsuario().getUserID(), usuariosParaCarregarAPI.toArray());
-            call.enqueue(new Callback<List<Usuario>>() {
-                @Override
-                public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
-                    if (response.isSuccessful()) {
-                        for (Usuario usuario : response.body()) {
-                            if (Sistema.getListaUsuarios().containsKey(usuario.getUserID())) {
-                                Sistema.getListaUsuarios().put(usuario.getUserID(), usuario);
-                            }
-                        }
-
-                        carregarPerfis();
-                    } else {
-                        Log.e("Carregar Perfis", response.message());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<Usuario>> call, Throwable t) {
-                    Log.e("Carregar Perfis", "Erro ao carregar os usuarios", t);
-                }
-            });
-        }
-        else {
-            carregarPerfis();
-        }
-    }
-
-    public void carregarPerfis() {
-        Facebook facebook = new Facebook(getContext());
-
-        facebook.carregarUsuarios(Sistema.getListaUsuarios().values(), new ICallback() {
+        Sistema.carregarUsuarios(getContext(), usuariosParaCarregarAPI, new ICallback() {
             @Override
             public void onSuccess() {
                 view.onLoadListaDiscussoes(listaDiscussoes);

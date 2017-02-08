@@ -12,7 +12,7 @@ public class Contato {
     private long id;
 
     @SerializedName("contato")
-    private Usuario usuario;
+    private long usuario;
 
     public long getId() {
         return id;
@@ -22,11 +22,11 @@ public class Contato {
         this.id = id;
     }
 
-    public Usuario getUsuario() {
+    public long getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(Usuario usuario) {
+    public void setUsuario(long usuario) {
         this.usuario = usuario;
     }
 }

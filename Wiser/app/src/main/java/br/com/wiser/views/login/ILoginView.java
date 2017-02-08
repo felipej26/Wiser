@@ -1,7 +1,6 @@
 package br.com.wiser.views.login;
 
 import br.com.wiser.views.IView;
-import android.widget.Button;
 
 /**
  * Created by Jefferson on 22/01/2017.

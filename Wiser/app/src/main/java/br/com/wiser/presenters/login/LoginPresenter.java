@@ -3,8 +3,14 @@ package br.com.wiser.presenters.login;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
+import java.io.IOException;
 import java.util.Date;
 
 import br.com.wiser.R;
@@ -14,6 +20,7 @@ import br.com.wiser.models.login.ILoginService;
 import br.com.wiser.models.login.Login;
 import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.services.CarregarConversasService;
+import br.com.wiser.utils.Utils;
 import br.com.wiser.views.login.ILoginView;
 import br.com.wiser.facebook.Facebook;
 import br.com.wiser.APIClient;
@@ -40,13 +47,14 @@ public class LoginPresenter extends Presenter<ILoginView> {
 
         service = APIClient.getClient().create(ILoginService.class);
         facebook = new Facebook(view.getContext());
-    }
-
-    public void onResume() {
         checkLogin();
     }
 
-    public void checkLogin() {
+    public void onResume() {
+
+    }
+
+    private void checkLogin() {
         if (facebook.isLogado() && Sistema.checkPermissoes(view.getContext())) {
             login(new ICallback() {
                 @Override
@@ -126,9 +134,6 @@ public class LoginPresenter extends Presenter<ILoginView> {
 
     private void onLoginSuccess() {
         Sistema.getListaUsuarios().put(Sistema.getUsuario().getUserID(), Sistema.getUsuario());
-
-        view.showToast(view.getContext().getString(R.string.boas_vindas,
-                Sistema.getUsuario().getPerfil().getFirstName()));
 
         startPrincipalActivity();
         startService();

@@ -18,8 +18,13 @@ import com.google.gson.GsonBuilder;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
@@ -30,6 +35,7 @@ import br.com.wiser.models.conversas.Conversas;
 import br.com.wiser.models.conversas.ConversasDeserializer;
 import br.com.wiser.models.conversas.IConversasService;
 import br.com.wiser.models.mensagens.Mensagem;
+import br.com.wiser.models.usuario.IUsuarioService;
 import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.utils.Utils;
 import br.com.wiser.views.splashscreen.SplashScreenActivity;
@@ -40,20 +46,30 @@ import retrofit2.Response;
 /**
  * Created by Jefferson on 18/09/2016.
  */
-public class CarregarConversasService extends Service {
+public class CarregarConversasService extends Service implements Observer {
+
+    private interface CallbackConversas {
+        void onLoad(List<String> listaNovasMensagens);
+    }
 
     private IConversasService service;
+    private IUsuarioService usuarioService;
 
     private LinkedList<Conversas> listaConversas;
     private boolean lock = false;
     private boolean lockCarregarUsuarios = false;
+
+    private Map<Long, List<String>> listaMensagensNaoEnviadas;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         service = APIClient.getClient().create(IConversasService.class);
+        usuarioService = APIClient.getClient().create(IUsuarioService.class);
+
         listaConversas = new LinkedList<>();
+        listaMensagensNaoEnviadas = new HashMap<>();
     }
 
     @Override
@@ -81,20 +97,21 @@ public class CarregarConversasService extends Service {
                         call.enqueue(new Callback<LinkedList<Conversas>>() {
                             @Override
                             public void onResponse(Call<LinkedList<Conversas>> call, Response<LinkedList<Conversas>> response) {
-                                List<String> listaNovasMensagens;
 
                                 if (response.isSuccessful()) {
-                                    listaNovasMensagens = adicionarNovasMensagens(response.body());
+                                    adicionarNovasMensagens(response.body(), new CallbackConversas() {
+                                        @Override
+                                        public void onLoad(List<String> listaNovasMensagens) {
+                                            if (listaNovasMensagens.size() > 0) {
+                                                Utils.vibrar(CarregarConversasService.this, 150);
+                                                notificar(listaNovasMensagens);
+                                            }
 
-                                    if (listaNovasMensagens.size() > 0) {
-                                        Utils.vibrar(CarregarConversasService.this, 150);
-                                        notificar(listaNovasMensagens);
-                                    }
-
-                                    EventBus.getDefault().post(listaConversas);
+                                            EventBus.getDefault().post(listaConversas);
+                                            lock = false;
+                                        }
+                                    });
                                 }
-
-                                lock = false;
                             }
 
                             @Override
@@ -129,10 +146,18 @@ public class CarregarConversasService extends Service {
         return null;
     }
 
-    private List<String> adicionarNovasMensagens(LinkedList<Conversas> listaConversas) {
-        List<String> listaNovasMensagens = new LinkedList<>();
-        List<Usuario> listaUsuarios = new LinkedList<>();
-        Facebook facebook = new Facebook(this);
+    @Override
+    public void update(Observable observable, Object data) {
+        if (observable instanceof Usuario) {
+            if (listaMensagensNaoEnviadas.containsKey(((Usuario) observable).getUserID())) {
+                notificar(listaMensagensNaoEnviadas.get(((Usuario) observable).getUserID()));
+            }
+        }
+    }
+
+    private void adicionarNovasMensagens(final LinkedList<Conversas> listaConversas, final CallbackConversas callback) {
+        final List<String> listaNovasMensagens = new LinkedList<>();
+        List<Long> listaUsuarios = new LinkedList<>();
 
         Conversas conversaAux;
 
@@ -161,51 +186,72 @@ public class CarregarConversasService extends Service {
             }
         }
 
-        lockCarregarUsuarios = false;
+        carregarUsuarios(listaUsuarios, new ICallback() {
+            @Override
+            public void onSuccess() {
+                /* Adiciona na Lista de Conversas e na Lista de Novas Mensagens as novas mensagens recebidas */
+                for (Conversas conversa : listaConversas) {
+                    if (conversa.getMensagens().size() > 0) {
 
-        /* Carrega o perfil dos novos usuarios */
-        if (listaUsuarios.size() > 0) {
-            lockCarregarUsuarios = true;
+                        for (Conversas c : CarregarConversasService.this.listaConversas) {
+                            if (c.getId() == conversa.getId()) {
+                                c.getMensagens().addAll(conversa.getMensagens());
 
-            facebook.carregarUsuarios(listaUsuarios, new ICallback() {
-                @Override
-                public void onSuccess() {
-                    lockCarregarUsuarios = false;
-                }
-
-                @Override
-                public void onError(String mensagemErro) {
-                    Log.e("Serviço", mensagemErro);
-                    lockCarregarUsuarios = false;
-                }
-            });
-        }
-
-        // TODO Arrumar isso
-        //while (lockCarregarUsuarios);
-
-        /* Adiciona na Lista de Conversas e na Lista de Novas Mensagens as novas mensagens recebidas */
-        for (Conversas conversa : listaConversas) {
-
-            if (conversa.getMensagens().size() > 0) {
-
-                for (Conversas c : this.listaConversas) {
-                    if (c.getId() == conversa.getId()) {
-                        c.getMensagens().addAll(conversa.getMensagens());
-
-                        for (Mensagem mensagem : c.getMensagens()) {
-                            if (mensagem.isDestinatario() && !mensagem.isLida()) {
-                                listaNovasMensagens.add(c.getDestinatario().getPerfil().getFirstName() + ": " + Utils.decode(mensagem.getMensagem()));
+                                carregarMensagens(c, listaNovasMensagens);
                             }
-
-                            mensagem.setMensagem(Utils.decode(mensagem.getMensagem()));
                         }
                     }
                 }
-            }
-        }
 
-        return listaNovasMensagens;
+                callback.onLoad(listaNovasMensagens);
+            }
+
+            @Override
+            public void onError(String mensagemErro) {
+                Log.e("Serviço", mensagemErro);
+                callback.onLoad(listaNovasMensagens);
+            }
+        });
+    }
+
+    private void carregarMensagens(Conversas conversa, List<String> listaNovasMensagens) {
+
+        List<String> listaAux;
+
+        for (Mensagem mensagem : conversa.getMensagens()) {
+            if (mensagem.isDestinatario() && !mensagem.isLida()) {
+                if (Sistema.getListaUsuarios().get(conversa.getDestinatario()).isPerfilLoaded()) {
+                    listaNovasMensagens.add(
+                            Sistema.getListaUsuarios().get(conversa.getDestinatario()).getPerfil().getFirstName() + ": " +
+                                    Utils.decode(mensagem.getMensagem()));
+                }
+                else {
+                    try {
+                        Sistema.getListaUsuarios().get(conversa.getDestinatario()).addObserver(this);
+                    }
+                    catch (Exception e) {
+                        Log.e("Serviço", "Erro ao adicionar o Observer. " + e.getMessage());
+                    }
+
+                    if (!listaNovasMensagens.contains(conversa.getDestinatario())) {
+                        listaAux = new LinkedList<>();
+                        listaMensagensNaoEnviadas.put(conversa.getDestinatario(), listaAux);
+                    }
+                    else {
+                        listaAux = listaMensagensNaoEnviadas.get(conversa.getDestinatario());
+                    }
+
+                    listaAux.add(Sistema.getListaUsuarios().get(conversa.getDestinatario()).getPerfil().getFirstName() + ": " +
+                            Utils.decode(mensagem.getMensagem()));
+                }
+            }
+
+            mensagem.setMensagem(Utils.decode(mensagem.getMensagem()));
+        }
+    }
+
+    private void carregarUsuarios(List<Long> listaUsuarios, final ICallback callback) {
+        Sistema.carregarUsuarios(this, listaUsuarios, callback);
     }
 
     private void notificar(List<String> listaNovasMensagens) {

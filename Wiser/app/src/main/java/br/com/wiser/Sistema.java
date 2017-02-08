@@ -25,6 +25,7 @@ import java.util.Set;
 import br.com.wiser.facebook.AccessTokenModel;
 import br.com.wiser.facebook.Facebook;
 import br.com.wiser.interfaces.ICallback;
+import br.com.wiser.models.usuario.IUsuarioService;
 import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.models.assunto.Assunto;
 import br.com.wiser.models.sistema.ISistemaService;
@@ -59,13 +60,17 @@ public class Sistema {
     private static Map<Long, Usuario> listaUsuarios;
 
     private static ISistemaService service;
+    private static IUsuarioService usuarioService;
 
     public static void inicializarSistema(Context context, final ICallback callback) {
 
         listaUsuarios = new HashMap<>();
 
         try {
+            new Facebook(context);
+
             service = APIClient.getClient().create(ISistemaService.class);
+            usuarioService = APIClient.getClient().create(IUsuarioService.class);
 
             /* Carrega linguagem do celular */
             appLinguagem = context.getResources().getConfiguration().locale.getLanguage();
@@ -110,6 +115,7 @@ public class Sistema {
             public void onResponse(Call<HashSet<Assunto>> call, Response<HashSet<Assunto>> response) {
                 if (response.isSuccessful()) {
                     assuntos = response.body();
+                    Log.i("Serviço", "Carregou Lista de Assuntos");
                     callback.onSuccess();
                 }
             }
@@ -131,6 +137,7 @@ public class Sistema {
             public void onResponse(Call<LinkedList<ComboBoxItem>> call, Response<LinkedList<ComboBoxItem>> response) {
                 if (response.isSuccessful()) {
                     listaIdiomas.addAll(response.body());
+                    Log.i("Serviço", "Carregou Lista de Idiomas");
                     callback.onSuccess();
                 }
             }
@@ -152,6 +159,7 @@ public class Sistema {
             public void onResponse(Call<LinkedList<ComboBoxItem>> call, Response<LinkedList<ComboBoxItem>> response) {
                 if (response.isSuccessful()) {
                     listaFluencias.addAll(response.body());
+                    Log.i("Serviço", "Carregou Lista de Fluencias");
                     callback.onSuccess();
                 }
             }
@@ -174,6 +182,7 @@ public class Sistema {
 
                     accessToken = new AccessToken(model.getAccessToken(), model.getApplicationID(),
                             model.getUserID(), Arrays.asList(model.getPermissions()), null, null, null, null);
+                    Log.i("Serviço", "Carregou Access Token");
                     callback.onSuccess();
                 }
             }
@@ -333,5 +342,43 @@ public class Sistema {
 
     public static Map<Long, Usuario> getListaUsuarios() {
         return listaUsuarios;
+    }
+
+    public static void carregarUsuarios(final Context context, List<Long> listaUsuarios, final ICallback callback) {
+
+        if (listaUsuarios.size() > 0) {
+            Call<List<Usuario>> call = usuarioService.carregarUsuarios(Sistema.getUsuario().getUserID(), listaUsuarios.toArray());
+            call.enqueue(new Callback<List<Usuario>>() {
+                @Override
+                public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
+                    if (response.isSuccessful()) {
+                        for (Usuario usuario : response.body()) {
+                            Sistema.getListaUsuarios().put(usuario.getUserID(), usuario);
+                        }
+
+                        carregarPerfis(context, callback);
+                    }
+                    else {
+                        Log.e("Carregar Perfis", response.message());
+                        callback.onError("");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Usuario>> call, Throwable t) {
+                    Log.e("Carregar Perfis", "Erro ao carregar os usuarios", t);
+                    callback.onError("");
+                }
+            });
+        }
+        else {
+            carregarPerfis(context, callback);
+        }
+    }
+
+    private static void carregarPerfis(Context context, ICallback callback) {
+        Facebook facebook = new Facebook(context);
+
+        facebook.carregarUsuarios(listaUsuarios.values(), callback);
     }
 }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.wiser.R;
+import br.com.wiser.Sistema;
 import br.com.wiser.models.contatos.Contato;
 import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.interfaces.IClickListener;
@@ -44,7 +45,7 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Usuario contato = listaContatos.get(position).getUsuario();
+        Usuario contato = Sistema.getListaUsuarios().get(listaContatos.get(position).getUsuario());
 
         holder.viewSeparator.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
 
@@ -55,10 +56,6 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.ViewHo
     @Override
     public int getItemCount() {
         return listaContatos.size();
-    }
-
-    public Usuario getContato(int posicao) {
-        return listaContatos.get(posicao).getUsuario();
     }
 
     public void setItems(List<Contato> listaContatos) {

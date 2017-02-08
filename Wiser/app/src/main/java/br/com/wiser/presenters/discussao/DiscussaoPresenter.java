@@ -48,14 +48,14 @@ public class DiscussaoPresenter extends Presenter<IDiscussaoView> {
     private void carregar(Discussao discussao) {
         Usuario usuario = null;
 
-        if (Sistema.getListaUsuarios().containsKey(discussao.getUsuario().getUserID())) {
-            usuario = Sistema.getListaUsuarios().get(discussao.getUsuario().getUserID());
+        if (Sistema.getListaUsuarios().containsKey(discussao.getUsuario())) {
+            usuario = Sistema.getListaUsuarios().get(discussao.getUsuario());
         }
 
         ((IDiscussaoCompletaView)view).onInitView();
         ((IDiscussaoCompletaView)view).onSetTextLblID("#" + discussao.getId());
-        ((IDiscussaoCompletaView)view).onSetTextLblTitulo(discussao.getTitulo());
-        ((IDiscussaoCompletaView)view).onSetTextLblDescricao(discussao.getDescricao());
+        ((IDiscussaoCompletaView)view).onSetTextLblTitulo(Utils.decode(discussao.getTitulo()));
+        ((IDiscussaoCompletaView)view).onSetTextLblDescricao(Utils.decode(discussao.getDescricao()));
         ((IDiscussaoCompletaView)view).onSetTextLblAutor(usuario.getPerfil().getFirstName());
         ((IDiscussaoCompletaView)view).onSetTextLblDataHora(UtilsDate.formatDate(discussao.getData(), UtilsDate.DDMMYYYY_HHMMSS));
         ((IDiscussaoCompletaView)view).onSetTextLblQntRespostas(
@@ -90,7 +90,7 @@ public class DiscussaoPresenter extends Presenter<IDiscussaoView> {
         map.put("id", String.valueOf(discussao.getId()));
         map.put("usuario", String.valueOf(Sistema.getUsuario().getUserID()));
         map.put("data", new Date().toString());
-        map.put("resposta", resposta.trim());
+        map.put("resposta", Utils.encode(resposta.trim()));
 
         Call<Resposta> call = service.responderDiscussao(map);
         call.enqueue(new Callback<Resposta>() {

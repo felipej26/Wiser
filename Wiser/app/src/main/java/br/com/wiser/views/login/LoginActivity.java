@@ -9,6 +9,7 @@ import br.com.wiser.Sistema;
 import br.com.wiser.R;
 import br.com.wiser.presenters.login.LoginPresenter;
 import br.com.wiser.views.AbstractActivity;
+import br.com.wiser.views.AbstractAppCompatActivity;
 
 public class LoginActivity extends AbstractActivity implements ILoginView {
 

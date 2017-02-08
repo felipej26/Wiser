@@ -144,6 +144,16 @@ public class MensagensActivity extends AbstractActivity implements IMensagensVie
     }
 
     @Override
+    public void onSetVisibilityBtnSugestoes(final int visibility) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                btnSugestao.setVisibility(visibility);
+            }
+        });
+    }
+
+    @Override
     public int onGetQntMensagens() {
         return adapter.getItemCount();
     }

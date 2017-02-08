@@ -14,6 +14,7 @@ public interface IMensagensView extends DialogSugestoes.CallbackSugestao {
     void onSetTitleActionBar(String titulo);
     void onSetPositionRecyclerView(int posicao);
     void onSetTextLblContLetras(String contLetras);
+    void onSetVisibilityBtnSugestoes(int visibility);
     int onGetQntMensagens();
     void onClearCampos();
 }

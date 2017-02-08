@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import java.util.LinkedList;
 
 import br.com.wiser.R;
+import br.com.wiser.Sistema;
 import br.com.wiser.models.conversas.Conversas;
 import br.com.wiser.interfaces.IClickListener;
 import br.com.wiser.utils.UtilsDate;
@@ -47,7 +48,7 @@ public class ConversasAdapter extends RecyclerView.Adapter<ConversasAdapter.View
 
         holder.viewSeparator.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
 
-        Utils.loadImageInBackground(context, m.getDestinatario().getPerfil().getUrlProfilePicture(), holder.imgPerfil, holder.prgBarra);
+        Utils.loadImageInBackground(context, Sistema.getListaUsuarios().get(m.getDestinatario()).getPerfil().getUrlProfilePicture(), holder.imgPerfil, holder.prgBarra);
         holder.lblDataHora.setText(UtilsDate.formatDate(m.getMensagens().getLast().getData(), UtilsDate.HHMM));
         holder.lblMensagens.setText(m.getMensagens().getLast().getMensagem());
         holder.lblContMensagens.setText(m.getContMsgNaoLidas() + " " + context.getString(m.getContMsgNaoLidas() <= 1 ? R.string.nao_lida : R.string.nao_lidas));

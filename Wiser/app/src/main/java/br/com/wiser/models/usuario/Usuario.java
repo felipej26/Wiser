@@ -20,7 +20,7 @@ public class Usuario extends Observable implements Serializable {
     private String facebookID;
 
     @SerializedName("access_token")
-    private String accessToken = "";
+    private String accessToken;
 
     @SerializedName("data_ultimo_acesso")
     private Date dataUltimoAcesso;
@@ -48,6 +48,8 @@ public class Usuario extends Observable implements Serializable {
 
     @SerializedName("isContato")
     private boolean isContato = false;
+
+    private boolean isPerfilLoaded;
 
     private Perfil perfil = new Perfil();
 
@@ -171,4 +173,11 @@ public class Usuario extends Observable implements Serializable {
     }
 
 
+    public boolean isPerfilLoaded() {
+        return isPerfilLoaded;
+    }
+
+    public void setPerfilLoaded(boolean perfilLoaded) {
+        isPerfilLoaded = perfilLoaded;
+    }
 }

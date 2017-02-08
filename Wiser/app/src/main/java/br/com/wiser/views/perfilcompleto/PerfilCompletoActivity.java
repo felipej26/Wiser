@@ -35,14 +35,16 @@ public class PerfilCompletoActivity extends AbstractActivity implements IPerfilC
     private DiscussaoPresenter discussaoPresenter;
 
     private ImageView imgPerfil;
-    private ProgressBar prgBarra;
+
     private TextView lblNomeDetalhe;
     private TextView lblIdade;
     private TextView lblIdiomaNivel;
     private TextView lblStatus;
     private Button btnAbrirChat;
+
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
+    private DiscussaoCardViewAdapter adapter;
+    private ProgressBar prgBarra;
 
     private List<Discussao> listaDiscussoes;
 
@@ -82,7 +84,7 @@ public class PerfilCompletoActivity extends AbstractActivity implements IPerfilC
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
 
-        adapter = new DiscussaoCardViewAdapter(this, listaDiscussoes);
+        adapter = new DiscussaoCardViewAdapter(this);
         recyclerView.setAdapter(adapter);
     }
 
@@ -116,6 +118,11 @@ public class PerfilCompletoActivity extends AbstractActivity implements IPerfilC
     }
 
     @Override
+    public void onLoadListaDiscussoes(LinkedList<Discussao> listaDiscussoes) {
+        adapter.setItems(listaDiscussoes);
+    }
+
+    @Override
     public void onLoadProfilePicture(String urlProfilePicture) {
         Utils.loadImageInBackground(this, urlProfilePicture, imgPerfil, prgBarra);
     }
@@ -141,6 +148,15 @@ public class PerfilCompletoActivity extends AbstractActivity implements IPerfilC
     }
 
     @Override
+    public void onSetVisibilityProgressBar(int visibility) {
+        if (visibility == View.VISIBLE) {
+            prgBarra.bringToFront();
+        }
+
+        prgBarra.setVisibility(visibility);
+    }
+
+    @Override
     public void onClick(int posicao) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("discussao", listaDiscussoes.get(posicao));
@@ -152,7 +168,7 @@ public class PerfilCompletoActivity extends AbstractActivity implements IPerfilC
 
     @Override
     public void onClickPerfil(int posicao) {
-        discussaoPresenter.openPerfil(listaDiscussoes.get(posicao).getUsuario());
+        discussaoPresenter.openPerfil(Sistema.getListaUsuarios().get(listaDiscussoes.get(posicao).getUsuario()));
     }
 
     @Override

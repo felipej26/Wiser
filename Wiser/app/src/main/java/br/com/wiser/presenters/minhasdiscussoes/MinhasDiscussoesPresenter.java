@@ -2,15 +2,22 @@ package br.com.wiser.presenters.minhasdiscussoes;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.APIClient;
+import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.models.forum.Discussao;
 import br.com.wiser.models.forum.IForumService;
+import br.com.wiser.models.forum.Resposta;
+import br.com.wiser.models.usuario.IUsuarioService;
+import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.presenters.Presenter;
 import br.com.wiser.views.discussao.DiscussaoActivity;
 import br.com.wiser.views.minhasdiscussoes.IMinhasDiscussoesView;
@@ -25,6 +32,7 @@ import retrofit2.Response;
 public class MinhasDiscussoesPresenter extends Presenter<IMinhasDiscussoesView> {
 
     private IForumService service;
+    private IUsuarioService usuarioService;
 
     private LinkedList<Discussao> listaDiscussoes;
 
@@ -33,6 +41,7 @@ public class MinhasDiscussoesPresenter extends Presenter<IMinhasDiscussoesView> 
         view.onInitView();
 
         service = APIClient.getClient().create(IForumService.class);
+        usuarioService = APIClient.getClient().create(IUsuarioService.class);
 
         carregarDiscussoes();
     }
@@ -53,13 +62,43 @@ public class MinhasDiscussoesPresenter extends Presenter<IMinhasDiscussoesView> 
                     }
 
                     listaDiscussoes = response.body();
-                    view.onLoadListaDiscussoes(listaDiscussoes);
+                    carregarUsuarios();
                 }
             }
 
             @Override
             public void onFailure(Call<LinkedList<Discussao>> call, Throwable t) {
                 view.onSetVisibilityProgressBar(View.INVISIBLE);
+            }
+        });
+    }
+
+    private void carregarUsuarios() {
+        List<Long> usuariosParaCarregarAPI = new ArrayList<>();
+
+        for (Discussao discussao : listaDiscussoes) {
+            if (!Sistema.getListaUsuarios().containsKey(discussao.getUsuario())) {
+                Sistema.getListaUsuarios().put(discussao.getUsuario(), new Usuario(discussao.getUsuario()));
+                usuariosParaCarregarAPI.add(discussao.getUsuario());
+            }
+
+            for (Resposta resposta : discussao.getListaRespostas()) {
+                if (!Sistema.getListaUsuarios().containsKey(resposta.getUsuario())) {
+                    Sistema.getListaUsuarios().put(resposta.getUsuario(), new Usuario(resposta.getUsuario()));
+                    usuariosParaCarregarAPI.add(resposta.getUsuario());
+                }
+            }
+        }
+
+        Sistema.carregarUsuarios(getContext(), usuariosParaCarregarAPI, new ICallback() {
+            @Override
+            public void onSuccess() {
+                view.onLoadListaDiscussoes(listaDiscussoes);
+            }
+
+            @Override
+            public void onError(String mensagemErro) {
+                Log.e("Carregar Perfis", mensagemErro);
             }
         });
     }

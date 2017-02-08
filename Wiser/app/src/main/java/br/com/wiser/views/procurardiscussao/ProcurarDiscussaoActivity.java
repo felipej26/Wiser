@@ -13,6 +13,7 @@ import android.widget.TextView;
 import java.util.LinkedList;
 
 import br.com.wiser.R;
+import br.com.wiser.Sistema;
 import br.com.wiser.models.forum.Discussao;
 import br.com.wiser.presenters.discussao.DiscussaoPresenter;
 import br.com.wiser.presenters.procurardiscussao.ProcurarDiscussaoPresenter;
@@ -63,7 +64,7 @@ public class ProcurarDiscussaoActivity extends AbstractActivity implements IProc
 
     @Override
     public void onClickPerfil(int posicao) {
-        discussaoPresenter.openPerfil(adapter.getItem(posicao).getUsuario());
+        discussaoPresenter.openPerfil(Sistema.getListaUsuarios().get(adapter.getItem(posicao).getUsuario()));
     }
 
     @Override
@@ -100,7 +101,7 @@ public class ProcurarDiscussaoActivity extends AbstractActivity implements IProc
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new DiscussaoCardViewAdapter(this, new LinkedList<Discussao>());
+        adapter = new DiscussaoCardViewAdapter(this);
         recyclerView.setAdapter(adapter);
     }
 

@@ -15,6 +15,7 @@ import br.com.wiser.dialogs.DialogInformar;
 import br.com.wiser.dialogs.IDialog;
 import br.com.wiser.models.forum.IForumService;
 import br.com.wiser.presenters.Presenter;
+import br.com.wiser.utils.Utils;
 import br.com.wiser.views.minhasdiscussoes.MinhasDiscussoesActivity;
 import br.com.wiser.views.novadiscussao.INovaDiscussaoView;
 import retrofit2.Call;
@@ -69,8 +70,8 @@ public class NovaDiscussaoPresenter extends Presenter<INovaDiscussaoView> {
 
         parametros.put("id", "0");
         parametros.put("usuario", String.valueOf(Sistema.getUsuario().getUserID()));
-        parametros.put("titulo", titulo);
-        parametros.put("descricao", descricao);
+        parametros.put("titulo", Utils.encode(titulo));
+        parametros.put("descricao", Utils.encode(descricao));
         parametros.put("data", new Date().toString());
 
         Call<Discussao> call = service.salvarDiscussao(parametros);

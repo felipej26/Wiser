@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -44,48 +46,43 @@ public class ContatosPresenter extends Presenter<IContatosView> implements Obser
     }
 
     private void carregarContatos() {
+        final List<Long> listaUsuarios = new ArrayList<>();
 
         Call<ArrayList<Contato>> call = service.carregarContatos(Sistema.getUsuario().getUserID());
         call.enqueue(new Callback<ArrayList<Contato>>() {
             @Override
             public void onResponse(Call<ArrayList<Contato>> call, Response<ArrayList<Contato>> response) {
                 if (response.isSuccessful()) {
+
                     listaContatos = response.body();
-                    carregarPerfis();
+                    for (Contato contato : listaContatos) {
+                        listaUsuarios.add(contato.getUsuario());
+                    }
+
+                    Sistema.carregarUsuarios(getContext(), listaUsuarios, new ICallback() {
+                        @Override
+                        public void onSuccess() {
+                            view.onLoadListaContatos(listaContatos);
+                        }
+
+                        @Override
+                        public void onError(String mensagemErro) {
+                            Log.e("Carregar Contatos", mensagemErro);
+                            view.showToast(getContext().getString(R.string.erro));
+                        }
+                    });
+
                 }
                 else {
                     view.showToast(getContext().getString(R.string.erro));
+                    Log.e("Contatos", "Erro ao carregar os Contatos. " + response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<ArrayList<Contato>> call, Throwable t) {
                 view.showToast(getContext().getString(R.string.erro));
-            }
-        });
-    }
-
-    private void carregarPerfis() {
-        new Facebook(getContext()).carregarContatos(listaContatos, new ICallback() {
-
-            @Override
-            public void onSuccess() {
-                view.onLoadListaContatos(listaContatos);
-
-                for (Contato contato : listaContatos) {
-                    try {
-                        contato.getUsuario().addObserver(ContatosPresenter.this);
-                    }
-                    catch (Exception e) {
-                        Log.e("Contatos", "Erro ao adicionar Observer. " + e.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onError(String mensagemErro) {
-                Log.e("Carregar Contatos", mensagemErro);
-                view.showToast(getContext().getString(R.string.erro));
+                Log.e("Contatos", "Erro ao carregar os Contatos", t);
             }
         });
     }

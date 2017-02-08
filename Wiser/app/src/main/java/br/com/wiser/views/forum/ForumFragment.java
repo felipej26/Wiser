@@ -12,6 +12,7 @@ import android.widget.Button;
 import java.util.LinkedList;
 
 import br.com.wiser.R;
+import br.com.wiser.Sistema;
 import br.com.wiser.presenters.discussao.DiscussaoPresenter;
 import br.com.wiser.presenters.forum.ForumPresenter;
 import br.com.wiser.views.AbstractFragment;
@@ -61,7 +62,7 @@ public class ForumFragment extends AbstractFragment implements IForumView, IDisc
 
     @Override
     public void onClickPerfil(int posicao) {
-        discussaoPresenter.openPerfil(adapter.getItem(posicao).getUsuario());
+        discussaoPresenter.openPerfil(Sistema.getListaUsuarios().get(adapter.getItem(posicao).getUsuario()));
     }
 
     @Override
@@ -105,7 +106,7 @@ public class ForumFragment extends AbstractFragment implements IForumView, IDisc
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-        adapter = new DiscussaoCardViewAdapter(this, new LinkedList<Discussao>());
+        adapter = new DiscussaoCardViewAdapter(this);
         recyclerView.setAdapter(adapter);
     }
 

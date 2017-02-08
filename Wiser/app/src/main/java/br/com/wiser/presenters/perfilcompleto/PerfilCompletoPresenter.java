@@ -2,10 +2,20 @@ package br.com.wiser.presenters.perfilcompleto;
 
 import android.content.Intent;
 import android.util.Log;
+import android.view.View;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.APIClient;
+import br.com.wiser.interfaces.ICallback;
+import br.com.wiser.models.forum.Discussao;
+import br.com.wiser.models.forum.IForumService;
+import br.com.wiser.models.forum.Resposta;
+import br.com.wiser.models.usuario.IUsuarioService;
 import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.models.conversas.Conversas;
 import br.com.wiser.models.contatos.IContatosService;
@@ -23,14 +33,24 @@ import retrofit2.Response;
 public class PerfilCompletoPresenter extends Presenter<IPerfilCompletoView> {
 
     private IContatosService service;
+    private IUsuarioService usuarioService;
+    private IForumService forumService;
+
     private Usuario usuario;
+
+    private LinkedList<Discussao> listaDiscussoes;
 
     public void onCreate(IPerfilCompletoView view, Usuario usuario) {
         super.onCreate(view);
         view.onInitView();
 
         service = APIClient.getClient().create(IContatosService.class);
+        usuarioService = APIClient.getClient().create(IUsuarioService.class);
+        forumService = APIClient.getClient().create(IForumService.class);
+
         this.usuario = usuario;
+
+        view.onSetVisibilityProgressBar(View.VISIBLE);
 
         if (Sistema.getUsuario().getUserID() == usuario.getUserID()) {
             view.onLoadAsUser();
@@ -48,6 +68,59 @@ public class PerfilCompletoPresenter extends Presenter<IPerfilCompletoView> {
         view.onSetTextLblIdiomaNivel(view.getContext().getString(R.string.fluencia_idioma,
                 Sistema.getDescricaoFluencia(usuario.getFluencia()), Sistema.getDescricaoIdioma(usuario.getIdioma())));
         view.onSetTextLblStatus(Utils.decode(usuario.getStatus()));
+
+        carregarDiscussoes();
+    }
+
+    private void carregarDiscussoes() {
+
+        Call<LinkedList<Discussao>> call = forumService.carregarDiscussoes(usuario.getUserID(), true);
+        call.enqueue(new Callback<LinkedList<Discussao>>() {
+            @Override
+            public void onResponse(Call<LinkedList<Discussao>> call, Response<LinkedList<Discussao>> response) {
+                view.onSetVisibilityProgressBar(View.INVISIBLE);
+
+                if (response.isSuccessful()) {
+                    if (response.body().size() == 0) {
+                        view.showToast(getContext().getString(R.string.erro_usuario_sem_discussao));
+                        return;
+                    }
+
+                    listaDiscussoes = response.body();
+                    carregarUsuarios();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LinkedList<Discussao>> call, Throwable t) {
+                view.onSetVisibilityProgressBar(View.INVISIBLE);
+            }
+        });
+    }
+
+    private void carregarUsuarios() {
+        List<Long> usuariosParaCarregarAPI = new ArrayList<>();
+
+        for (Discussao discussao : listaDiscussoes) {
+            for (Resposta resposta : discussao.getListaRespostas()) {
+                if (!Sistema.getListaUsuarios().containsKey(resposta.getUsuario())) {
+                    Sistema.getListaUsuarios().put(resposta.getUsuario(), new Usuario(resposta.getUsuario()));
+                    usuariosParaCarregarAPI.add(resposta.getUsuario());
+                }
+            }
+        }
+
+        Sistema.carregarUsuarios(getContext(), usuariosParaCarregarAPI, new ICallback() {
+            @Override
+            public void onSuccess() {
+                view.onLoadListaDiscussoes(listaDiscussoes);
+            }
+
+            @Override
+            public void onError(String mensagemErro) {
+                Log.e("Carregar Perfis", mensagemErro);
+            }
+        });
     }
 
     public void adicionarContato() {
@@ -75,7 +148,7 @@ public class PerfilCompletoPresenter extends Presenter<IPerfilCompletoView> {
 
     public void openChat() {
         Conversas conversa = new Conversas();
-        conversa.setDestinatario(usuario);
+        conversa.setDestinatario(usuario.getUserID());
 
         Intent i = new Intent(getContext(), MensagensActivity.class);
         i.putExtra(Sistema.CONVERSA, conversa);

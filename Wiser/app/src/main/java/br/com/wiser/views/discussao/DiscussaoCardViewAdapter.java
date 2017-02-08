@@ -29,9 +29,8 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
     private IDiscussaoView view;
     private List<Discussao> listaDiscussoes;
 
-    public DiscussaoCardViewAdapter(IDiscussaoView view, List<Discussao> listaDiscussoes) {
+    public DiscussaoCardViewAdapter(IDiscussaoView view) {
         this.view = view;
-        this.listaDiscussoes = listaDiscussoes;
     }
 
     @Override
@@ -48,15 +47,15 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
         Discussao objDiscussao = listaDiscussoes.get(position);
         Usuario usuario = null;
 
-        if (Sistema.getListaUsuarios().containsKey(objDiscussao.getUsuario().getUserID())) {
-            usuario = Sistema.getListaUsuarios().get(objDiscussao.getUsuario().getUserID());
+        if (Sistema.getListaUsuarios().containsKey(objDiscussao.getUsuario())) {
+            usuario = Sistema.getListaUsuarios().get(objDiscussao.getUsuario());
         }
 
         Utils.loadImageInBackground(view.getContext(), usuario.getPerfil().getUrlProfilePicture(), viewHolder.imgPerfil, viewHolder.prgBarra);
         viewHolder.lblIDDiscussao.setText("#" + objDiscussao.getId());
         viewHolder.lblAutorDiscussao.setText(usuario.getPerfil().getFirstName());
-        viewHolder.lblTituloDiscussao.setText(objDiscussao.getTitulo());
-        viewHolder.lblDescricaoDiscussao.setText(objDiscussao.getDescricao());
+        viewHolder.lblTituloDiscussao.setText(Utils.decode(objDiscussao.getTitulo()));
+        viewHolder.lblDescricaoDiscussao.setText(Utils.decode(objDiscussao.getDescricao()));
         viewHolder.lblContRespostas.setText(
                 view.getContext().getString(objDiscussao.getListaRespostas().size() == 1 ? R.string.resposta : R.string.respostas,
                         objDiscussao.getListaRespostas().size()));
@@ -72,6 +71,7 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
 
     @Override
     public int getItemCount() {
+        if (listaDiscussoes == null) return 0;
         return listaDiscussoes.size();
     }
 

@@ -20,7 +20,7 @@ public class Discussao implements Serializable {
     private long id;
 
     @SerializedName("usuario")
-    private Usuario usuario;
+    private long usuario;
 
     @SerializedName("titulo")
     private String titulo;
@@ -37,8 +37,6 @@ public class Discussao implements Serializable {
     @SerializedName("respostas")
     private LinkedList<Resposta> listaRespostas = new LinkedList<Resposta>();
 
-    private Map<Long, Usuario> listaUsuariosRespostas = new HashMap<>();
-
     public long getId() {
         return id;
     }
@@ -47,11 +45,11 @@ public class Discussao implements Serializable {
         this.id = id;
     }
 
-    public Usuario getUsuario() {
+    public long getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(Usuario usuario) {
+    public void setUsuario(long usuario) {
         this.usuario = usuario;
     }
 
@@ -93,13 +91,5 @@ public class Discussao implements Serializable {
 
     public void setListaRespostas(LinkedList<Resposta> listaRespostas) {
         this.listaRespostas = listaRespostas;
-    }
-
-    public Map<Long, Usuario> getListaUsuariosRespostas() {
-        return listaUsuariosRespostas;
-    }
-
-    public void setListaUsuariosRespostas(Map<Long, Usuario> listaUsuariosRespostas) {
-        this.listaUsuariosRespostas = listaUsuariosRespostas;
     }
 }

@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import java.util.LinkedList;
 
 import br.com.wiser.R;
+import br.com.wiser.Sistema;
 import br.com.wiser.models.forum.Discussao;
 import br.com.wiser.presenters.discussao.DiscussaoPresenter;
 import br.com.wiser.presenters.minhasdiscussoes.MinhasDiscussoesPresenter;
@@ -57,7 +58,7 @@ public class MinhasDiscussoesActivity extends AbstractActivity implements IMinha
 
     @Override
     public void onClickPerfil(int posicao) {
-        discussaoPresenter.openPerfil(adapter.getItem(posicao).getUsuario());
+        discussaoPresenter.openPerfil(Sistema.getListaUsuarios().get(adapter.getItem(posicao).getUsuario()));
     }
 
     @Override
@@ -88,7 +89,7 @@ public class MinhasDiscussoesActivity extends AbstractActivity implements IMinha
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(MinhasDiscussoesActivity.this));
 
-        adapter = new DiscussaoCardViewAdapter(MinhasDiscussoesActivity.this, new LinkedList<Discussao>());
+        adapter = new DiscussaoCardViewAdapter(MinhasDiscussoesActivity.this);
         recyclerView.setAdapter(adapter);
     }
 

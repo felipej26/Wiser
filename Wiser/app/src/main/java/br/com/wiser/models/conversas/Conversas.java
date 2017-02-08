@@ -19,8 +19,8 @@ public class Conversas implements Serializable {
     @SerializedName("id")
     private long id = 0;
 
-    @SerializedName("usuario")
-    private Usuario destinatario = new Usuario(0);
+    @SerializedName("destinatario")
+    private long destinatario;
 
     @SerializedName("mensagens")
     private LinkedList<Mensagem> mensagens = new LinkedList<>();
@@ -36,11 +36,11 @@ public class Conversas implements Serializable {
         this.id = id;
     }
 
-    public Usuario getDestinatario() {
+    public long getDestinatario() {
         return destinatario;
     }
 
-    public void setDestinatario(Usuario destinatario) {
+    public void setDestinatario(long destinatario) {
         this.destinatario = destinatario;
     }
 

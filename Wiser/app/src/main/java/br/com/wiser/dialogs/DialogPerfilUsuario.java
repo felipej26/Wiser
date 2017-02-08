@@ -85,7 +85,7 @@ public class DialogPerfilUsuario {
                     public void onClick(View v) {
                         Intent i = new Intent(v.getContext(), MensagensActivity.class);
                         Conversas conversa = new Conversas();
-                        conversa.setDestinatario(contato);
+                        conversa.setDestinatario(contato.getUserID());
                         i.putExtra(Sistema.CONVERSA, conversa);
                         v.getContext().startActivity(i);
                     }
