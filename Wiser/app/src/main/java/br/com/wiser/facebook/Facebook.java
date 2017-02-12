@@ -23,7 +23,10 @@ import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 
+import junit.framework.Assert;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
@@ -225,28 +228,44 @@ public class Facebook {
         }
     }
 
-    public void carregarPaginasEmComum(final Long destinatario, final ICallbackPaginas callbackPaginas) {
+    public void carregarPaginasEmComum(final long destinatario, final ICallbackPaginas callbackPaginas) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                carregarContextID(destinatario, new ICallbackContextID() {
+                    @Override
+                    public void onSuccess(String userContextID) {
+                        carregarPaginasEmComum(userContextID, callbackPaginas);
+                    }
+
+                    @Override
+                    public void onError(String mensagemErro) {
+
+                    }
+                });
+            }
+        }).start();
+    }
+
+    private void carregarPaginasEmComum(final String userContextID, final ICallbackPaginas callbackPaginas) {
         final HashSet<Pagina> paginas = new HashSet<>();
         final Bundle parametros = new Bundle();
 
-        parametros.putString("fields", "context.fields(mutual_likes.fields(category,name,id,is_verified))");
-
         final GraphRequest.Callback graphCallback = new GraphRequest.Callback() {
             @Override
-            public void onCompleted(GraphResponse response) {
+            public void onCompleted(GraphResponse graphResponse) {
                 JSONArray json;
 
                 try {
-                    if (response != null) {
-                        if (response.getError() != null) {
-                            Log.e("Facebook", "Erro ao carregar as Paginas em Comum.", response.getError().getException());
+                    if (graphResponse != null) {
+                        if (graphResponse.getError() != null) {
+                            Log.e("Facebook", "Erro ao carregar as Paginas em Comum.", graphResponse.getError().getException());
                             callbackPaginas.setResponse(paginas);
                             return;
                         }
 
-                        json = response.getJSONObject()
-                                .getJSONObject("context")
-                                .getJSONObject("mutual_likes")
+                        json = graphResponse.getJSONObject()
                                 .getJSONArray("data");
 
                         if (json != null) {
@@ -265,7 +284,7 @@ public class Facebook {
                         }
                     }
 
-                    GraphRequest nextRequest = response.getRequestForPagedResults(GraphResponse.PagingDirection.NEXT);
+                    GraphRequest nextRequest = graphResponse.getRequestForPagedResults(GraphResponse.PagingDirection.NEXT);
                     if (nextRequest != null) {
                         nextRequest.setCallback(this);
                         nextRequest.executeAndWait();
@@ -275,21 +294,52 @@ public class Facebook {
                     }
                 }
                 catch (Exception e) {
-                    Log.e("Facebook", "Erro ao carregar as Paginas em Comum", e);
+                    e.printStackTrace();
                 }
             }
         };
+
+        parametros.putString("fields", "category,name,id,is_verified");
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 new GraphRequest(createAccessToken(Sistema.getUsuario()),
-                        "/" + Sistema.getListaUsuarios().get(destinatario).getFacebookID(),
+                        "/" + userContextID + "/mutual_likes",
                         parametros,
                         HttpMethod.GET,
                         graphCallback).executeAndWait();
             }
         }).start();
+    }
+
+    private void carregarContextID(Long destinatario, final ICallbackContextID callback) {
+        GraphRequest request = GraphRequest.newGraphPathRequest(
+                createAccessToken(Sistema.getUsuario()),
+                "/" + Sistema.getListaUsuarios().get(destinatario).getFacebookID(),
+                new GraphRequest.Callback() {
+                    @Override
+                    public void onCompleted(GraphResponse response) {
+                        if (response.getError() == null) {
+                            try {
+                                callback.onSuccess(response.getJSONObject()
+                                        .getJSONObject("context")
+                                        .getString("id"));
+                            }
+                            catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        else {
+                            callback.onError(response.getError().getErrorMessage());
+                        }
+                    }
+                });
+
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "context.fields(id)");
+        request.setParameters(parameters);
+        request.executeAsync();
     }
 
     private GraphRequest getGraphRequestCarregarPerfil(final Usuario usuario, final ICallback callback) {
@@ -408,5 +458,10 @@ public class Facebook {
         catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private interface ICallbackContextID {
+        void onSuccess(String userContextID);
+        void onError(String mensagemErro);
     }
 }
