@@ -59,6 +59,7 @@ public class NovaDiscussaoPresenter extends Presenter<INovaDiscussaoView> {
             @Override
             public void onClick() {
                 salvarDiscussao(titulo, descricao);
+                view.getActivity().finish();
             }
         });
         confirmar.show();

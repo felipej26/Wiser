@@ -123,4 +123,10 @@ public class ForumFragment extends AbstractFragment implements IForumView, IDisc
 
         pgbLoading.setVisibility(visibility);
     }
+
+    @Override
+    public void onResume() {
+        forumPresenter.atualizarDiscussoes();
+        super.onResume();
+    }
 }

@@ -8,7 +8,7 @@
     <string name="app_configuracoes_item_status">Status</string>
     <string name="app_sobre_title">Sobre</string>
     <string name="app_sobre_item_versao">Versão %1$s</string>
-    <string name="app_sobre_item_copyright" translatable="false">© 2016-2016 FATEC CPB</string>
+    <string name="app_sobre_item_copyright" translatable="false">© 2016-2017 FATEC CPB</string>
     <string name="app_pesquisa_title">Encontrar Pessoas</string>
     <string name="chat_mensagens_title">Mensagens</string>
     <string name="chat_pesquisa_title">Pesquisar</string>

@@ -14,7 +14,8 @@
         android:layout_alignBottom="@+id/btnProcurarDiscussao"
         android:hint="@string/procure_por"
         android:singleLine="true"
-        android:textColor="#3a3939"/>
+        android:textColor="#3a3939"
+        android:textSize="16sp" />
 
     <Button
         android:layout_width="wrap_content"

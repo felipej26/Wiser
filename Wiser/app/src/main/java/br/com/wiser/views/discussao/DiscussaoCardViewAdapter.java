@@ -46,16 +46,21 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         Discussao objDiscussao = listaDiscussoes.get(position);
         Usuario usuario = null;
+        String texto = objDiscussao.getDescricao();
 
         if (Sistema.getListaUsuarios().containsKey(objDiscussao.getUsuario())) {
             usuario = Sistema.getListaUsuarios().get(objDiscussao.getUsuario());
+        }
+
+        if(texto.length() > 80){
+            texto = texto.substring(0, 80) + "...";
         }
 
         Utils.loadImageInBackground(view.getContext(), usuario.getPerfil().getUrlProfilePicture(), viewHolder.imgPerfil, viewHolder.prgBarra);
         viewHolder.lblIDDiscussao.setText("#" + objDiscussao.getId());
         viewHolder.lblAutorDiscussao.setText(usuario.getPerfil().getFirstName());
         viewHolder.lblTituloDiscussao.setText(Utils.decode(objDiscussao.getTitulo()));
-        viewHolder.lblDescricaoDiscussao.setText(Utils.decode(objDiscussao.getDescricao()));
+        viewHolder.lblDescricaoDiscussao.setText(Utils.decode(texto));
         viewHolder.lblContRespostas.setText(
                 view.getContext().getString(objDiscussao.getListaRespostas().size() == 1 ? R.string.resposta : R.string.respostas,
                         objDiscussao.getListaRespostas().size()));
