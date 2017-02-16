@@ -14,6 +14,7 @@ import br.com.wiser.Sistema;
 import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.presenters.usuariosencontrados.UsuariosEncontradosPresenter;
 import br.com.wiser.views.AbstractActivity;
+import android.widget.ProgressBar;
 
 /**
  * Created by Jefferson on 31/03/2016.
@@ -24,6 +25,7 @@ public class UsuariosEncontradosActivity extends AbstractActivity implements IUs
 
     private UsuariosEncontradosAdapter adapter;
     private GridView grdResultado;
+    private ProgressBar pgbLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,8 @@ public class UsuariosEncontradosActivity extends AbstractActivity implements IUs
                 usuariosEncontradosPresenter.abrirPerfil(position);
             }
         });
+
+        pgbLoading = (ProgressBar) findViewById(R.id.pgbLoading);
     }
 
     @Override
@@ -68,5 +72,14 @@ public class UsuariosEncontradosActivity extends AbstractActivity implements IUs
                 adapter.notifyDataSetChanged();
             }
         });
+    }
+
+    @Override
+    public void onSetVisibilityProgressBar(int visibility) {
+        if (visibility == View.VISIBLE) {
+            pgbLoading.bringToFront();
+        }
+
+        pgbLoading.setVisibility(visibility);
     }
 }

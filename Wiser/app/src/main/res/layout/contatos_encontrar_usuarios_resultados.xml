@@ -14,4 +14,17 @@
         android:clickable="true"
         android:gravity="center"/>
 
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pgbLoading"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:progressDrawable="@drawable/circular_loading"
+        android:visibility="invisible"
+        android:progressTint="@color/colorAccent"
+        android:indeterminateTint="@color/colorAccent"
+        android:indeterminateTintMode="src_in" />
+
 </RelativeLayout>

@@ -1,10 +1,13 @@
 package br.com.wiser.views.mensagens;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -135,7 +138,7 @@ public class MensagensActivity extends AbstractActivity implements IMensagensVie
 
     @Override
     public void onSetPositionRecyclerView(int posicao) {
-        recyclerView.scrollToPosition(posicao);
+        recyclerView.getLayoutManager().scrollToPosition(posicao);
     }
 
     @Override

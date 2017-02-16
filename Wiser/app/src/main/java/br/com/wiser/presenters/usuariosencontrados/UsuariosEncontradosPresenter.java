@@ -1,6 +1,7 @@
 package br.com.wiser.presenters.usuariosencontrados;
 
 import android.util.Log;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.Observable;
@@ -20,10 +21,12 @@ public class UsuariosEncontradosPresenter extends Presenter<IUsuariosEncontrados
 
     private ArrayList<Usuario> listaUsuarios;
 
-    public void onCreate(IUsuariosEncontradosView view, final ArrayList<Usuario> listaUsuarios) {
+    public void onCreate(final IUsuariosEncontradosView view, final ArrayList<Usuario> listaUsuarios) {
         super.onCreate(view);
         view.onInitView();
         this.listaUsuarios = listaUsuarios;
+
+        view.onSetVisibilityProgressBar(View.VISIBLE);
 
         new Facebook(getContext()).carregarUsuarios(listaUsuarios, new ICallback() {
             @Override
@@ -33,10 +36,13 @@ public class UsuariosEncontradosPresenter extends Presenter<IUsuariosEncontrados
                 for (Usuario usuario : listaUsuarios) {
                     usuario.addObserver(UsuariosEncontradosPresenter.this);
                 }
+
+                view.onSetVisibilityProgressBar(View.INVISIBLE);
             }
 
             @Override
             public void onError(String mensagemErro) {
+                view.onSetVisibilityProgressBar(View.INVISIBLE);
                 Log.e("Carregar Usuarios", mensagemErro);
             }
         });

@@ -38,6 +38,8 @@ public class MensagensPresenter extends Presenter<IMensagensView> {
     private IMensagensService service;
     private Conversas conversa;
 
+    private long qntdMensagens = 0;
+
     public void onCreate(IMensagensView view, Conversas conversa) {
         super.onCreate(view);
         view.onInitView();
@@ -46,7 +48,6 @@ public class MensagensPresenter extends Presenter<IMensagensView> {
         this.conversa = conversa;
 
         view.onSetTitleActionBar(Sistema.getListaUsuarios().get(conversa.getDestinatario()).getPerfil().getFullName());
-
 
         carregarMensagens();
 
@@ -68,6 +69,7 @@ public class MensagensPresenter extends Presenter<IMensagensView> {
 
         for (Conversas conversa : conversas) {
             Usuario usuario = Sistema.getListaUsuarios().get(conversa.getDestinatario());
+
             if (Sistema.getListaUsuarios().get(this.conversa.getDestinatario()).getUserID() == usuario.getUserID()) {
                 this.conversa = conversa;
                 carregarMensagens();
@@ -77,14 +79,13 @@ public class MensagensPresenter extends Presenter<IMensagensView> {
     }
 
     private void carregarMensagens() {
-        boolean hasNewMessages = conversa.getMensagens().size() != view.onGetQntMensagens();
-
         view.onLoadListaMensagens(conversa.getMensagens());
 
-        if (hasNewMessages) {
-            vibrar();
-            view.onSetPositionRecyclerView(view.onGetQntMensagens() - 1);
+        if (qntdMensagens != conversa.getMensagens().size()) {
+            view.onSetPositionRecyclerView(conversa.getMensagens().size() - 1);
             atualizarMensagensLidas();
+
+            qntdMensagens = conversa.getMensagens().size();
         }
     }
 
@@ -101,7 +102,7 @@ public class MensagensPresenter extends Presenter<IMensagensView> {
             public void onResponse(Call call, Response response) {
                 if (response.isSuccessful()) {
                     for (Mensagem m : conversa.getMensagens()) {
-                        if (m.isDestinatario()) {
+                        if (!m.isDestinatario()) {
                             m.setLida(true);
                         }
                     }

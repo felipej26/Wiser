@@ -118,6 +118,10 @@ public class Sistema {
                     Log.i("Serviço", "Carregou Lista de Assuntos");
                     callback.onSuccess();
                 }
+                else {
+                    Log.e("Inicializar Sistema", "Erro ao carregar a Lista de Assuntos. Erro: " + response.message());
+                    callback.onError(response.message());
+                }
             }
 
             @Override
@@ -139,6 +143,10 @@ public class Sistema {
                     listaIdiomas.addAll(response.body());
                     Log.i("Serviço", "Carregou Lista de Idiomas");
                     callback.onSuccess();
+                }
+                else {
+                    Log.e("Inicializar Sistema", "Erro ao carregar a Lista de Idiomas. Erro: " + response.message());
+                    callback.onError(response.message());
                 }
             }
 
@@ -162,6 +170,10 @@ public class Sistema {
                     Log.i("Serviço", "Carregou Lista de Fluencias");
                     callback.onSuccess();
                 }
+                else {
+                    Log.e("Inicializar Sistema", "Erro ao carregar a Lista de Fluencias. Erro: " + response.message());
+                    callback.onError(response.message());
+                }
             }
 
             @Override
@@ -184,6 +196,10 @@ public class Sistema {
                             model.getUserID(), Arrays.asList(model.getPermissions()), null, null, null, null);
                     Log.i("Serviço", "Carregou Access Token");
                     callback.onSuccess();
+                }
+                else {
+                    Log.e("Inicializar Sistema", "Erro ao carregar o Access Token. Erro: " + response.message());
+                    callback.onError(response.message());
                 }
             }
 

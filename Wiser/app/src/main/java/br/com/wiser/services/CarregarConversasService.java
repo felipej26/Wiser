@@ -82,6 +82,12 @@ public class CarregarConversasService extends Service implements Observer {
 
                 while (true) {
                     try {
+
+                        if (Sistema.getUsuario() == null) {
+                            stopSelf();
+                            return;
+                        }
+
                         idUltimaMensagem = 0;
                         lock = true;
 

@@ -104,7 +104,7 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
         public Button btnDesativar;
         public Button btnCompartilhar;
 
-        public ViewHolder(View view) {
+        public ViewHolder(final View view) {
             super(view);
 
             lblIDDiscussao = (TextView) view.findViewById(R.id.lblIDDiscussao);
@@ -142,7 +142,7 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
             btnCompartilhar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DiscussaoCardViewAdapter.this.view.compartilharDiscussao(v);
+                    DiscussaoCardViewAdapter.this.view.compartilharDiscussao(view);
                 }
             });
         }

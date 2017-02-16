@@ -82,7 +82,6 @@ public class PerfilCompletoPresenter extends Presenter<IPerfilCompletoView> {
 
                 if (response.isSuccessful()) {
                     if (response.body().size() == 0) {
-                        view.showToast(getContext().getString(R.string.erro_usuario_sem_discussao));
                         return;
                     }
 

@@ -73,6 +73,7 @@ public class LoginPresenter extends Presenter<ILoginView> {
 
     public void setCallbackManager(int requestCode, int resultCode, Intent data) {
         facebook.callbackManager(requestCode, resultCode, data);
+        checkLogin();
     }
 
     public void setOnClickBtnLogin() {
@@ -152,7 +153,9 @@ public class LoginPresenter extends Presenter<ILoginView> {
     }
 
     private void stopService() {
-        getContext().stopService(carregarConversasServices);
+        if (carregarConversasServices != null) {
+            getContext().stopService(carregarConversasServices);
+        }
     }
 
     public void tratarPermissioes(int[] grantResults) {

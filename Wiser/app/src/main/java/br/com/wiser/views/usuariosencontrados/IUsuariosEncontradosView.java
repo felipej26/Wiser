@@ -14,4 +14,5 @@ public interface IUsuariosEncontradosView extends IView {
     void onInitView();
     void onLoad(ArrayList<Usuario> listaUsuarios);
     void onNotifyDataSetChanged();
+    void onSetVisibilityProgressBar(int visibility);
 }

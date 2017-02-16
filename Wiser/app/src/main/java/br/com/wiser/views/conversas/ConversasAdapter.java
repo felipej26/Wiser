@@ -9,6 +9,8 @@ import android.widget.TextView;
 import android.widget.ProgressBar;
 import android.widget.ImageView;
 
+import org.w3c.dom.Text;
+
 import java.util.LinkedList;
 
 import br.com.wiser.R;
@@ -49,6 +51,7 @@ public class ConversasAdapter extends RecyclerView.Adapter<ConversasAdapter.View
         holder.viewSeparator.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
 
         Utils.loadImageInBackground(context, Sistema.getListaUsuarios().get(m.getDestinatario()).getPerfil().getUrlProfilePicture(), holder.imgPerfil, holder.prgBarra);
+        holder.lblNome.setText(Sistema.getListaUsuarios().get(m.getDestinatario()).getPerfil().getFullName());
         holder.lblDataHora.setText(UtilsDate.formatDate(m.getMensagens().getLast().getData(), UtilsDate.HHMM));
         holder.lblMensagens.setText(m.getMensagens().getLast().getMensagem());
         holder.lblContMensagens.setText(m.getContMsgNaoLidas() + " " + context.getString(m.getContMsgNaoLidas() <= 1 ? R.string.nao_lida : R.string.nao_lidas));
@@ -75,6 +78,7 @@ public class ConversasAdapter extends RecyclerView.Adapter<ConversasAdapter.View
         public ImageView imgPerfil;
         public ProgressBar prgBarra;
 
+        public TextView lblNome;
         public TextView lblDataHora;
         public TextView lblMensagens;
         public TextView lblContMensagens;
@@ -88,6 +92,7 @@ public class ConversasAdapter extends RecyclerView.Adapter<ConversasAdapter.View
             imgPerfil = (ImageView) itemLayoutView.findViewById(R.id.imgPerfil);
             prgBarra = (ProgressBar) itemLayoutView.findViewById(R.id.prgBarra);
 
+            lblNome = (TextView) itemLayoutView.findViewById(R.id.txtNome);
             lblDataHora = (TextView) itemLayoutView.findViewById(R.id.lblDataHora);
             lblMensagens = (TextView) itemLayoutView.findViewById(R.id.lblMensagens);
             lblContMensagens = (TextView) itemLayoutView.findViewById(R.id.lblContMensagens);
