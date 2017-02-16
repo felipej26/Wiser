@@ -38,8 +38,6 @@ public class DialogPerfilUsuario {
     private IUsuarioService usuarioService;
     private IForumService forumService;
 
-    private Usuario usuario;
-
     private AlertDialog alert;
     private AlertDialog.Builder builder;
     private View viewDetalhes;
@@ -76,43 +74,32 @@ public class DialogPerfilUsuario {
         if (Sistema.getUsuario().getUserID() == contato.getUserID()) {
             btnAbrirChat.setVisibility(View.INVISIBLE);
         }
-        else {
-            if (!contato.isContato()) {
-                btnAbrirChat.setText(R.string.adicionar_amigo);
-                btnAbrirChat.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        btnAbrirChat.setVisibility(View.INVISIBLE);
-                        Call<Object> call = service.adicionarContato(Sistema.getUsuario().getUserID(), usuario.getUserID());
-                        call.enqueue(new Callback<Object>() {
-                            @Override
-                            public void onResponse(Call<Object> call, Response<Object> response) {
-                                btnAbrirChat.setVisibility(View.VISIBLE);
-                                if (response.isSuccessful()) {
-                                    btnAbrirChat.setText(context.getString(R.string.enviar_mensagem));
-                                }
+        else if (!contato.isContato()) {
+            btnAbrirChat.setText(R.string.adicionar_amigo);
+            btnAbrirChat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    btnAbrirChat.setVisibility(View.INVISIBLE);
+                    Call<Object> call = service.adicionarContato(Sistema.getUsuario().getUserID(), contato.getUserID());
+                    call.enqueue(new Callback<Object>() {
+                        @Override
+                        public void onResponse(Call<Object> call, Response<Object> response) {
+                            btnAbrirChat.setVisibility(View.VISIBLE);
+                            if (response.isSuccessful()) {
+                                btnAbrirChat.setText(context.getString(R.string.enviar_mensagem));
+                                loadAsFriend(contato);
                             }
+                        }
 
-                            @Override
-                            public void onFailure(Call<Object> call, Throwable t) {
-                                btnAbrirChat.setVisibility(View.VISIBLE);
-                            }
-                        });
-                    }
-                });
-            }
-            else {
-                btnAbrirChat.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent i = new Intent(v.getContext(), MensagensActivity.class);
-                        Conversas conversa = new Conversas();
-                        conversa.setDestinatario(contato.getUserID());
-                        i.putExtra(Sistema.CONVERSA, conversa);
-                        v.getContext().startActivity(i);
-                    }
-                });
-            }
+                        @Override
+                        public void onFailure(Call<Object> call, Throwable t) {
+                            btnAbrirChat.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
+            });
+        } else {
+           loadAsFriend(contato);
         }
 
         btnPerfCompleto.setOnClickListener(new View.OnClickListener() {
@@ -128,5 +115,18 @@ public class DialogPerfilUsuario {
         builder.setView(viewDetalhes);
         alert = builder.create();
         alert.show();
+    }
+
+    public void loadAsFriend(final Usuario contato){
+        btnAbrirChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(v.getContext(), MensagensActivity.class);
+                Conversas conversa = new Conversas();
+                conversa.setDestinatario(contato.getUserID());
+                i.putExtra(Sistema.CONVERSA, conversa);
+                v.getContext().startActivity(i);
+            }
+        });
     }
 }

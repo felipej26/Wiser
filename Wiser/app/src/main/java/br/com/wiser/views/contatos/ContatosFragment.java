@@ -47,6 +47,12 @@ public class ContatosFragment extends AbstractFragment implements IContatosView 
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        contatosPresenter.onResume();
+    }
+
+    @Override
     public void onInitView() {
         btnEncontrarUsuarios = (Button) view.findViewById(R.id.btnEncontrarUsuarios);
         btnEncontrarUsuarios.setOnClickListener(new View.OnClickListener() {

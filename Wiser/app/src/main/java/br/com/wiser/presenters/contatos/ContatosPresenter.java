@@ -42,6 +42,9 @@ public class ContatosPresenter extends Presenter<IContatosView> implements Obser
         service = APIClient.getClient().create(IContatosService.class);
 
         listaContatos = new ArrayList<>();
+    }
+
+    public void onResume(){
         carregarContatos();
     }
 
