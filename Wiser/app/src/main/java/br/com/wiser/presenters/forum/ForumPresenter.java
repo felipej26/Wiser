@@ -46,7 +46,9 @@ public class ForumPresenter extends Presenter<IForumView> {
 
         service = APIClient.getClient().create(IForumService.class);
         usuarioService = APIClient.getClient().create(IUsuarioService.class);
+    }
 
+    public void onResume() {
         carregarListaDiscussoes();
     }
 

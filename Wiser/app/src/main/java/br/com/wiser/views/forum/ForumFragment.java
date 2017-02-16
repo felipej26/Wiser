@@ -56,6 +56,12 @@ public class ForumFragment extends AbstractFragment implements IForumView, IDisc
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        forumPresenter.onResume();
+    }
+
+    @Override
     public void onClick(int posicao) {
         forumPresenter.startDiscussao(posicao);
     }
@@ -122,11 +128,5 @@ public class ForumFragment extends AbstractFragment implements IForumView, IDisc
         }
 
         pgbLoading.setVisibility(visibility);
-    }
-
-    @Override
-    public void onResume() {
-        forumPresenter.atualizarDiscussoes();
-        super.onResume();
     }
 }
