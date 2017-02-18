@@ -59,7 +59,12 @@ public class Facebook {
     public Facebook(Context context) {
         this.context = context;
 
-        nomeIndisponivel = context.getResources().getString(R.string.usuario);
+        try {
+            nomeIndisponivel = context.getResources().getString(R.string.usuario);
+        }
+        catch (Exception e) {
+            nomeIndisponivel = "Usuário";
+        }
 
         if (!FacebookSdk.isInitialized()) {
             FacebookSdk.sdkInitialize(context, new FacebookSdk.InitializeCallback() {

@@ -9,11 +9,14 @@ import br.com.wiser.views.AbstractActivity;
 
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Button;
 
 public class SobreActivity extends AbstractActivity implements ISobreView {
 
     private SobrePresenter sobrePresenter;
     private TextView lblVersao;
+
+    private Button btnCompartilhar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,14 @@ public class SobreActivity extends AbstractActivity implements ISobreView {
     public void onInitView() {
         lblVersao = (TextView) findViewById(R.id.lblVersao);
         lblVersao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sobrePresenter.compartilharApp();
+            }
+        });
+
+        btnCompartilhar = (Button) findViewById(R.id.btnCompartilhar);
+        btnCompartilhar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sobrePresenter.compartilharApp();

@@ -50,7 +50,6 @@
                 android:layout_centerHorizontal="true"
                 android:layout_below="@id/imgPerfil"
                 android:layout_marginTop="10sp"
-                android:layout_marginLeft="5dp"
                 android:layout_toEndOf="@id/lblNomeDetalhe"
                 android:text="Idade"
                 android:textSize="25sp" />
