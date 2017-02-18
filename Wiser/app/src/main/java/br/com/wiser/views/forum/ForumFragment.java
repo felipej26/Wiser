@@ -13,6 +13,7 @@ import java.util.LinkedList;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
+import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.presenters.discussao.DiscussaoPresenter;
 import br.com.wiser.presenters.forum.ForumPresenter;
 import br.com.wiser.views.AbstractFragment;
@@ -73,7 +74,17 @@ public class ForumFragment extends AbstractFragment implements IForumView, IDisc
 
     @Override
     public void desativarDiscussao(int posicao) {
-        discussaoPresenter.confirmarDesativarDiscussao(adapter.getItem(posicao));
+        discussaoPresenter.confirmarDesativarDiscussao(adapter.getItem(posicao), new ICallback() {
+            @Override
+            public void onSuccess() {
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(String mensagemErro) {
+
+            }
+        });
     }
 
     @Override

@@ -9,6 +9,7 @@ import java.util.Map;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.APIClient;
+import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.models.forum.Resposta;
 import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.models.forum.Discussao;
@@ -33,10 +34,13 @@ public class DiscussaoPresenter extends Presenter<IDiscussaoView> {
     private IForumService service;
     private Discussao discussao;
 
+    public DiscussaoPresenter() {
+        service = APIClient.getClient().create(IForumService.class);
+    }
+
     public void onCreate(IDiscussaoView view, Discussao discussao) {
         super.onCreate(view);
 
-        service = APIClient.getClient().create(IForumService.class);
         this.discussao = discussao;
 
         if (view instanceof IDiscussaoCompletaView) {
@@ -117,13 +121,13 @@ public class DiscussaoPresenter extends Presenter<IDiscussaoView> {
         dialog.show(view.getContext(), usuario);
     }
 
-    public void confirmarDesativarDiscussao(final Discussao discussao) {
+    public void confirmarDesativarDiscussao(final Discussao discussao, final ICallback callback) {
         DialogConfirmar confirmar = new DialogConfirmar(getActivity());
 
         confirmar.setYesClick(new IDialog() {
             @Override
             public void onClick() {
-                desativarDiscussao(discussao);
+                desativarDiscussao(discussao, callback);
             }
         });
 
@@ -137,7 +141,19 @@ public class DiscussaoPresenter extends Presenter<IDiscussaoView> {
         confirmar.show();
     }
 
-    private void desativarDiscussao(Discussao discussao) {
+    private void desativarDiscussao(final Discussao discussao, final ICallback callback) {
+        Call<Object> call = service.desativarDiscussao(discussao.getId(), !discussao.isAtiva());
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                discussao.setAtiva(!discussao.isAtiva());
+                callback.onSuccess();
+            }
 
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
     }
 }

@@ -1,6 +1,5 @@
 package br.com.wiser.views.perfilcompleto;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,14 +11,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
+import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.models.forum.Discussao;
 import br.com.wiser.presenters.discussao.DiscussaoPresenter;
 import br.com.wiser.views.discussao.DiscussaoCardViewAdapter;
-import br.com.wiser.views.discussao.DiscussaoActivity;
 import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.presenters.perfilcompleto.PerfilCompletoPresenter;
 import br.com.wiser.utils.Utils;
@@ -164,7 +162,16 @@ public class PerfilCompletoActivity extends AbstractActivity implements IPerfilC
 
     @Override
     public void desativarDiscussao(int posicao) {
-        discussaoPresenter.confirmarDesativarDiscussao(adapter.getItem(posicao));
+        discussaoPresenter.confirmarDesativarDiscussao(adapter.getItem(posicao), new ICallback() {
+            @Override
+            public void onSuccess() {
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(String mensagemErro) {
+            }
+        });
     }
 
     @Override

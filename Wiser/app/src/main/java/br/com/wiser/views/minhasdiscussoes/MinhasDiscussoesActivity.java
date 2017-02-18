@@ -12,6 +12,7 @@ import java.util.LinkedList;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
+import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.models.forum.Discussao;
 import br.com.wiser.presenters.discussao.DiscussaoPresenter;
 import br.com.wiser.presenters.minhasdiscussoes.MinhasDiscussoesPresenter;
@@ -63,7 +64,16 @@ public class MinhasDiscussoesActivity extends AbstractActivity implements IMinha
 
     @Override
     public void desativarDiscussao(int posicao) {
-        discussaoPresenter.confirmarDesativarDiscussao(adapter.getItem(posicao));
+        discussaoPresenter.confirmarDesativarDiscussao(adapter.getItem(posicao), new ICallback() {
+            @Override
+            public void onSuccess() {
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(String mensagemErro) {
+            }
+        });
     }
 
     @Override

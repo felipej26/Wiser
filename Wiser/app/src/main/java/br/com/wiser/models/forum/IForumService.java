@@ -6,6 +6,7 @@ import java.util.Map;
 import br.com.wiser.views.IView;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -28,6 +29,7 @@ public interface IForumService {
     @POST("discussao/responderDiscussao")
     Call<Resposta> responderDiscussao(@Body Map<String, String> parametros);
 
+    @FormUrlEncoded
     @POST("discussao/desativarDiscussao")
-    Call<>
+    Call<Object> desativarDiscussao(@Field("id") long discussaoID, @Field("desativar") boolean desativar);
 }
