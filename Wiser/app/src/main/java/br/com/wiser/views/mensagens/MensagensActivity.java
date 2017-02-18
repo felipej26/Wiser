@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -54,16 +55,16 @@ public class MensagensActivity extends AbstractActivity implements IMensagensVie
     @Override
     protected void onStart() {
         super.onStart();
-        mensagensPresenter.onStart();
+        EventBus.getDefault().register(this);
     }
 
     @Override
     protected void onStop() {
-        mensagensPresenter.onStop();
+        EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onEvent(LinkedList<Conversas> conversas) {
         mensagensPresenter.onEvent(conversas);
     }
@@ -129,6 +130,11 @@ public class MensagensActivity extends AbstractActivity implements IMensagensVie
     @Override
     public void onLoadListaMensagens(LinkedList<Mensagem> listaMensagens) {
         adapter.setItems(listaMensagens);
+    }
+
+    @Override
+    public void onNotifyDataSetChanged() {
+        adapter.notifyDataSetChanged();
     }
 
     @Override

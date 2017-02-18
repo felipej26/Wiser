@@ -11,4 +11,5 @@ import br.com.wiser.views.IView;
 public interface IConversasView extends IView {
     void onInitView();
     void onLoadListaConversas(LinkedList<Conversas> listaConversas);
+    void onNotifyDataSetChanged();
 }

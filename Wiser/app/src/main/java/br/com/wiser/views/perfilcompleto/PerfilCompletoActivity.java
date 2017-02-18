@@ -46,8 +46,6 @@ public class PerfilCompletoActivity extends AbstractActivity implements IPerfilC
     private DiscussaoCardViewAdapter adapter;
     private ProgressBar prgBarra;
 
-    private List<Discussao> listaDiscussoes;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,8 +66,6 @@ public class PerfilCompletoActivity extends AbstractActivity implements IPerfilC
 
     @Override
     public void onInitView() {
-        listaDiscussoes = new LinkedList<>();
-
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         imgPerfil = (ImageView) findViewById(R.id.imgPerfil);
@@ -158,22 +154,17 @@ public class PerfilCompletoActivity extends AbstractActivity implements IPerfilC
 
     @Override
     public void onClick(int posicao) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("discussao", listaDiscussoes.get(posicao));
-
-        Intent i = new Intent(this, DiscussaoActivity.class);
-        i.putExtra("discussoes", bundle);
-        startActivity(i);
+        perfilCompletoPresenter.openDiscussao(posicao);
     }
 
     @Override
     public void onClickPerfil(int posicao) {
-        discussaoPresenter.openPerfil(Sistema.getListaUsuarios().get(listaDiscussoes.get(posicao).getUsuario()));
+        discussaoPresenter.openPerfil(Sistema.getListaUsuarios().get(adapter.getItem(posicao).getUsuario()));
     }
 
     @Override
-    public void desativarDiscussao(final int posicao) {
-        discussaoPresenter.confirmarDesativarDiscussao(listaDiscussoes.get(posicao));
+    public void desativarDiscussao(int posicao) {
+        discussaoPresenter.confirmarDesativarDiscussao(adapter.getItem(posicao));
     }
 
     @Override

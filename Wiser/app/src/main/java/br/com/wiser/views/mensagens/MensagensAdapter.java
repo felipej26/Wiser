@@ -12,6 +12,7 @@ import java.util.List;
 
 import br.com.wiser.R;
 import br.com.wiser.models.mensagens.Mensagem;
+import br.com.wiser.utils.Utils;
 import br.com.wiser.utils.UtilsDate;
 
 /**
@@ -55,7 +56,7 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         Mensagem m = mensagens.get(position);
         holder.lblDataHora.setText(UtilsDate.formatDate(m.getData(), UtilsDate.HHMM));
-        holder.lblMensagem.setText(m.getMensagem().trim());
+        holder.lblMensagem.setText(Utils.decode(m.getMensagem().trim()));
     }
 
     @Override

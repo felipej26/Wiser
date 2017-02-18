@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -44,19 +45,25 @@ public class ConversasFragment extends AbstractFragment implements IConversasVie
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        conversasPresenter.onResume();
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
-        conversasPresenter.onStart();
+        EventBus.getDefault().register(this);
     }
 
     @Override
     public void onStop() {
-        conversasPresenter.onStop();
+        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onEvent(final LinkedList<Conversas> listaConversas) {
         conversasPresenter.onEvent(listaConversas);
     }
@@ -80,5 +87,15 @@ public class ConversasFragment extends AbstractFragment implements IConversasVie
     @Override
     public void onLoadListaConversas(LinkedList<Conversas> listaConversas) {
         adapter.setItems(listaConversas);
+    }
+
+    @Override
+    public void onNotifyDataSetChanged() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 }

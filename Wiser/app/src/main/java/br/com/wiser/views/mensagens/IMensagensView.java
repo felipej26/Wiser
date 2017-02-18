@@ -11,6 +11,7 @@ import br.com.wiser.dialogs.DialogSugestoes;
 public interface IMensagensView extends DialogSugestoes.CallbackSugestao {
     void onInitView();
     void onLoadListaMensagens(LinkedList<Mensagem> listaMensagens);
+    void onNotifyDataSetChanged();
     void onSetTitleActionBar(String titulo);
     void onSetPositionRecyclerView(int posicao);
     void onSetTextLblContLetras(String contLetras);

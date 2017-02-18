@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
@@ -42,10 +44,16 @@ public class ContatosPresenter extends Presenter<IContatosView> implements Obser
         service = APIClient.getClient().create(IContatosService.class);
 
         listaContatos = new ArrayList<>();
+        carregarContatos();
     }
 
     public void onResume(){
-        carregarContatos();
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                view.onNotifyDataSetChanged();
+            }
+        }, 1500);
     }
 
     private void carregarContatos() {
@@ -66,6 +74,15 @@ public class ContatosPresenter extends Presenter<IContatosView> implements Obser
                         @Override
                         public void onSuccess() {
                             view.onLoadListaContatos(listaContatos);
+
+                            for (Contato contato : listaContatos) {
+                                try {
+                                    //Sistema.getListaUsuarios().get(contato.getUsuario()).addObserver(ContatosPresenter.this);
+                                }
+                                catch (Exception ex) { }
+                            }
+
+                            view.onNotifyDataSetChanged();
                         }
 
                         @Override

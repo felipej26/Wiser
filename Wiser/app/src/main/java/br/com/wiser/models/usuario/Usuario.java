@@ -168,7 +168,7 @@ public class Usuario extends Observable implements Serializable {
             }
         }
         catch (Exception e) {
-            Log.d("Usuario", "Nenhum observer disponivel");
+
         }
     }
 

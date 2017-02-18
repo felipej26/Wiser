@@ -70,6 +70,8 @@ public class CarregarConversasService extends Service implements Observer {
 
         listaConversas = new LinkedList<>();
         listaMensagensNaoEnviadas = new HashMap<>();
+
+        EventBus.builder().logNoSubscriberMessages(false).build();
     }
 
     @Override
@@ -79,6 +81,7 @@ public class CarregarConversasService extends Service implements Observer {
             @Override
             public void run() {
                 long idUltimaMensagem;
+                final boolean[] primeiraVez = {true};
 
                 while (true) {
                     try {
@@ -108,12 +111,22 @@ public class CarregarConversasService extends Service implements Observer {
                                     adicionarNovasMensagens(response.body(), new CallbackConversas() {
                                         @Override
                                         public void onLoad(List<String> listaNovasMensagens) {
+
                                             if (listaNovasMensagens.size() > 0) {
                                                 Utils.vibrar(CarregarConversasService.this, 150);
                                                 notificar(listaNovasMensagens);
+                                                //EventBus.getDefault().post(listaConversas);
+                                                EventBus.getDefault().postSticky(listaConversas);
+                                            }
+                                            else {
+                                                if (primeiraVez[0]) {
+                                                    EventBus.getDefault().postSticky(listaConversas);
+                                                    primeiraVez[0] = false;
+                                                }
                                             }
 
-                                            EventBus.getDefault().post(listaConversas);
+                                            notificar(listaNovasMensagens);
+
                                             lock = false;
                                         }
                                     });
@@ -260,19 +273,23 @@ public class CarregarConversasService extends Service implements Observer {
         Sistema.carregarUsuarios(this, listaUsuarios, callback);
     }
 
-    private void notificar(List<String> listaNovasMensagens) {
+    private void notificar(List<String> listaMensagensNaoLidas) {
 
-        int notificacaoID = 1;
+        final int NOTIFICATION_ID = 1;
+
+        if (listaMensagensNaoLidas.size() == 0) {
+            return;
+        }
 
         NotificationCompat.Builder builder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.logo_wiser_notificacao)
                 .setContentTitle(getString(R.string.app_name))
-                .setContentText("Chegaram " + listaNovasMensagens.size() + " novas mensagens!");
+                .setContentText("Chegaram " + listaMensagensNaoLidas.size() + " novas mensagens!");
 
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
         inboxStyle.setBigContentTitle(getString(R.string.app_name));
 
-        for (String mensagem : listaNovasMensagens) {
+        for (String mensagem : listaMensagensNaoLidas) {
             System.out.println(mensagem);
             inboxStyle.addLine(mensagem);
         }
@@ -288,6 +305,6 @@ public class CarregarConversasService extends Service implements Observer {
         builder.setContentIntent(resultPendingIntent);
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        mNotificationManager.notify(notificacaoID, builder.build());
+        mNotificationManager.notify(NOTIFICATION_ID, builder.build());
     }
 }

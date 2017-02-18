@@ -55,7 +55,7 @@ public class DiscussaoRespostaAdapter extends RecyclerView.Adapter<DiscussaoResp
         holder.lblIDResposta.setText("#" + (position + 1));
         holder.lblAutor.setText(usuario.getPerfil().getFirstName());
         holder.lblDataHora.setText(UtilsDate.formatDate(r.getData(), UtilsDate.DDMMYYYY_HHMMSS));
-        holder.lblResposta.setText(r.getResposta());
+        holder.lblResposta.setText(Utils.decode(r.getResposta()));
     }
 
     @Override

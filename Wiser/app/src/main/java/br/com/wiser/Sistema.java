@@ -75,34 +75,54 @@ public class Sistema {
             /* Carrega linguagem do celular */
             appLinguagem = context.getResources().getConfiguration().locale.getLanguage();
 
-            ICallback callbackList = new ICallback() {
+            carregarAccessToken(new ICallback() {
                 @Override
                 public void onSuccess() {
-                    checkListas(callback);
+                    carregarListaIdiomas(new ICallback() {
+                        @Override
+                        public void onSuccess() {
+                            carregarListaFluencias(new ICallback() {
+                                @Override
+                                public void onSuccess() {
+                                    carregarListaAssuntos(new ICallback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            callback.onSuccess();
+                                        }
+
+                                        @Override
+                                        public void onError(String mensagemErro) {
+
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onError(String mensagemErro) {
+
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onError(String mensagemErro) {
+
+                        }
+                    });
                 }
 
                 @Override
                 public void onError(String mensagemErro) {
-                    callback.onError(mensagemErro);
-                }
-            };
 
-            carregarAccessToken(callbackList);
-            carregarListaIdiomas(callbackList);
-            carregarListaFluencias(callbackList);
-            carregarListaAssuntos(callbackList);
+                }
+            });
+
+
+
         }
         catch (Exception e) {
             Log.e("Inicializar Sistema", e.getMessage());
             callback.onError(e.getMessage());
-        }
-    }
-
-    private static void checkListas(ICallback callback) {
-        NUM_LISTAS_CARREGADAS++;
-
-        if (NUM_LISTAS_CARREGADAS == NUM_LISTAS_PARA_CARREGAR) {
-            callback.onSuccess();
         }
     }
 

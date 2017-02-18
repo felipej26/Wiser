@@ -39,6 +39,7 @@ public class MensagensPresenter extends Presenter<IMensagensView> {
     private Conversas conversa;
 
     private long qntdMensagens = 0;
+    private static boolean lock = false;
 
     public void onCreate(IMensagensView view, Conversas conversa) {
         super.onCreate(view);
@@ -55,14 +56,6 @@ public class MensagensPresenter extends Presenter<IMensagensView> {
             view.onSetVisibilityBtnSugestoes(View.INVISIBLE);
             carregarSugestoesAssuntos();
         }
-    }
-
-    public void onStart() {
-        EventBus.getDefault().register(view);
-    }
-
-    public void onStop() {
-        EventBus.getDefault().unregister(view);
     }
 
     public void onEvent(LinkedList<Conversas> conversas) {
@@ -102,9 +95,7 @@ public class MensagensPresenter extends Presenter<IMensagensView> {
             public void onResponse(Call call, Response response) {
                 if (response.isSuccessful()) {
                     for (Mensagem m : conversa.getMensagens()) {
-                        if (!m.isDestinatario()) {
-                            m.setLida(true);
-                        }
+                        m.setLida(true);
                     }
                 }
             }
@@ -116,34 +107,45 @@ public class MensagensPresenter extends Presenter<IMensagensView> {
         });
     }
 
-    public void enviarMensagem(String textoMensagem) {
+    public void enviarMensagem(final String textoMensagem) {
         Map<String, String> map = new HashMap<>();
 
+        if (lock) {
+            return;
+        }
+
         if (!textoMensagem.trim().isEmpty()) {
+            lock = true;
+
             map.put("conversa", String.valueOf(conversa.getId()));
             map.put("usuario", String.valueOf(Sistema.getUsuario().getUserID()));
             map.put("destinatario", String.valueOf(conversa.getDestinatario()));
             map.put("data", new Date().toString());
-            map.put("mensagem", textoMensagem.trim());
+            map.put("mensagem", Utils.encode(textoMensagem.trim()));
 
             Call<Object> call = service.enviarMensagem(map);
             call.enqueue(new Callback<Object>() {
                 @Override
                 public void onResponse(Call<Object> call, Response<Object> response) {
                     view.onClearCampos();
+                    Mensagem m = new Mensagem();
+                    m.setId(0);
+                    m.setData(new Date());
+                    m.setUsuario(Sistema.getUsuario().getUserID());
+                    m.setMensagem(textoMensagem);
+                    conversa.getMensagens().add(m);
+                    view.onNotifyDataSetChanged();
+                    view.onSetPositionRecyclerView(conversa.getMensagens().size() - 1);
+
+                    lock = false;
                 }
 
                 @Override
                 public void onFailure(Call<Object> call, Throwable t) {
                     view.showToast("Falha ao enviar");
+                    lock = false;
                 }
             });
-        }
-    }
-
-    public void vibrar() {
-        if (conversa.getContMsgNaoLidas() > 0) {
-            Utils.vibrar(view.getContext(), 150);
         }
     }
 

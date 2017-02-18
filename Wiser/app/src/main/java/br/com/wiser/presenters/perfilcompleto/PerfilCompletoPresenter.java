@@ -1,6 +1,7 @@
 package br.com.wiser.presenters.perfilcompleto;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
@@ -21,6 +22,7 @@ import br.com.wiser.models.conversas.Conversas;
 import br.com.wiser.models.contatos.IContatosService;
 import br.com.wiser.presenters.Presenter;
 import br.com.wiser.utils.Utils;
+import br.com.wiser.views.discussao.DiscussaoActivity;
 import br.com.wiser.views.mensagens.MensagensActivity;
 import br.com.wiser.views.perfilcompleto.IPerfilCompletoView;
 import retrofit2.Call;
@@ -151,6 +153,15 @@ public class PerfilCompletoPresenter extends Presenter<IPerfilCompletoView> {
 
         Intent i = new Intent(getContext(), MensagensActivity.class);
         i.putExtra(Sistema.CONVERSA, conversa);
+        getContext().startActivity(i);
+    }
+
+    public void openDiscussao(int posicao) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Sistema.DISCUSSAO, listaDiscussoes.get(posicao));
+
+        Intent i = new Intent(getContext(), DiscussaoActivity.class);
+        i.putExtra(Sistema.DISCUSSAO, bundle);
         getContext().startActivity(i);
     }
 }
