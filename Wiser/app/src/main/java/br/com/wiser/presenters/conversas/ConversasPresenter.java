@@ -50,6 +50,7 @@ public class ConversasPresenter extends Presenter<IConversasView> implements Obs
                     Sistema.getListaUsuarios().get(conversa.getDestinatario()).addObserver(this);
                 }
                 catch (Exception e) {
+                    Log.e("AAAA", "Deveria não cair aqui!" + e.getMessage());
                 }
             }
 

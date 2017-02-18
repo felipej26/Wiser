@@ -31,7 +31,6 @@ import retrofit2.Response;
 public class DiscussaoPresenter extends Presenter<IDiscussaoView> {
 
     private IForumService service;
-
     private Discussao discussao;
 
     public void onCreate(IDiscussaoView view, Discussao discussao) {

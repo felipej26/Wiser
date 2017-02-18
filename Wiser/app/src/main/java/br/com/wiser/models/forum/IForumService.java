@@ -27,4 +27,7 @@ public interface IForumService {
 
     @POST("discussao/responderDiscussao")
     Call<Resposta> responderDiscussao(@Body Map<String, String> parametros);
+
+    @POST("discussao/desativarDiscussao")
+    Call<>
 }

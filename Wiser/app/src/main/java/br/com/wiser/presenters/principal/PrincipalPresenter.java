@@ -66,6 +66,8 @@ public class PrincipalPresenter extends Presenter<IPrincipalView> {
 
     private void showSnackBar() {
         try {
+            while (!Sistema.getUsuario().isPerfilLoaded());
+
             Picasso.with(getContext())
                     .load(Sistema.getUsuario().getPerfil().getUrlProfilePicture())
                     .into(new Target() {
