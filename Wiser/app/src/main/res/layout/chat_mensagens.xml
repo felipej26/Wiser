@@ -9,7 +9,7 @@
         android:text="Sugestão"
         android:id="@+id/btnSugestao"
         android:onClick="abrirSugestao"
-        android:layout_alignParentRight="true"/>
+        android:layout_centerHorizontal="true"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
