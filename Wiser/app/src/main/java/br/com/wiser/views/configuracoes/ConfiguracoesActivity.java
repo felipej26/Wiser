@@ -2,30 +2,31 @@ package br.com.wiser.views.configuracoes;
 
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.MenuItem;
-
-import br.com.wiser.R;
-import br.com.wiser.Sistema;
-import br.com.wiser.models.configuracoes.Configuracoes;
-import br.com.wiser.presenters.configuracoes.ConfiguracoesPresenter;
-import br.com.wiser.views.AbstractActivity;
-import br.com.wiser.utils.ComboBoxItem;
-import br.com.wiser.utils.Utils;
-
-import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import br.com.wiser.R;
+import br.com.wiser.Sistema;
+import br.com.wiser.presenters.configuracoes.ConfiguracoesPresenter;
+import br.com.wiser.utils.ComboBoxItem;
+import br.com.wiser.views.AbstractActivity;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 public class ConfiguracoesActivity extends AbstractActivity implements IConfiguracoesView {
 
     private ConfiguracoesPresenter configuracoesPresenter;
 
-    private Spinner cmbIdioma;
-    private Spinner cmbFluencia;
-    private TextView lblContLetras;
-    private EditText txtStatus;
+    @BindView(R.id.cmbIdiomaConfig) Spinner cmbIdioma;
+    @BindView(R.id.cmbFluenciaConfig) Spinner cmbFluencia;
+    @BindView(R.id.lblContLetras) TextView lblContLetras;
+    @BindView(R.id.txtStatus) EditText txtStatus;
+    @BindView(R.id.btnDesativar) Button btnDesativar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,55 +40,28 @@ public class ConfiguracoesActivity extends AbstractActivity implements IConfigur
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         onBackPressed();
-        salvar();
+        configuracoesPresenter.salvar();
         return true;
     }
 
     @Override
     public void onInitView() {
+        ButterKnife.bind(this);
+
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
-        cmbIdioma = (Spinner) findViewById(R.id.cmbIdiomaConfig);
-        cmbFluencia = (Spinner) findViewById(R.id.cmbFluenciaConfig);
-
-        lblContLetras = (TextView) findViewById(R.id.lblContLetras);
-        txtStatus = (EditText) findViewById(R.id.txtStatus);
-        txtStatus.addTextChangedListener(new TextWatcher() {
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-            public void afterTextChanged(Editable s) { }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                configuracoesPresenter.setTextChangedTxtStatus(s.length());
-            }
-        });
 
         Sistema.carregarComboIdiomas(cmbIdioma, ConfiguracoesActivity.this, false);
         Sistema.carregarComboFluencia(cmbFluencia, ConfiguracoesActivity.this, false);
     }
 
     @Override
-    public Spinner getCmbIdioma() {
-        return cmbIdioma;
+    public void onSetSelectionCmbIdioma(int idioma) {
+        cmbIdioma.setSelection(Sistema.getPosicaoItemComboBox(cmbIdioma, idioma));
     }
 
     @Override
-    public Spinner getCmbFluencia() {
-        return cmbFluencia;
-    }
-
-    @Override
-    public String getTextTxtStatus() {
-        return txtStatus.getText().toString();
-    }
-
-    @Override
-    public void onSetSelectionCmbIdioma(int posicao) {
-        cmbIdioma.setSelection(posicao);
-    }
-
-    @Override
-    public void onSetSelectionCmbFluencia(int posicao) {
-        cmbFluencia.setSelection(posicao);
+    public void onSetSelectionCmbFluencia(int fluencia) {
+        cmbFluencia.setSelection(Sistema.getPosicaoItemComboBox(cmbFluencia, fluencia));
     }
 
     @Override
@@ -122,11 +96,13 @@ public class ConfiguracoesActivity extends AbstractActivity implements IConfigur
         return txtStatus.getText().toString();
     }
 
-    public void salvar() {
-        configuracoesPresenter.salvar();
+    @OnClick(R.id.btnDesativar)
+    public void btnDesativarOnClick() {
+        configuracoesPresenter.confirmarDesativarConta();
     }
 
-    public void desativar(View view){
-        configuracoesPresenter.confirmarDesativarConta();
+    @OnTextChanged(value = R.id.txtStatus, callback = OnTextChanged.Callback.TEXT_CHANGED)
+    public void txtStatusTextChanged(Editable editable) {
+        configuracoesPresenter.setTextChangedTxtStatus(editable.length());
     }
 }

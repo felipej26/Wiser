@@ -6,19 +6,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import br.com.wiser.R;
-import br.com.wiser.models.contatos.Contato;
-import br.com.wiser.models.usuario.Usuario;
-import br.com.wiser.interfaces.IClickListener;
-import br.com.wiser.presenters.contatos.ContatosPresenter;
-import br.com.wiser.views.AbstractFragment;
-
 import android.widget.Button;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+
+import br.com.wiser.R;
+import br.com.wiser.interfaces.IClickListener;
+import br.com.wiser.models.contatos.Contato;
+import br.com.wiser.presenters.contatos.ContatosPresenter;
+import br.com.wiser.views.AbstractFragment;
 
 /**
  * Created by Jefferson on 22/09/2016.

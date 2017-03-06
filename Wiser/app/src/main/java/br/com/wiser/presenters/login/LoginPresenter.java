@@ -3,14 +3,9 @@ package br.com.wiser.presenters.login;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-
-import java.io.IOException;
 import java.util.Date;
 
 import br.com.wiser.R;
@@ -19,8 +14,8 @@ import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.models.login.ILoginService;
 import br.com.wiser.models.login.Login;
 import br.com.wiser.models.usuario.Usuario;
+import br.com.wiser.models.usuario.UsuarioLogadoDAO;
 import br.com.wiser.services.CarregarConversasService;
-import br.com.wiser.utils.Utils;
 import br.com.wiser.views.login.ILoginView;
 import br.com.wiser.facebook.Facebook;
 import br.com.wiser.APIClient;
@@ -99,6 +94,12 @@ public class LoginPresenter extends Presenter<ILoginView> {
                 public void onResponse(final Call<Usuario> call, Response<Usuario> response) {
                     if (response.isSuccessful()) {
                         Sistema.setUsuario(response.body());
+
+                        UsuarioLogadoDAO usuarioLogadoDAO = new UsuarioLogadoDAO(getContext());
+                        usuarioLogadoDAO.logarUsuario();
+                        Toast.makeText(getActivity(), "Funcionou: " + usuarioLogadoDAO.getLast(), Toast.LENGTH_SHORT).show();
+                        usuarioLogadoDAO.close();
+
                         facebook.carregarPerfil(Sistema.getUsuario(), new ICallback() {
                             @Override
                             public void onSuccess() {

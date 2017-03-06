@@ -1,7 +1,5 @@
 package br.com.wiser.views.configuracoes;
 
-import android.widget.Spinner;
-
 import br.com.wiser.views.IView;
 
 /**
@@ -10,12 +8,8 @@ import br.com.wiser.views.IView;
 public interface IConfiguracoesView extends IView {
     void onInitView();
 
-    Spinner getCmbIdioma();
-    Spinner getCmbFluencia();
-    String getTextTxtStatus();
-
-    void onSetSelectionCmbIdioma(int posicao);
-    void onSetSelectionCmbFluencia(int posicao);
+    void onSetSelectionCmbIdioma(int idioma);
+    void onSetSelectionCmbFluencia(int fluencia);
     void onSetSelectionTxtStatus(int tamanho);
     void onSetTextTxtStatus(String status);
     void onSetTextLblContLetras(String contLetras);

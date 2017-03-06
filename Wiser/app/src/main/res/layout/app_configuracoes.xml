@@ -78,7 +78,6 @@
     <Button
         android:text="@string/desativar_conta"
         android:id="@+id/btnDesativar"
-        android:onClick="desativar"
         android:layout_below="@+id/imageView4"
         android:layout_marginTop="10dp"
         style="@style/AppTema.AppBotao.Atencao" />

@@ -77,7 +77,7 @@ public class ContatosPresenter extends Presenter<IContatosView> implements Obser
 
                             for (Contato contato : listaContatos) {
                                 try {
-                                    //Sistema.getListaUsuarios().get(contato.getUsuario()).addObserver(ContatosPresenter.this);
+                                    //Sistema.getListaUsuarios().getLast(contato.getUsuario()).addObserver(ContatosPresenter.this);
                                 }
                                 catch (Exception ex) { }
                             }

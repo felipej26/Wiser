@@ -35,14 +35,10 @@ public class ConfiguracoesPresenter extends Presenter<IConfiguracoesView> {
         service = APIClient.getClient().create(IUsuarioService.class);
 
         if (Sistema.getUsuario().isSetouConfiguracoes()) {
-            view.onSetSelectionCmbIdioma(Sistema.getPosicaoItemComboBox(view.getCmbIdioma(),
-                    Sistema.getUsuario().getIdioma()));
-
-            view.onSetSelectionCmbFluencia(Sistema.getPosicaoItemComboBox(view.getCmbFluencia(),
-                    Sistema.getUsuario().getFluencia()));
-
+            view.onSetSelectionCmbIdioma(Sistema.getUsuario().getIdioma());
+            view.onSetSelectionCmbFluencia(Sistema.getUsuario().getFluencia());
             view.onSetTextTxtStatus(Utils.decode(Sistema.getUsuario().getStatus()));
-            view.onSetSelectionTxtStatus(view.getTextTxtStatus().length());
+            view.onSetSelectionTxtStatus(view.onGetTextTxtStatus().length());
         }
     }
 

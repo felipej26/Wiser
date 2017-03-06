@@ -11,6 +11,7 @@ public class UtilsDate {
     public static final String DDMMYYYY_HHMM = "dd/MM/yyyy HH:mm";
     public static final String DDMMYYYY_HHMMSS = "dd/MM/yyyy HH:mm:ss";
     public static final String HHMM = "HH:mm";
+    public static final String YYYYMMDD_HHMMSS = "yyyy-MM-dd HH:mm:ss";
     public static final String YYYYMMDD_HHMMSSZ = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
     public static String formatDate(Date data, String formatData) {

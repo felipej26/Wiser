@@ -2,19 +2,21 @@ package br.com.wiser.views.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
-import br.com.wiser.Sistema;
 import br.com.wiser.R;
+import br.com.wiser.Sistema;
 import br.com.wiser.presenters.login.LoginPresenter;
 import br.com.wiser.views.AbstractActivity;
-import br.com.wiser.views.AbstractAppCompatActivity;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class LoginActivity extends AbstractActivity implements ILoginView {
 
     private LoginPresenter loginPresenter;
-    private Button btnLogin;
+
+    @BindView(R.id.btnLogin) Button btnLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +30,6 @@ public class LoginActivity extends AbstractActivity implements ILoginView {
             getIntent().removeExtra(Sistema.LOGOUT);
             loginPresenter.logout();
         }
-        else {
-            //loginPresenter.checkLogin();
-        }
     }
 
     @Override
@@ -41,7 +40,6 @@ public class LoginActivity extends AbstractActivity implements ILoginView {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         loginPresenter.setCallbackManager(requestCode, resultCode, data);
     }
 
@@ -57,12 +55,11 @@ public class LoginActivity extends AbstractActivity implements ILoginView {
 
     @Override
     public void onInitView() {
-        btnLogin = (Button) findViewById(R.id.btnLogin);
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loginPresenter.setOnClickBtnLogin();
-            }
-        });
+        ButterKnife.bind(this);
+    }
+
+    @OnClick(R.id.btnLogin)
+    public void btnLoginOnClick() {
+        loginPresenter.setOnClickBtnLogin();
     }
 }
