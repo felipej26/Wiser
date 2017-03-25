@@ -4,25 +4,22 @@ import android.content.Intent;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import br.com.wiser.APIClient;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.APIClient;
-import br.com.wiser.facebook.Facebook;
+import br.com.wiser.features.conversa.Conversa;
 import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.models.contatos.Contato;
-import br.com.wiser.models.conversas.Conversas;
 import br.com.wiser.models.contatos.IContatosService;
-import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.presenters.Presenter;
 import br.com.wiser.views.contatos.IContatosView;
-import br.com.wiser.views.mensagens.MensagensActivity;
+import br.com.wiser.features.mensagem.MensagemActivity;
 import br.com.wiser.views.procurarusuarios.ProcurarUsuariosActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -74,14 +71,6 @@ public class ContatosPresenter extends Presenter<IContatosView> implements Obser
                         @Override
                         public void onSuccess() {
                             view.onLoadListaContatos(listaContatos);
-
-                            for (Contato contato : listaContatos) {
-                                try {
-                                    //Sistema.getListaUsuarios().getLast(contato.getUsuario()).addObserver(ContatosPresenter.this);
-                                }
-                                catch (Exception ex) { }
-                            }
-
                             view.onNotifyDataSetChanged();
                         }
 
@@ -112,8 +101,8 @@ public class ContatosPresenter extends Presenter<IContatosView> implements Obser
     }
 
     public void startChat(int posicao) {
-        Intent i = new Intent(getContext(), MensagensActivity.class);
-        Conversas conversa = new Conversas();
+        Intent i = new Intent(getContext(), MensagemActivity.class);
+        Conversa conversa = new Conversa();
         conversa.setDestinatario(listaContatos.get(posicao).getUsuario());
 
         i.putExtra(Sistema.CONVERSA, conversa);

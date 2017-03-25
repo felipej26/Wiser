@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:background="@color/colorBackground">
 
     <TextView
         android:layout_width="wrap_content"
@@ -12,28 +13,15 @@
         android:layout_centerHorizontal="true"
         android:textAlignment="center" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Responder"
-        android:id="@+id/lblResponder"
-        android:layout_below="@id/lblSugestao" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0 / 250"
-        android:id="@+id/lblContResposta"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@id/lblSugestao" />
-
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/txtResposta"
-        android:layout_below="@id/lblResponder"
+        android:layout_below="@id/lblSugestao"
+        android:layout_marginLeft="16dp"
         android:layout_alignParentStart="true"
         android:layout_toStartOf="@+id/btnEnviarResposta"
+        android:textSize="15sp"
         android:maxLength="250"
         android:maxLines="5"
         android:hint="Digite sua mensagem aqui..."
@@ -44,8 +32,18 @@
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:id="@+id/btnEnviarResposta"
+        android:layout_marginRight="16dp"
         android:background="@mipmap/ic_enviar"
-        android:layout_below="@+id/lblResponder"
+        android:layout_below="@+id/lblSugestao"
         android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0 / 250"
+        android:id="@+id/lblContResposta"
+        android:textSize="10dp"
+        android:layout_toStartOf="@+id/btnEnviarResposta"
+        android:layout_below="@id/txtResposta" />
 
 </RelativeLayout>

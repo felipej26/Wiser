@@ -4,25 +4,21 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ProgressBar;
 import android.widget.Button;
 
-import java.util.LinkedList;
-
 import br.com.wiser.APIClient;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
+import br.com.wiser.features.conversa.Conversa;
 import br.com.wiser.models.contatos.IContatosService;
-import br.com.wiser.models.conversas.Conversas;
-import br.com.wiser.models.forum.Discussao;
 import br.com.wiser.models.forum.IForumService;
 import br.com.wiser.models.usuario.IUsuarioService;
 import br.com.wiser.views.perfilcompleto.PerfilCompletoActivity;
-import br.com.wiser.views.mensagens.MensagensActivity;
+import br.com.wiser.features.mensagem.MensagemActivity;
 import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.utils.Utils;
 import retrofit2.Call;
@@ -121,8 +117,8 @@ public class DialogPerfilUsuario {
         btnAbrirChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(v.getContext(), MensagensActivity.class);
-                Conversas conversa = new Conversas();
+                Intent i = new Intent(v.getContext(), MensagemActivity.class);
+                Conversa conversa = new Conversa();
                 conversa.setDestinatario(contato.getUserID());
                 i.putExtra(Sistema.CONVERSA, conversa);
                 v.getContext().startActivity(i);

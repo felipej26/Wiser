@@ -7,18 +7,13 @@ import android.app.Service;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
-import android.hardware.camera2.params.Face;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,15 +21,15 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
+import br.com.wiser.APIClient;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.APIClient;
-import br.com.wiser.facebook.Facebook;
+import br.com.wiser.features.conversa.Conversa;
 import br.com.wiser.interfaces.ICallback;
-import br.com.wiser.models.conversas.Conversas;
-import br.com.wiser.models.conversas.ConversasDeserializer;
-import br.com.wiser.models.conversas.IConversasService;
-import br.com.wiser.models.mensagens.Mensagem;
+import br.com.wiser.features.conversa.ConversaDAO;
+import br.com.wiser.features.conversa.IConversaService;
+import br.com.wiser.features.mensagem.Mensagem;
+import br.com.wiser.features.mensagem.MensagemDAO;
 import br.com.wiser.models.usuario.IUsuarioService;
 import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.utils.Utils;
@@ -52,20 +47,22 @@ public class CarregarConversasService extends Service implements Observer {
         void onLoad(List<String> listaNovasMensagens);
     }
 
-    private IConversasService service;
+    private IConversaService service;
     private IUsuarioService usuarioService;
 
-    private LinkedList<Conversas> listaConversas;
+    private LinkedList<Conversa> listaConversas;
     private boolean lock = false;
     private boolean lockCarregarUsuarios = false;
 
     private Map<Long, List<String>> listaMensagensNaoEnviadas;
 
+    private long idUltimaMensagem;
+
     @Override
     public void onCreate() {
         super.onCreate();
 
-        service = APIClient.getClient().create(IConversasService.class);
+        service = APIClient.getClient().create(IConversaService.class);
         usuarioService = APIClient.getClient().create(IUsuarioService.class);
 
         listaConversas = new LinkedList<>();
@@ -76,38 +73,57 @@ public class CarregarConversasService extends Service implements Observer {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        final ConversaDAO conversasDAO = new ConversaDAO(this);
+        final MensagemDAO mensagensDAO = new MensagemDAO(this);
+        idUltimaMensagem = mensagensDAO.getMaxIdServer();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                long idUltimaMensagem;
-                final boolean[] primeiraVez = {true};
 
                 while (true) {
                     try {
-
                         if (Sistema.getUsuario() == null) {
                             stopSelf();
                             return;
                         }
 
+                        /*
                         idUltimaMensagem = 0;
                         lock = true;
 
-                        for (Conversas conversa : listaConversas) {
-                            if (conversa.getMensagens().size() > 0) {
-                                if (conversa.getMensagens().getLast().getId() > idUltimaMensagem) {
-                                    idUltimaMensagem = conversa.getMensagens().getLast().getId();
+                        for (Conversa conversa : listaConversas) {
+                            if (conversa.get().size() > 0) {
+                                if (conversa.get().getLast().getId() > idUltimaMensagem) {
+                                    idUltimaMensagem = conversa.get().getLast().getId();
                                 }
                             }
                         }
+                        */
 
-                        Call<LinkedList<Conversas>> call = service.carregarConversas(Sistema.getUsuario().getUserID(), idUltimaMensagem);
-                        call.enqueue(new Callback<LinkedList<Conversas>>() {
+                        Call<LinkedList<Conversa>> call = service.carregarConversas(Sistema.getUsuario().getUserID(), idUltimaMensagem);
+                        call.enqueue(new Callback<LinkedList<Conversa>>() {
                             @Override
-                            public void onResponse(Call<LinkedList<Conversas>> call, Response<LinkedList<Conversas>> response) {
+                            public void onResponse(Call<LinkedList<Conversa>> call, Response<LinkedList<Conversa>> response) {
+                                Map<Long, List<Mensagem>> mapMensagens = new HashMap<>();
 
                                 if (response.isSuccessful()) {
+                                    for (Conversa conversa : response.body()) {
+                                        if (conversa.getMensagens().size() > 0) {
+                                            mapMensagens.put(conversa.getId(), conversa.getMensagens());
+                                            conversasDAO.insert(conversa);
+                                        }
+                                    }
+
+                                    if (mapMensagens.size() > 0) {
+                                        mensagensDAO.insert(mapMensagens);
+                                        Utils.vibrar(CarregarConversasService.this, 150);
+                                        //notificar();
+                                        //EventBus.getDefault().post(mapMensagens);
+                                    }
+
+
+                                    /*
                                     adicionarNovasMensagens(response.body(), new CallbackConversas() {
                                         @Override
                                         public void onLoad(List<String> listaNovasMensagens) {
@@ -130,12 +146,13 @@ public class CarregarConversasService extends Service implements Observer {
                                             lock = false;
                                         }
                                     });
+                                    */
                                 }
                             }
 
                             @Override
-                            public void onFailure(Call<LinkedList<Conversas>> call, Throwable t) {
-                                Log.e("Serviço", "Erro ao Carregar Conversas", t);
+                            public void onFailure(Call<LinkedList<Conversa>> call, Throwable t) {
+                                Log.e("Serviço", "Erro ao Carregar Conversa", t);
                                 lock = false;
                             }
                         });
@@ -174,20 +191,20 @@ public class CarregarConversasService extends Service implements Observer {
         }
     }
 
-    private void adicionarNovasMensagens(final LinkedList<Conversas> listaConversas, final CallbackConversas callback) {
+    private void adicionarNovasMensagens(final LinkedList<Conversa> listaConversas, final CallbackConversas callback) {
         final List<String> listaNovasMensagens = new LinkedList<>();
         List<Long> listaUsuarios = new LinkedList<>();
 
-        Conversas conversaAux;
+        Conversa conversaAux;
 
-        /* Adiciona na Lista de Conversas as novas conversas
+        /* Adiciona na Lista de Conversa as novas conversas
          * e na Lista de Usuarios, os novos usuarios dessas conversas */
-        for (Conversas conversa : listaConversas) {
+        for (Conversa conversa : listaConversas) {
             conversaAux = null;
 
             if (conversa.getMensagens().size() > 0) {
 
-                for (Conversas c : this.listaConversas) {
+                for (Conversa c : this.listaConversas) {
                     if (c.getId() == conversa.getId()) {
                         conversaAux = c;
                         break;
@@ -195,7 +212,7 @@ public class CarregarConversasService extends Service implements Observer {
                 }
 
                 if (conversaAux == null) {
-                    conversaAux = new Conversas();
+                    conversaAux = new Conversa();
                     conversaAux.setId(conversa.getId());
                     conversaAux.setDestinatario(conversa.getDestinatario());
 
@@ -208,11 +225,11 @@ public class CarregarConversasService extends Service implements Observer {
         carregarUsuarios(listaUsuarios, new ICallback() {
             @Override
             public void onSuccess() {
-                /* Adiciona na Lista de Conversas e na Lista de Novas Mensagens as novas mensagens recebidas */
-                for (Conversas conversa : listaConversas) {
+                /* Adiciona na Lista de Conversa e na Lista de Novas Mensagens as novas mensagens recebidas */
+                for (Conversa conversa : listaConversas) {
                     if (conversa.getMensagens().size() > 0) {
 
-                        for (Conversas c : CarregarConversasService.this.listaConversas) {
+                        for (Conversa c : CarregarConversasService.this.listaConversas) {
                             if (c.getId() == conversa.getId()) {
                                 c.getMensagens().addAll(conversa.getMensagens());
 
@@ -233,7 +250,7 @@ public class CarregarConversasService extends Service implements Observer {
         });
     }
 
-    private void carregarMensagens(Conversas conversa, List<String> listaNovasMensagens) {
+    private void carregarMensagens(Conversa conversa, List<String> listaNovasMensagens) {
 
         List<String> listaAux;
 

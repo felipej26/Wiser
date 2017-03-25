@@ -1,11 +1,9 @@
 package br.com.wiser.views.splashscreen;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import br.com.wiser.R;
-import br.com.wiser.views.login.LoginActivity;
-import br.com.wiser.presenters.splashscreen.SplashScreenPresenter;
+import br.com.wiser.features.splashscreen.SplashScreenPresenter;
 import br.com.wiser.views.AbstractActivity;
 
 public class SplashScreenActivity extends AbstractActivity implements ISplashScreenView {
@@ -18,11 +16,5 @@ public class SplashScreenActivity extends AbstractActivity implements ISplashScr
 
         splashScreenPresenter = new SplashScreenPresenter();
         splashScreenPresenter.onCreate(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        splashScreenPresenter.onResume();
     }
 }

@@ -14,7 +14,6 @@ import android.widget.Spinner;
 import com.facebook.AccessToken;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -30,7 +29,7 @@ import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.models.assunto.Assunto;
 import br.com.wiser.models.sistema.ISistemaService;
 import br.com.wiser.utils.ComboBoxItem;
-import br.com.wiser.views.login.LoginActivity;
+import br.com.wiser.features.login.LoginActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

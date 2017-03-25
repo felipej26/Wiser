@@ -18,7 +18,7 @@ public class APIClient {
     public static Retrofit getClient() {
         Gson gson;
 
-        if (retrofit==null) {
+        if (retrofit == null) {
             gson = new GsonBuilder()
                     .registerTypeAdapter(ComboBoxItem.class, new ComboDeserializer())
                     .create();

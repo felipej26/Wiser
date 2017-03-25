@@ -2,35 +2,38 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginRight="5dp"
+    android:layout_marginRight="16dp"
     android:layout_marginTop="5dp" >
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/linearlayout"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="13dp"
+        android:paddingRight="13dp"
+        android:layout_marginLeft="50dp"
         android:background="@drawable/btnmsgusuarioshape"
         android:layout_alignParentEnd="true"
-        android:layout_marginLeft="50dp" >
+        android:id="@+id/relMensagem">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
             android:text="Mensagem"
             android:id="@+id/lblMensagem"
-            android:textColor="@color/colorPrimaryText"/>
+            android:textColor="@color/colorPrimaryText" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_marginRight="10dp"
         android:text="00:00"
         android:id="@+id/lblDataHora"
-        android:layout_below="@id/linearlayout"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/relMensagem"
         android:textSize="10dp" />
 
 </RelativeLayout>

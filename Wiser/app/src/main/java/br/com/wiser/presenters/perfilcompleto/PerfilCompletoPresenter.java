@@ -18,12 +18,12 @@ import br.com.wiser.models.forum.IForumService;
 import br.com.wiser.models.forum.Resposta;
 import br.com.wiser.models.usuario.IUsuarioService;
 import br.com.wiser.models.usuario.Usuario;
-import br.com.wiser.models.conversas.Conversas;
+import br.com.wiser.features.conversa.Conversa;
 import br.com.wiser.models.contatos.IContatosService;
 import br.com.wiser.presenters.Presenter;
 import br.com.wiser.utils.Utils;
 import br.com.wiser.views.discussao.DiscussaoActivity;
-import br.com.wiser.views.mensagens.MensagensActivity;
+import br.com.wiser.features.mensagem.MensagemActivity;
 import br.com.wiser.views.perfilcompleto.IPerfilCompletoView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -148,10 +148,10 @@ public class PerfilCompletoPresenter extends Presenter<IPerfilCompletoView> {
     }
 
     public void openChat() {
-        Conversas conversa = new Conversas();
+        Conversa conversa = new Conversa();
         conversa.setDestinatario(usuario.getUserID());
 
-        Intent i = new Intent(getContext(), MensagensActivity.class);
+        Intent i = new Intent(getContext(), MensagemActivity.class);
         i.putExtra(Sistema.CONVERSA, conversa);
         getContext().startActivity(i);
     }

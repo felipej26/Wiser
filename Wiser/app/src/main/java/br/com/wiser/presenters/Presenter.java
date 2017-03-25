@@ -16,9 +16,7 @@ public abstract class Presenter<V extends IView> {
         onCreate();
     }
 
-    protected void onCreate() {
-
-    }
+    protected void onCreate() { }
 
     protected Context getContext() {
         return view.getContext();

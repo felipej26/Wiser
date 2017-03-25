@@ -7,7 +7,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Bundle;
-
 import android.util.Base64;
 import android.util.Log;
 
@@ -23,10 +22,7 @@ import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 
-import junit.framework.Assert;
-
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
@@ -37,14 +33,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
-import br.com.wiser.Sistema;
 import br.com.wiser.R;
+import br.com.wiser.Sistema;
 import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.models.assunto.Pagina;
-import br.com.wiser.models.contatos.Contato;
 import br.com.wiser.models.usuario.Perfil;
 import br.com.wiser.models.usuario.Usuario;
-import br.com.wiser.models.conversas.Conversas;
 import br.com.wiser.utils.UtilsDate;
 
 /**

@@ -97,12 +97,12 @@ public class ConfiguracoesActivity extends AbstractActivity implements IConfigur
     }
 
     @OnClick(R.id.btnDesativar)
-    public void btnDesativarOnClick() {
+    public void onDesableClicked() {
         configuracoesPresenter.confirmarDesativarConta();
     }
 
     @OnTextChanged(value = R.id.txtStatus, callback = OnTextChanged.Callback.TEXT_CHANGED)
-    public void txtStatusTextChanged(Editable editable) {
+    public void onStatusTextChanged(Editable editable) {
         configuracoesPresenter.setTextChangedTxtStatus(editable.length());
     }
 }

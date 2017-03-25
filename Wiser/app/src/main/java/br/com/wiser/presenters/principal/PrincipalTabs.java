@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.LinkedList;
 
-import br.com.wiser.views.conversas.ConversasFragment;
+import br.com.wiser.features.conversa.ConversaFragment;
 import br.com.wiser.views.contatos.ContatosFragment;
 import br.com.wiser.views.forum.ForumFragment;
 
@@ -21,7 +21,7 @@ public class PrincipalTabs extends FragmentPagerAdapter {
 
         abasFragmentos = new LinkedList<>();
         abasFragmentos.add(0, ContatosFragment.newInstance());
-        abasFragmentos.add(1, ConversasFragment.newInstance());
+        abasFragmentos.add(1, ConversaFragment.newInstance());
         abasFragmentos.add(2, ForumFragment.newInstance());
     }
 
