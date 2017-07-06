@@ -12,6 +12,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.ParseException;
 import java.util.List;
 
 import br.com.wiser.R;
@@ -49,19 +50,6 @@ public class ConversaFragment extends AbstractFragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        /*
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                adapter.notifyDataSetChanged();
-            }
-        }, 1500);
-        */
-    }
-
-    @Override
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
@@ -70,7 +58,7 @@ public class ConversaFragment extends AbstractFragment {
     @Override
     public void onStop() {
         EventBus.getDefault().unregister(this);
-        super.onDestroy();
+        super.onStop();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -100,7 +88,12 @@ public class ConversaFragment extends AbstractFragment {
     }
 
     private void onLoadChat() {
-        listaConversas = conversasPresenter.carregarConversas();
-        adapter.addAll(listaConversas);
+        try {
+            listaConversas = conversasPresenter.carregarConversas();
+            adapter.addAll(listaConversas);
+        }
+        catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }

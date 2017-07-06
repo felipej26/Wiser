@@ -28,7 +28,7 @@ public class ConversaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private Context context;
-    private LinkedList<Conversa> listaConversas;
+    private LinkedList<Conversa> listaConversas = new LinkedList<>();
     private ICallback callback;
 
     public ConversaAdapter(Context context, ICallback callback) {

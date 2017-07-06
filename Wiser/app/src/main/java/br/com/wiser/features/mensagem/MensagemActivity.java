@@ -14,6 +14,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.ParseException;
 import java.util.LinkedList;
 
 import br.com.wiser.R;
@@ -124,8 +125,12 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
     }
 
     private void onLoadMessages() {
-        conversa.setMensagens(
-                new LinkedList<>(mensagensPresenter.carregarMensagens(conversa.getId())));
+        try {
+            conversa.setMensagens(new LinkedList<>(mensagensPresenter.carregarMensagens(conversa.getId())));
+        }
+        catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         adapter.addAll(conversa.getMensagens());
         recyclerView.getLayoutManager().scrollToPosition(adapter.getItemCount());

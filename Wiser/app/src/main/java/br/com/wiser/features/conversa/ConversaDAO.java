@@ -4,53 +4,37 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
 
+import br.com.wiser.Database;
 import br.com.wiser.features.mensagem.MensagemDAO;
 
 /**
  * Created by Jefferson on 16/03/2017.
  */
-public class ConversaDAO extends SQLiteOpenHelper {
-    private final static String TABELA = "Conversa";
-    private MensagemDAO mensagemDAO;
+public class ConversaDAO {
+
+    private Database database;
 
     public ConversaDAO(Context context) {
-        super(context, TABELA, null, 1);
-        mensagemDAO = new MensagemDAO(context);
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        String sql =
-                "CREATE TABLE " + TABELA + " (" +
-                "    id INTEGER PRIMARY KEY NOT NULL," +
-                "    id_server BIGINT NOT NULL," +
-                "    destinatario BIGINT NOT NULL" +
-                ")";
-
-        db.execSQL(sql);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        database = Database.getInstance(context);
     }
 
     public long insert(Conversa conversa) {
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase db = database.getWritableDatabase();
         ContentValues valores = new ContentValues();
 
         long id = 0;
 
         try {
             valores.put("id", conversa.getId());
+            valores.put("id_server", conversa.getIdServer());
             valores.put("destinatario", conversa.getDestinatario());
 
-            id = db.insertOrThrow(TABELA, null, valores);
+            id = db.insertOrThrow(database.CONVERSAS, null, valores);
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -66,8 +50,8 @@ public class ConversaDAO extends SQLiteOpenHelper {
     }
 
     public long getMax() {
-        SQLiteDatabase db = getReadableDatabase();
-        String sql = "SELECT MAX(id) AS id FROM " + TABELA;
+        SQLiteDatabase db = database.getReadableDatabase();
+        String sql = "SELECT MAX(id) AS id FROM " + database.CONVERSAS;
 
         long max = 0;
 
@@ -79,13 +63,14 @@ public class ConversaDAO extends SQLiteOpenHelper {
         return max;
     }
 
-    public List<Conversa> get() {
-        SQLiteDatabase db = getReadableDatabase();
+    public List<Conversa> get() throws ParseException {
+        SQLiteDatabase db = database.getReadableDatabase();
+
         String sql =
                 "SELECT C.id AS idConversa, C.id_server AS idServerConversa, C.destinatario, M.*" +
-                " FROM " + TABELA + " AS C" +
-                " LEFT JOIN " + mensagemDAO.TABELA + " AS M" +
-                " ON M.conversa = C.conversa";
+                " FROM " + database.CONVERSAS + " AS C" +
+                " LEFT JOIN " + database.MENSAGENS + " AS M" +
+                " ON M.conversa = C.id";
 
         List<Conversa> listaConversa = new LinkedList<>();
 
@@ -108,7 +93,7 @@ public class ConversaDAO extends SQLiteOpenHelper {
             }
 
             if (c.getLong(c.getColumnIndex("id")) != 0) {
-                conversa.getMensagens().add(mensagemDAO.tratarMensagem(c));
+                conversa.getMensagens().add(MensagemDAO.tratarMensagem(c));
             }
         }
 

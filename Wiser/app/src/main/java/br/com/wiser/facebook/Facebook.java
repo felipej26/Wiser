@@ -14,7 +14,6 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphRequestBatch;
 import com.facebook.GraphResponse;
@@ -60,28 +59,21 @@ public class Facebook {
             nomeIndisponivel = "Usuário";
         }
 
-        if (!FacebookSdk.isInitialized()) {
-            FacebookSdk.sdkInitialize(context, new FacebookSdk.InitializeCallback() {
+        getSignatures();
+
+        if (callbackManager == null) {
+            callbackManager = CallbackManager.Factory.create();
+
+            LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
                 @Override
-                public void onInitialized() {
-                    getSignatures();
+                public void onSuccess(LoginResult loginResult) { }
 
-                    if (callbackManager == null) {
-                        callbackManager = CallbackManager.Factory.create();
+                @Override
+                public void onCancel() { }
 
-                        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-                            @Override
-                            public void onSuccess(LoginResult loginResult) { }
-
-                            @Override
-                            public void onCancel() { }
-
-                            @Override
-                            public void onError(FacebookException error) {
-                                error.printStackTrace();
-                            }
-                        });
-                    }
+                @Override
+                public void onError(FacebookException error) {
+                    error.printStackTrace();
                 }
             });
         }

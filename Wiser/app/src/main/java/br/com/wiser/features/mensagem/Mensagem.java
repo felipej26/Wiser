@@ -30,7 +30,7 @@ public class Mensagem implements Serializable {
     private long idServer;
     private long conversa;
     private long usuario;
-    private Estado estado;
+    private Estado estado = Estado.ENVIADO;
     private Date data;
     private String mensagem;
     private boolean lida;

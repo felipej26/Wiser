@@ -4,67 +4,40 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.Date;
 
+import br.com.wiser.Database;
 import br.com.wiser.Sistema;
 import br.com.wiser.utils.UtilsDate;
 
 /**
  * Created by Jefferson on 27/02/2017.
  */
-public class LoginDAO extends SQLiteOpenHelper {
+public class LoginDAO {
 
-    private final static String TABELA = "Usuario_Logado";
+    private Database database;
 
     public LoginDAO(Context context) {
-        super(context, TABELA, null, 5);
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        String sql =
-                "CREATE TABLE " + TABELA + " (" +
-                "    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                "    usuario BIGINT NOT NULL," +
-                "    data DATETIME NOT NULL," +
-                "    logado INTEGER NOT NULL" +
-                ");";
-
-        db.execSQL(sql);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String sql = "DROP TABLE IF EXISTS " + TABELA + ";";
-        db.execSQL(sql);
-        onCreate(db);
-
-        /*
-        switch (oldVersion) {
-            case 5:
-
-        }
-        */
+        database = Database.getInstance(context);
     }
 
     public void logarUsuario() {
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase db = database.getWritableDatabase();
 
         try {
             ContentValues valores = new ContentValues();
             valores.put("logado", 0);
 
-            db.update(TABELA, valores, "logado = ?", new String[]{"1"});
+            db.update(database.LOGIN, valores, "logado = ?", new String[]{"1"});
 
             valores = new ContentValues();
             valores.put("usuario", Sistema.getUsuario().getUserID());
             valores.put("data", UtilsDate.formatDate(new Date(), UtilsDate.YYYYMMDD_HHMMSS));
             valores.put("logado", 1);
 
-            db.insertOrThrow(TABELA, null, valores);
+            db.insertOrThrow(database.LOGIN, null, valores);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -72,15 +45,15 @@ public class LoginDAO extends SQLiteOpenHelper {
     }
 
     public void deslogarUsuario() {
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase db = database.getWritableDatabase();
 
-        String sql = "UPDATE " + TABELA + " SET logado = 0 WHERE logado = 1;";
+        String sql = "UPDATE " + database.LOGIN + " SET logado = 0 WHERE logado = 1;";
         db.execSQL(sql);
     }
 
     public void getDados() {
-        SQLiteDatabase db = getReadableDatabase();
-        String sql = "SELECT * FROM " + TABELA;
+        SQLiteDatabase db = database.getReadableDatabase();
+        String sql = "SELECT * FROM " + database.LOGIN;
 
         Cursor c = db.rawQuery(sql, null);
         while (c.moveToNext()) {
@@ -95,8 +68,8 @@ public class LoginDAO extends SQLiteOpenHelper {
     public Long getLogado() {
         getDados();
 
-        SQLiteDatabase db = getReadableDatabase();
-        String sql = "SELECT * FROM " + TABELA + " WHERE logado = 1";
+        SQLiteDatabase db = database.getReadableDatabase();
+        String sql = "SELECT * FROM " + database.LOGIN + " WHERE logado = 1";
 
         long usuario = 0;
 

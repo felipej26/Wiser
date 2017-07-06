@@ -2,6 +2,7 @@ package br.com.wiser.features.mensagem;
 
 import android.util.Log;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +30,7 @@ public class MensagemPresenter {
         this.mensagensDAO = mensagensDAO;
     }
 
-    public List<Mensagem> carregarMensagens(long conversa) {
+    public List<Mensagem> carregarMensagens(long conversa) throws ParseException {
         return mensagensDAO.get(conversa);
     }
 
@@ -102,41 +103,4 @@ public class MensagemPresenter {
             });
         }
     }
-
-    /*
-    public void carregarSugestoesAssuntos() {
-        Facebook facebook = new Facebook(getContext());
-
-        facebook.carregarPaginasEmComum(conversa.getDestinatario(), new ICallbackPaginas() {
-            @Override
-            public void setResponse(HashSet<Pagina> paginas) {
-                Map<String, Assunto> mapAssuntos = new HashMap<>();
-
-                for (Assunto assunto : Sistema.getAssuntos()) {
-                    for (String categoria : assunto.getCategorias()) {
-                        mapAssuntos.put(categoria, assunto);
-                    }
-                }
-
-                for (Pagina pagina : paginas) {
-                    if (mapAssuntos.containsKey(pagina.getCategoria())) {
-                        Assunto assunto = mapAssuntos.get(pagina.getCategoria());
-
-                        int item = new Random().nextInt(assunto.getItens().size());
-                        conversa.getSugestoes().add(assunto.getItens().get(item)
-                            .replace("%a", pagina.getNome())
-                            .replace("%i", Sistema.getDescricaoIdioma(Sistema.getUsuario().getIdioma()))
-                            .replace("%u", Sistema.getListaUsuarios().get(conversa.getDestinatario()).getPerfil().getFirstName()));
-                    }
-                }
-
-                if (conversa.getSugestoes().size() > 0) {
-                    view.onSetSugestao();
-                }
-
-                conversa.setCarregouSugestoes(true);
-            }
-        });
-    }
-    */
 }

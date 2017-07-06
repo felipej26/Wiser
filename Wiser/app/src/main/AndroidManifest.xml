@@ -14,8 +14,7 @@
         android:icon="@mipmap/logo_wiser_2"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTema"
-        android:name=".WiserApplication">
+        android:theme="@style/AppTema">
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

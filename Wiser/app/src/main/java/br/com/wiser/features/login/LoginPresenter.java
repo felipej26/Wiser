@@ -8,11 +8,9 @@ import android.widget.Toast;
 
 import java.util.Date;
 
-import javax.inject.Inject;
-
+import br.com.wiser.APIClient;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.WiserApplication;
 import br.com.wiser.facebook.Facebook;
 import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.models.usuario.Usuario;
@@ -29,11 +27,8 @@ import retrofit2.Response;
  */
 public class LoginPresenter extends Presenter<ILoginView> {
 
-    @Inject
-    ILoginService service;
-
-    @Inject
-    Facebook facebook;
+    private ILoginService service;
+    private Facebook facebook;
 
     private Intent carregarConversasServices;
 
@@ -41,10 +36,8 @@ public class LoginPresenter extends Presenter<ILoginView> {
     public void onCreate() {
         view.onInitView();
 
-        WiserApplication app = (WiserApplication) getActivity().getApplication();
-        LoginComponent component = app.getLoginComponent();
-        component.inject(this);
-
+        service = APIClient.getClient().create(ILoginService.class);
+        facebook = new Facebook(view.getContext());
         checkLogin();
     }
 
@@ -94,10 +87,9 @@ public class LoginPresenter extends Presenter<ILoginView> {
                     if (response.isSuccessful()) {
                         Sistema.setUsuario(response.body());
 
-                        LoginDAO usuarioLogadoDAO = new LoginDAO(getContext());
-                        usuarioLogadoDAO.logarUsuario();
-                        Toast.makeText(getActivity(), "Funcionou: " + usuarioLogadoDAO.getLogado(), Toast.LENGTH_SHORT).show();
-                        usuarioLogadoDAO.close();
+                        LoginDAO loginDAO = new LoginDAO(getContext());
+                        loginDAO.logarUsuario();
+                        Toast.makeText(getActivity(), "Funcionou: " + loginDAO.getLogado(), Toast.LENGTH_SHORT).show();
 
                         facebook.carregarPerfil(Sistema.getUsuario(), new ICallback() {
                             @Override

@@ -88,19 +88,6 @@ public class CarregarConversasService extends Service implements Observer {
                             return;
                         }
 
-                        /*
-                        idUltimaMensagem = 0;
-                        lock = true;
-
-                        for (Conversa conversa : listaConversas) {
-                            if (conversa.get().size() > 0) {
-                                if (conversa.get().getLast().getId() > idUltimaMensagem) {
-                                    idUltimaMensagem = conversa.get().getLast().getId();
-                                }
-                            }
-                        }
-                        */
-
                         Call<LinkedList<Conversa>> call = service.carregarConversas(Sistema.getUsuario().getUserID(), idUltimaMensagem);
                         call.enqueue(new Callback<LinkedList<Conversa>>() {
                             @Override
@@ -118,35 +105,7 @@ public class CarregarConversasService extends Service implements Observer {
                                     if (mapMensagens.size() > 0) {
                                         mensagensDAO.insert(mapMensagens);
                                         Utils.vibrar(CarregarConversasService.this, 150);
-                                        //notificar();
-                                        //EventBus.getDefault().post(mapMensagens);
                                     }
-
-
-                                    /*
-                                    adicionarNovasMensagens(response.body(), new CallbackConversas() {
-                                        @Override
-                                        public void onLoad(List<String> listaNovasMensagens) {
-
-                                            if (listaNovasMensagens.size() > 0) {
-                                                Utils.vibrar(CarregarConversasService.this, 150);
-                                                notificar(listaNovasMensagens);
-                                                //EventBus.getDefault().post(listaConversas);
-                                                EventBus.getDefault().postSticky(listaConversas);
-                                            }
-                                            else {
-                                                if (primeiraVez[0]) {
-                                                    EventBus.getDefault().postSticky(listaConversas);
-                                                    primeiraVez[0] = false;
-                                                }
-                                            }
-
-                                            notificar(listaNovasMensagens);
-
-                                            lock = false;
-                                        }
-                                    });
-                                    */
                                 }
                             }
 

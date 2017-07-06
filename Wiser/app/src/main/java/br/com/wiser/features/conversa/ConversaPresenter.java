@@ -1,5 +1,6 @@
 package br.com.wiser.features.conversa;
 
+import java.text.ParseException;
 import java.util.List;
 
 import br.com.wiser.Sistema;
@@ -15,7 +16,7 @@ public class ConversaPresenter {
         this.conversaDAO = conversaDAO;
     }
 
-    public List<Conversa> carregarConversas() {
+    public List<Conversa> carregarConversas() throws ParseException {
         List<Conversa> listaConversa = conversaDAO.get();
 
         for (Conversa conversa : listaConversa) {
