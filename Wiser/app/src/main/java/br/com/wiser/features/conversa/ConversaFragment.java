@@ -42,7 +42,7 @@ public class ConversaFragment extends AbstractFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.chat_principal, container, false);
 
-        conversasPresenter = new ConversaPresenter(new ConversaDAO(getContext()));
+        conversasPresenter = new ConversaPresenter();
         onLoad();
         onLoadChat();
 
@@ -61,12 +61,12 @@ public class ConversaFragment extends AbstractFragment {
         super.onStop();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(Mensagem mensagem) {
-        for (Conversa c : listaConversas) {
-            if (c.getId() == mensagem.getConversa()) {
-                c.getMensagens().add(mensagem);
-                adapter.updateItem(mensagem);
+        for (Conversa conversa : listaConversas) {
+            if (conversa.getId() == mensagem.getConversa()) {
+                conversa.getMensagens().add(mensagem);
+                adapter.updateItem(conversa);
             }
         }
     }

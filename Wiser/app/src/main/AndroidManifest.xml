@@ -14,7 +14,8 @@
         android:icon="@mipmap/logo_wiser_2"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTema">
+        android:theme="@style/AppTema"
+        android:name=".WiserApplication">
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -25,7 +26,7 @@
         <!-- Activity do Splash Screen -->
         <!-- Activity Main do App -->
         <activity
-            android:name=".views.splashscreen.SplashScreenActivity"
+            android:name=".features.splashscreen.SplashScreenActivity"
             android:screenOrientation="portrait"
             android:label="@string/app_name"
             android:theme="@style/AppTema.NoActionBar" >

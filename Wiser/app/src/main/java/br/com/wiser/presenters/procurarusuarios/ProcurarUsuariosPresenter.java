@@ -11,10 +11,8 @@ import java.util.Map;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.facebook.Facebook;
 import br.com.wiser.APIClient;
-import br.com.wiser.interfaces.ICallback;
-import br.com.wiser.models.usuario.Usuario;
+import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.models.procurarusuarios.Pesquisa;
 import br.com.wiser.models.procurarusuarios.IProcurarUsuariosService;
 import br.com.wiser.presenters.Presenter;
@@ -46,7 +44,7 @@ public class ProcurarUsuariosPresenter extends Presenter<IProcurarUsuariosView> 
         view.onSetVisibilityProgressBar(View.VISIBLE);
 
         Map<String, String> map = new HashMap<>();
-        map.put("usuario", String.valueOf(Sistema.getUsuario().getUserID()));
+        map.put("usuario", String.valueOf(Sistema.getUsuario().getId()));
         map.put("latitude", String.valueOf(Sistema.getUsuario().getLatitude()));
         map.put("longitude", String.valueOf(Sistema.getUsuario().getLongitude()));
         map.put("distancia", String.valueOf(pesquisa.getDistancia()));

@@ -1,4 +1,4 @@
-package br.com.wiser.views.contatos;
+package br.com.wiser.features.contato;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,13 +9,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import br.com.wiser.R;
-import br.com.wiser.Sistema;
-import br.com.wiser.models.contatos.Contato;
-import br.com.wiser.models.usuario.Usuario;
+import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.interfaces.IClickListener;
 import br.com.wiser.utils.Utils;
 
@@ -45,12 +42,11 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Usuario contato = Sistema.getListaUsuarios().get(listaContatos.get(position).getUsuario());
+        Usuario contato = listaContatos.get(position).getDestinatario();
 
         holder.viewSeparator.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
-
-        Utils.loadImageInBackground(context, contato.getPerfil().getUrlProfilePicture(), holder.imgPerfil, holder.prgBarra);
-        holder.lblNome.setText(contato.getPerfil().getFullName());
+        Utils.loadImageInBackground(context, contato.getUrlFotoPerfil(), holder.imgPerfil, holder.prgBarra);
+        holder.lblNome.setText(contato.getNome());
     }
 
     @Override

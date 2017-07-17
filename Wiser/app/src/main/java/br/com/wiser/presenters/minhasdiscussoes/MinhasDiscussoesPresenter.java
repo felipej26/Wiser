@@ -2,22 +2,18 @@ package br.com.wiser.presenters.minhasdiscussoes;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import br.com.wiser.APIClient;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.APIClient;
-import br.com.wiser.interfaces.ICallback;
+import br.com.wiser.features.usuario.IUsuarioService;
 import br.com.wiser.models.forum.Discussao;
 import br.com.wiser.models.forum.IForumService;
-import br.com.wiser.models.forum.Resposta;
-import br.com.wiser.models.usuario.IUsuarioService;
-import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.presenters.Presenter;
 import br.com.wiser.views.discussao.DiscussaoActivity;
 import br.com.wiser.views.minhasdiscussoes.IMinhasDiscussoesView;
@@ -49,7 +45,7 @@ public class MinhasDiscussoesPresenter extends Presenter<IMinhasDiscussoesView> 
     private void carregarDiscussoes() {
         view.onSetVisibilityProgressBar(View.VISIBLE);
 
-        Call<LinkedList<Discussao>> call = service.carregarDiscussoes(Sistema.getUsuario().getUserID(), true);
+        Call<LinkedList<Discussao>> call = service.carregarDiscussoes(Sistema.getUsuario().getId(), true);
         call.enqueue(new Callback<LinkedList<Discussao>>() {
             @Override
             public void onResponse(Call<LinkedList<Discussao>> call, Response<LinkedList<Discussao>> response) {
@@ -76,23 +72,24 @@ public class MinhasDiscussoesPresenter extends Presenter<IMinhasDiscussoesView> 
     private void carregarUsuarios() {
         List<Long> usuariosParaCarregarAPI = new ArrayList<>();
 
+        /*
         for (Discussao discussao : listaDiscussoes) {
-            if (!Sistema.getListaUsuarios().containsKey(discussao.getUsuario())) {
-                Sistema.getListaUsuarios().put(discussao.getUsuario(), new Usuario(discussao.getUsuario()));
-                usuariosParaCarregarAPI.add(discussao.getUsuario());
+            if (!Sistema.getListaUsuarios().containsKey(discussao.getDestinatario())) {
+                Sistema.getListaUsuarios().put(discussao.getDestinatario(), new Usuario(discussao.getDestinatario()));
+                usuariosParaCarregarAPI.add(discussao.getDestinatario());
             }
 
             for (Resposta resposta : discussao.getListaRespostas()) {
-                if (!Sistema.getListaUsuarios().containsKey(resposta.getUsuario())) {
-                    Sistema.getListaUsuarios().put(resposta.getUsuario(), new Usuario(resposta.getUsuario()));
-                    usuariosParaCarregarAPI.add(resposta.getUsuario());
+                if (!Sistema.getListaUsuarios().containsKey(resposta.getDestinatario())) {
+                    Sistema.getListaUsuarios().put(resposta.getDestinatario(), new Usuario(resposta.getDestinatario()));
+                    usuariosParaCarregarAPI.add(resposta.getDestinatario());
                 }
             }
         }
 
-        Sistema.carregarUsuarios(getContext(), usuariosParaCarregarAPI, new ICallback() {
+        Sistema.carregarUsuarios(getAppContext(), usuariosParaCarregarAPI, new ICallback() {
             @Override
-            public void onSuccess() {
+            public void onFinish() {
                 view.onLoadListaDiscussoes(listaDiscussoes);
             }
 
@@ -101,6 +98,7 @@ public class MinhasDiscussoesPresenter extends Presenter<IMinhasDiscussoesView> 
                 Log.e("Carregar Perfis", mensagemErro);
             }
         });
+        */
     }
 
     public void startDiscussao(int posicao) {

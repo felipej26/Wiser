@@ -9,9 +9,12 @@ import com.squareup.picasso.Target;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.views.minhasdiscussoes.MinhasDiscussoesActivity;
+import br.com.wiser.features.parametros.CodigoParametro;
+import br.com.wiser.features.parametros.Parametro;
+import br.com.wiser.features.parametros.ParametroDAO;
 import br.com.wiser.presenters.Presenter;
 import br.com.wiser.views.configuracoes.ConfiguracoesActivity;
+import br.com.wiser.views.minhasdiscussoes.MinhasDiscussoesActivity;
 import br.com.wiser.views.principal.IPrincipalView;
 import br.com.wiser.views.sobre.SobreActivity;
 
@@ -20,12 +23,19 @@ import br.com.wiser.views.sobre.SobreActivity;
  */
 public class PrincipalPresenter extends Presenter<IPrincipalView> {
 
+    private ParametroDAO parametroDAO = new ParametroDAO();
+
     @Override
     protected void onCreate() {
         super.onCreate();
         view.onInitView();
 
-        if (!Sistema.getUsuario().isSetouConfiguracoes()) {
+        if (!parametroDAO.exist(CodigoParametro.SALVOU_CONFIGURACOES)) {
+            parametroDAO.insert(new Parametro(
+                    CodigoParametro.SALVOU_CONFIGURACOES, "Salvou Configurações?", "NÃO"));
+        }
+
+        if (!parametroDAO.get(CodigoParametro.SALVOU_CONFIGURACOES).equals("SIM")) {
             startConfiguracoesActivity();
         }
 
@@ -66,15 +76,13 @@ public class PrincipalPresenter extends Presenter<IPrincipalView> {
 
     private void showSnackBar() {
         try {
-            while (!Sistema.getUsuario().isPerfilLoaded());
-
             Picasso.with(getContext())
-                    .load(Sistema.getUsuario().getPerfil().getUrlProfilePicture())
+                    .load(Sistema.getUsuario().getUrlFotoPerfil())
                     .into(new Target() {
                         @Override
                         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                             view.showSnackBarImage(view.onGetSnackBarView(),
-                                    view.getContext().getString(R.string.boas_vindas, Sistema.getUsuario().getPerfil().getFirstName()),
+                                    view.getContext().getString(R.string.boas_vindas, Sistema.getUsuario().getPrimeiroNome()),
                                     bitmap);
                         }
 

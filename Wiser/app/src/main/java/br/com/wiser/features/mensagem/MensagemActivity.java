@@ -22,7 +22,7 @@ import br.com.wiser.Sistema;
 import br.com.wiser.dialogs.DialogSugestoes;
 import br.com.wiser.features.conversa.Conversa;
 import br.com.wiser.interfaces.ICallback;
-import br.com.wiser.interfaces.ICallbackSuccess;
+import br.com.wiser.interfaces.ICallbackFinish;
 import br.com.wiser.views.AbstractActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,19 +51,13 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
         setContentView(R.layout.chat_mensagens);
 
         conversa = (Conversa) getIntent().getSerializableExtra(Sistema.CONVERSA);
-        mensagensPresenter = new MensagemPresenter(new MensagemDAO(this));
+        mensagensPresenter = new MensagemPresenter();
 
         onLoad();
-        /*
-        if (!conversa.isCarregouSugestoes()) {
-            mensagensPresenter.carregarSugestoesAssuntos();
-        }
-        */
-
         onLoadMessages();
-        mensagensPresenter.atualizarMensagensLidas(conversa.getId(), new ICallbackSuccess() {
+        mensagensPresenter.atualizarMensagensLidas(conversa, new ICallbackFinish() {
             @Override
-            public void onSuccess() {
+            public void onFinish() {
 
             }
         });
@@ -86,7 +80,7 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
         super.onResume();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(Mensagem mensagem) {
         if (this.conversa.getId() == mensagem.getConversa()) {
             conversa.getMensagens().add(mensagem);
@@ -104,7 +98,7 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
         ButterKnife.bind(this);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setTitle(Sistema.getListaUsuarios().get(conversa.getDestinatario()).getPerfil().getFullName());
+        getActionBar().setTitle(conversa.getUsuario().getNome());
 
         lblSugestao.setText("");
         lblSugestao.setVisibility(View.INVISIBLE);
@@ -125,8 +119,9 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
     }
 
     private void onLoadMessages() {
+
         try {
-            conversa.setMensagens(new LinkedList<>(mensagensPresenter.carregarMensagens(conversa.getId())));
+            conversa.setMensagens(new LinkedList<>(mensagensPresenter.carregarMensagens(conversa)));
         }
         catch (ParseException e) {
             e.printStackTrace();
@@ -138,7 +133,7 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
 
     @OnClick(R.id.btnEnviarResposta)
     public void onSendMessage() {
-        mensagensPresenter.enviarMensagem(conversa.getId(), conversa.getDestinatario(), txtResposta.getText().toString(), new ICallback() {
+        mensagensPresenter.enviarMensagem(conversa.getId(), conversa.getUsuario().getId(), txtResposta.getText().toString(), new ICallback() {
             @Override
             public void onSuccess() {
 

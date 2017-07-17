@@ -7,11 +7,10 @@ import android.widget.GridView;
 import android.widget.AdapterView;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.models.usuario.Usuario;
+import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.presenters.usuariosencontrados.UsuariosEncontradosPresenter;
 import br.com.wiser.views.AbstractActivity;
 import android.widget.ProgressBar;

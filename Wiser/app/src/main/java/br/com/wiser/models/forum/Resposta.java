@@ -3,8 +3,6 @@ package br.com.wiser.models.forum;
 import java.io.Serializable;
 import java.util.Date;
 
-import br.com.wiser.models.usuario.Usuario;
-
 /**
  * Created by Jefferson on 20/05/2016.
  */

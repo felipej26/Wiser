@@ -74,13 +74,11 @@ public class MensagemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         switch (holder.getItemViewType()) {
             case VIEW_MENSAGEM_USUARIO:
-                ((MensagensViewHolder)holder).bind(context, listaMensagens.get(position));
-                break;
             case VIEW_MENSAGEM_CONTATO:
                 ((MensagensViewHolder)holder).bind(context, listaMensagens.get(position));
                 break;
             case VIEW_BOTAO_SUGESTAO:
-                ((SugestaoViewHolder)holder).bind(callback );
+                ((SugestaoViewHolder)holder).bind(callback);
                 break;
         }
     }
@@ -99,7 +97,7 @@ public class MensagemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void addAll(List<Mensagem> listaMensagens) {
-        listaMensagens.addAll(listaMensagens);
+        this.listaMensagens.addAll(listaMensagens);
         notifyDataSetChanged();
     }
 
@@ -118,7 +116,7 @@ public class MensagemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         public MensagensViewHolder(View view) {
             super(view);
-            ButterKnife.bind(view);
+            ButterKnife.bind(this, view);
         }
 
         public void bind(Context context, Mensagem mensagem) {
@@ -144,7 +142,7 @@ public class MensagemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         public SugestaoViewHolder(View view) {
             super(view);
-            ButterKnife.bind(view);
+            ButterKnife.bind(this, view);
         }
 
         public void bind(final Callback callback) {

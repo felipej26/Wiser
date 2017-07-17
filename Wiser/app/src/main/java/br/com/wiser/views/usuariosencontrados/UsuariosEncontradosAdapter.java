@@ -13,7 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import br.com.wiser.R;
-import br.com.wiser.models.usuario.Usuario;
+import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.utils.Utils;
 
 /**
@@ -54,8 +54,8 @@ public class UsuariosEncontradosAdapter extends ArrayAdapter<Usuario> {
         }
 
         Usuario usuario = listaUsuarios.get(position);
-        objHolder.txtNome.setText(usuario.getPerfil().getFirstName());
-        Utils.loadImageInBackground(context, usuario.getPerfil().getUrlProfilePicture(), objHolder.imgPerfil, objHolder.prgBarra);
+        objHolder.txtNome.setText(usuario.getPrimeiroNome());
+        Utils.loadImageInBackground(context, usuario.getUrlFotoPerfil(), objHolder.imgPerfil, objHolder.prgBarra);
 
         return objView;
     }

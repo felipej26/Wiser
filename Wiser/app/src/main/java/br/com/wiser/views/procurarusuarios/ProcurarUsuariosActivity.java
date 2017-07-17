@@ -7,10 +7,8 @@ import android.view.View;
 import br.com.wiser.R;
 
 import br.com.wiser.Sistema;
-import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.models.procurarusuarios.Pesquisa;
 import br.com.wiser.presenters.procurarusuarios.ProcurarUsuariosPresenter;
-import br.com.wiser.utils.Utils;
 import br.com.wiser.views.AbstractActivity;
 
 import android.widget.Button;

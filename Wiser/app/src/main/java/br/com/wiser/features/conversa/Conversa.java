@@ -7,24 +7,18 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 import br.com.wiser.features.mensagem.Mensagem;
+import br.com.wiser.features.usuario.Usuario;
 
 /**
  * Created by Jefferson on 23/05/2016.
  */
 public class Conversa implements Serializable {
 
-    @SerializedName("id")
-    private long id = 0;
-
-    private long idServer;
-
+    private long id;
     @SerializedName("destinatario")
-    private long destinatario;
-
-    @SerializedName("mensagens")
+    private long idDestinatario;
+    private Usuario usuario;
     private LinkedList<Mensagem> mensagens = new LinkedList<>();
-
-    private boolean carregouSugestoes;
     private HashSet<String> sugestoes = new HashSet<>();
 
     public long getId() {
@@ -35,20 +29,20 @@ public class Conversa implements Serializable {
         this.id = id;
     }
 
-    public long getIdServer() {
-        return idServer;
+    public long getIdDestinatario() {
+        return idDestinatario;
     }
 
-    public void setIdServer(long idServer) {
-        this.idServer = idServer;
+    public void setIdDestinatario(long idDestinatario) {
+        this.idDestinatario = idDestinatario;
     }
 
-    public long getDestinatario() {
-        return destinatario;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setDestinatario(long destinatario) {
-        this.destinatario = destinatario;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public LinkedList<Mensagem> getMensagens() {
@@ -57,14 +51,6 @@ public class Conversa implements Serializable {
 
     public void setMensagens(LinkedList<Mensagem> mensagens) {
         this.mensagens = mensagens;
-    }
-
-    public boolean isCarregouSugestoes() {
-        return carregouSugestoes;
-    }
-
-    public void setCarregouSugestoes(boolean carregouSugestoes) {
-        this.carregouSugestoes = carregouSugestoes;
     }
 
     public HashSet<String> getSugestoes() {

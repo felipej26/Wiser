@@ -6,19 +6,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import java.util.LinkedList;
 
 import br.com.wiser.R;
-import br.com.wiser.Sistema;
 import br.com.wiser.interfaces.ICallback;
+import br.com.wiser.models.forum.Discussao;
 import br.com.wiser.presenters.discussao.DiscussaoPresenter;
 import br.com.wiser.presenters.forum.ForumPresenter;
 import br.com.wiser.views.AbstractFragment;
 import br.com.wiser.views.discussao.DiscussaoCardViewAdapter;
-import br.com.wiser.models.forum.Discussao;
 import br.com.wiser.views.discussao.IDiscussaoView;
 
 /**
@@ -69,7 +68,7 @@ public class ForumFragment extends AbstractFragment implements IForumView, IDisc
 
     @Override
     public void onClickPerfil(int posicao) {
-        discussaoPresenter.openPerfil(Sistema.getListaUsuarios().get(adapter.getItem(posicao).getUsuario()));
+        //discussaoPresenter.openPerfil(Sistema.getListaUsuarios().get(adapter.getItem(posicao).getUsuario()));
     }
 
     @Override

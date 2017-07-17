@@ -1,25 +1,24 @@
-package br.com.wiser.presenters.contatos;
+package br.com.wiser.features.contato;
 
 import android.content.Intent;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Set;
 
 import br.com.wiser.APIClient;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.features.conversa.Conversa;
-import br.com.wiser.interfaces.ICallback;
-import br.com.wiser.models.contatos.Contato;
-import br.com.wiser.models.contatos.IContatosService;
-import br.com.wiser.presenters.Presenter;
-import br.com.wiser.views.contatos.IContatosView;
 import br.com.wiser.features.mensagem.MensagemActivity;
+import br.com.wiser.features.usuario.Usuario;
+import br.com.wiser.features.usuario.UsuarioDAO;
+import br.com.wiser.features.usuario.UsuarioPresenter;
+import br.com.wiser.presenters.Presenter;
 import br.com.wiser.views.procurarusuarios.ProcurarUsuariosActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,6 +43,7 @@ public class ContatosPresenter extends Presenter<IContatosView> implements Obser
         carregarContatos();
     }
 
+    /*
     public void onResume(){
         new Timer().schedule(new TimerTask() {
             @Override
@@ -52,35 +52,38 @@ public class ContatosPresenter extends Presenter<IContatosView> implements Obser
             }
         }, 1500);
     }
+    */
 
     private void carregarContatos() {
-        final List<Long> listaUsuarios = new ArrayList<>();
+        final Set<Long> idsUsuariosParaCarregar = new HashSet<>();
 
-        Call<ArrayList<Contato>> call = service.carregarContatos(Sistema.getUsuario().getUserID());
+        Call<ArrayList<Contato>> call = service.carregarContatos(Sistema.getUsuario().getId());
         call.enqueue(new Callback<ArrayList<Contato>>() {
             @Override
             public void onResponse(Call<ArrayList<Contato>> call, Response<ArrayList<Contato>> response) {
-                if (response.isSuccessful()) {
+                UsuarioDAO usuarioDAO = new UsuarioDAO();
+                UsuarioPresenter usuarioPresenter = new UsuarioPresenter();
 
+                if (response.isSuccessful()) {
                     listaContatos = response.body();
                     for (Contato contato : listaContatos) {
-                        listaUsuarios.add(contato.getUsuario());
+                        if (usuarioDAO.exist(contato.getIdContato())) {
+                            contato.setDestinatario(usuarioDAO.getById(contato.getIdContato()));
+                        }
+                        else {
+                            idsUsuariosParaCarregar.add(contato.getIdContato());
+                        }
                     }
 
-                    Sistema.carregarUsuarios(getContext(), listaUsuarios, new ICallback() {
-                        @Override
-                        public void onSuccess() {
-                            view.onLoadListaContatos(listaContatos);
-                            view.onNotifyDataSetChanged();
-                        }
-
-                        @Override
-                        public void onError(String mensagemErro) {
-                            Log.e("Carregar Contatos", mensagemErro);
-                            view.showToast(getContext().getString(R.string.erro));
-                        }
-                    });
-
+                    if (idsUsuariosParaCarregar.size() > 0) {
+                        usuarioPresenter.getInServer(idsUsuariosParaCarregar, new UsuarioPresenter.ICallback() {
+                            @Override
+                            public void onFinished(List<Usuario> usuarios) {
+                                view.onLoadListaContatos(listaContatos);
+                                view.onNotifyDataSetChanged();
+                            }
+                        });
+                    }
                 }
                 else {
                     view.showToast(getContext().getString(R.string.erro));
@@ -103,7 +106,7 @@ public class ContatosPresenter extends Presenter<IContatosView> implements Obser
     public void startChat(int posicao) {
         Intent i = new Intent(getContext(), MensagemActivity.class);
         Conversa conversa = new Conversa();
-        conversa.setDestinatario(listaContatos.get(posicao).getUsuario());
+        conversa.setUsuario(listaContatos.get(posicao).getDestinatario());
 
         i.putExtra(Sistema.CONVERSA, conversa);
         getContext().startActivity(i);

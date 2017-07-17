@@ -18,7 +18,7 @@ import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.models.forum.Discussao;
 import br.com.wiser.presenters.discussao.DiscussaoPresenter;
 import br.com.wiser.views.discussao.DiscussaoCardViewAdapter;
-import br.com.wiser.models.usuario.Usuario;
+import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.presenters.perfilcompleto.PerfilCompletoPresenter;
 import br.com.wiser.utils.Utils;
 import br.com.wiser.views.AbstractActivity;
@@ -157,7 +157,7 @@ public class PerfilCompletoActivity extends AbstractActivity implements IPerfilC
 
     @Override
     public void onClickPerfil(int posicao) {
-        discussaoPresenter.openPerfil(Sistema.getListaUsuarios().get(adapter.getItem(posicao).getUsuario()));
+        //discussaoPresenter.openPerfil(Sistema.getListaUsuarios().get(adapter.getItem(posicao).getUsuario()));
     }
 
     @Override

@@ -1,10 +1,7 @@
-package br.com.wiser.views.contatos;
+package br.com.wiser.features.contato;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import br.com.wiser.models.contatos.Contato;
-import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.views.IView;
 
 /**

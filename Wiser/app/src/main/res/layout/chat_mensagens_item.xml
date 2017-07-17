@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:textSize="16dp"
         android:text="Nome"
-        android:id="@+id/txtNome"
+        android:id="@+id/lblNome"
         android:layout_alignStart="@+id/viewSeparator"
         android:layout_alignTop="@+id/frmImgPerfil"
         android:layout_marginLeft="5dp"

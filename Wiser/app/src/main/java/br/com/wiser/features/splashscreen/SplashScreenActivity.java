@@ -1,12 +1,11 @@
-package br.com.wiser.views.splashscreen;
+package br.com.wiser.features.splashscreen;
 
 import android.os.Bundle;
 
 import br.com.wiser.R;
-import br.com.wiser.features.splashscreen.SplashScreenPresenter;
 import br.com.wiser.views.AbstractActivity;
 
-public class SplashScreenActivity extends AbstractActivity implements ISplashScreenView {
+public class SplashScreenActivity extends AbstractActivity {
 
     private SplashScreenPresenter splashScreenPresenter;
 

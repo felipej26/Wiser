@@ -14,12 +14,12 @@ import br.com.wiser.APIClient;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.features.conversa.Conversa;
-import br.com.wiser.models.contatos.IContatosService;
+import br.com.wiser.features.contato.IContatosService;
 import br.com.wiser.models.forum.IForumService;
-import br.com.wiser.models.usuario.IUsuarioService;
+import br.com.wiser.features.usuario.IUsuarioService;
 import br.com.wiser.views.perfilcompleto.PerfilCompletoActivity;
 import br.com.wiser.features.mensagem.MensagemActivity;
-import br.com.wiser.models.usuario.Usuario;
+import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.utils.Utils;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,7 +45,7 @@ public class DialogPerfilUsuario {
     private Button btnAbrirChat;
     private Button btnPerfCompleto;
 
-    public void show(final Context context, final Usuario contato) {
+    public void show(final Context context, final Usuario contato, boolean isContato) {
 
         service = APIClient.getClient().create(IContatosService.class);
         usuarioService = APIClient.getClient().create(IUsuarioService.class);
@@ -61,22 +61,22 @@ public class DialogPerfilUsuario {
         btnAbrirChat = (Button) viewDetalhes.findViewById(R.id.btnAbrirChat);
         btnPerfCompleto = (Button) viewDetalhes.findViewById(R.id.btnPerfCompleto);
 
-        Utils.loadImageInBackground(context, contato.getPerfil().getUrlProfilePicture(), imgPerfil, prgBarra);
-        lblNome.setText(contato.getPerfil().getFirstName());
+        Utils.loadImageInBackground(context, contato.getUrlFotoPerfil(), imgPerfil, prgBarra);
+        lblNome.setText(contato.getNome());
         lblIdiomaNivel.setText(context.getString(R.string.fluencia_idioma,
                 Sistema.getDescricaoFluencia(contato.getFluencia()), Sistema.getDescricaoIdioma(contato.getIdioma())));
         lblStatus.setText(Utils.decode(contato.getStatus()));
 
-        if (Sistema.getUsuario().getUserID() == contato.getUserID()) {
+        if (Sistema.getUsuario().getId() == contato.getId()) {
             btnAbrirChat.setVisibility(View.INVISIBLE);
         }
-        else if (!contato.isContato()) {
+        else if (!isContato) {
             btnAbrirChat.setText(R.string.adicionar_amigo);
             btnAbrirChat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     btnAbrirChat.setVisibility(View.INVISIBLE);
-                    Call<Object> call = service.adicionarContato(Sistema.getUsuario().getUserID(), contato.getUserID());
+                    Call<Object> call = service.adicionarContato(Sistema.getUsuario().getId(), contato.getId());
                     call.enqueue(new Callback<Object>() {
                         @Override
                         public void onResponse(Call<Object> call, Response<Object> response) {
@@ -119,7 +119,7 @@ public class DialogPerfilUsuario {
             public void onClick(View v) {
                 Intent i = new Intent(v.getContext(), MensagemActivity.class);
                 Conversa conversa = new Conversa();
-                conversa.setDestinatario(contato.getUserID());
+                conversa.setUsuario(contato);
                 i.putExtra(Sistema.CONVERSA, conversa);
                 v.getContext().startActivity(i);
             }

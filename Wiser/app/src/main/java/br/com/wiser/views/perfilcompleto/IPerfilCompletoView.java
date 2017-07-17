@@ -3,7 +3,7 @@ package br.com.wiser.views.perfilcompleto;
 import java.util.LinkedList;
 
 import br.com.wiser.models.forum.Discussao;
-import br.com.wiser.models.usuario.Usuario;
+import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.views.IView;
 
 /**

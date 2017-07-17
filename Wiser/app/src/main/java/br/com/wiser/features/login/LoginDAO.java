@@ -1,7 +1,6 @@
 package br.com.wiser.features.login;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -19,8 +18,8 @@ public class LoginDAO {
 
     private Database database;
 
-    public LoginDAO(Context context) {
-        database = Database.getInstance(context);
+    public LoginDAO() {
+        database = Database.getInstance();
     }
 
     public void logarUsuario() {
@@ -33,7 +32,7 @@ public class LoginDAO {
             db.update(database.LOGIN, valores, "logado = ?", new String[]{"1"});
 
             valores = new ContentValues();
-            valores.put("usuario", Sistema.getUsuario().getUserID());
+            valores.put("usuario", Sistema.getUsuario().getId());
             valores.put("data", UtilsDate.formatDate(new Date(), UtilsDate.YYYYMMDD_HHMMSS));
             valores.put("logado", 1);
 

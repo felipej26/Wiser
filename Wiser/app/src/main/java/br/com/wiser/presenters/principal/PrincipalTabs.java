@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.LinkedList;
 
 import br.com.wiser.features.conversa.ConversaFragment;
-import br.com.wiser.views.contatos.ContatosFragment;
+import br.com.wiser.features.contato.ContatosFragment;
 import br.com.wiser.views.forum.ForumFragment;
 
 /**

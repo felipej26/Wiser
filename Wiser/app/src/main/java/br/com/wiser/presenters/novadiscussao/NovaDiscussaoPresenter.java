@@ -70,7 +70,7 @@ public class NovaDiscussaoPresenter extends Presenter<INovaDiscussaoView> {
         Map<String, String> parametros = new HashMap<>();
 
         parametros.put("id", "0");
-        parametros.put("usuario", String.valueOf(Sistema.getUsuario().getUserID()));
+        parametros.put("usuario", String.valueOf(Sistema.getUsuario().getId()));
         parametros.put("titulo", Utils.encode(titulo));
         parametros.put("descricao", Utils.encode(descricao));
         parametros.put("data", new Date().toString());

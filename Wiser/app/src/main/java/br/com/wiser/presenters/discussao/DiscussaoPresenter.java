@@ -4,19 +4,24 @@ import android.view.View;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import br.com.wiser.APIClient;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.APIClient;
-import br.com.wiser.interfaces.ICallback;
-import br.com.wiser.models.forum.Resposta;
-import br.com.wiser.models.usuario.Usuario;
-import br.com.wiser.models.forum.Discussao;
 import br.com.wiser.dialogs.DialogConfirmar;
 import br.com.wiser.dialogs.DialogPerfilUsuario;
 import br.com.wiser.dialogs.IDialog;
+import br.com.wiser.features.contato.ContatoDAO;
+import br.com.wiser.features.usuario.Usuario;
+import br.com.wiser.features.usuario.UsuarioDAO;
+import br.com.wiser.features.usuario.UsuarioPresenter;
+import br.com.wiser.models.forum.Discussao;
 import br.com.wiser.models.forum.IForumService;
+import br.com.wiser.models.forum.Resposta;
 import br.com.wiser.presenters.Presenter;
 import br.com.wiser.utils.Utils;
 import br.com.wiser.utils.UtilsDate;
@@ -30,6 +35,10 @@ import retrofit2.Response;
  * Created by Jefferson on 23/01/2017.
  */
 public class DiscussaoPresenter extends Presenter<IDiscussaoView> {
+
+    private interface ICallback{
+        void onFinished(Usuario usuario);
+    }
 
     private IForumService service;
     private Discussao discussao;
@@ -48,29 +57,48 @@ public class DiscussaoPresenter extends Presenter<IDiscussaoView> {
         }
     }
 
-    private void carregar(Discussao discussao) {
-        Usuario usuario = null;
+    private void carregar(final Discussao discussao) {
 
-        if (Sistema.getListaUsuarios().containsKey(discussao.getUsuario())) {
-            usuario = Sistema.getListaUsuarios().get(discussao.getUsuario());
+        carregarUsuario(discussao.getId(), new DiscussaoPresenter.ICallback() {
+            @Override
+            public void onFinished(Usuario usuario) {
+                ((IDiscussaoCompletaView)view).onInitView();
+                ((IDiscussaoCompletaView)view).onSetTextLblID("#" + discussao.getId());
+                ((IDiscussaoCompletaView)view).onSetTextLblTitulo(Utils.decode(discussao.getTitulo()));
+                ((IDiscussaoCompletaView)view).onSetTextLblDescricao(Utils.decode(discussao.getDescricao()));
+                ((IDiscussaoCompletaView)view).onSetTextLblAutor(usuario.getPrimeiroNome());
+                ((IDiscussaoCompletaView)view).onSetTextLblDataHora(UtilsDate.formatDate(discussao.getData(), UtilsDate.DDMMYYYY_HHMMSS));
+                ((IDiscussaoCompletaView)view).onSetTextLblQntRespostas(
+                        getContext().getString(discussao.getListaRespostas().size() == 1 ?
+                                R.string.resposta : R.string.respostas, discussao.getListaRespostas().size()));
+                ((IDiscussaoCompletaView)view).onLoadProfilePicture(usuario.getUrlFotoPerfil());
+
+                if (!discussao.isAtiva()) {
+                    ((IDiscussaoCompletaView) view).onSetVisibilityFrmResponder(View.INVISIBLE);
+                }
+
+                ((IDiscussaoCompletaView)view).onLoadRespostas(discussao.getListaRespostas());
+            }
+        });
+    }
+
+    private void carregarUsuario(final long id, final ICallback callback) {
+        UsuarioPresenter usuarioPresenter = new UsuarioPresenter();
+        final UsuarioDAO usuarioDAO = new UsuarioDAO();
+
+        if (usuarioDAO.exist(id)) {
+            callback.onFinished(usuarioDAO.getById(id));
         }
-
-        ((IDiscussaoCompletaView)view).onInitView();
-        ((IDiscussaoCompletaView)view).onSetTextLblID("#" + discussao.getId());
-        ((IDiscussaoCompletaView)view).onSetTextLblTitulo(Utils.decode(discussao.getTitulo()));
-        ((IDiscussaoCompletaView)view).onSetTextLblDescricao(Utils.decode(discussao.getDescricao()));
-        ((IDiscussaoCompletaView)view).onSetTextLblAutor(usuario.getPerfil().getFirstName());
-        ((IDiscussaoCompletaView)view).onSetTextLblDataHora(UtilsDate.formatDate(discussao.getData(), UtilsDate.DDMMYYYY_HHMMSS));
-        ((IDiscussaoCompletaView)view).onSetTextLblQntRespostas(
-                getContext().getString(discussao.getListaRespostas().size() == 1 ?
-                        R.string.resposta : R.string.respostas, discussao.getListaRespostas().size()));
-        ((IDiscussaoCompletaView)view).onLoadProfilePicture(usuario.getPerfil().getUrlProfilePicture());
-
-        if (!discussao.isAtiva()) {
-            ((IDiscussaoCompletaView) view).onSetVisibilityFrmResponder(View.INVISIBLE);
+        else  {
+            Set<Long> ids = new HashSet<Long>();
+            ids.add(id);
+            usuarioPresenter.getInServer(ids, new UsuarioPresenter.ICallback() {
+                @Override
+                public void onFinished(List<Usuario> usuarios) {
+                    callback.onFinished(usuarioDAO.getById(id));
+                }
+            });
         }
-
-        ((IDiscussaoCompletaView)view).onLoadRespostas(discussao.getListaRespostas());
     }
 
     public void compartilhar(View view) {
@@ -91,7 +119,7 @@ public class DiscussaoPresenter extends Presenter<IDiscussaoView> {
         ((IDiscussaoCompletaView) view).onSetVisibilityProgressBar(View.VISIBLE);
 
         map.put("id", String.valueOf(discussao.getId()));
-        map.put("usuario", String.valueOf(Sistema.getUsuario().getUserID()));
+        map.put("usuario", String.valueOf(Sistema.getUsuario().getId()));
         map.put("data", new Date().toString());
         map.put("resposta", Utils.encode(resposta.trim()));
 
@@ -118,10 +146,12 @@ public class DiscussaoPresenter extends Presenter<IDiscussaoView> {
 
     public void openPerfil(Usuario usuario) {
         DialogPerfilUsuario dialog = new DialogPerfilUsuario();
-        dialog.show(view.getContext(), usuario);
+        ContatoDAO contatoDAO = new ContatoDAO();
+
+        dialog.show(view.getContext(), usuario, contatoDAO.isContato(usuario.getId()));
     }
 
-    public void confirmarDesativarDiscussao(final Discussao discussao, final ICallback callback) {
+    public void confirmarDesativarDiscussao(final Discussao discussao, final br.com.wiser.interfaces.ICallback callback) {
         DialogConfirmar confirmar = new DialogConfirmar(getActivity());
 
         confirmar.setYesClick(new IDialog() {
@@ -141,7 +171,7 @@ public class DiscussaoPresenter extends Presenter<IDiscussaoView> {
         confirmar.show();
     }
 
-    private void desativarDiscussao(final Discussao discussao, final ICallback callback) {
+    private void desativarDiscussao(final Discussao discussao, final br.com.wiser.interfaces.ICallback callback) {
         Call<Object> call = service.desativarDiscussao(discussao.getId(), !discussao.isAtiva());
         call.enqueue(new Callback<Object>() {
             @Override

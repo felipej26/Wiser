@@ -10,13 +10,13 @@ import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.features.login.LoginActivity;
-import br.com.wiser.views.splashscreen.ISplashScreenView;
 import br.com.wiser.presenters.Presenter;
+import br.com.wiser.views.IView;
 
 /**
  * Created by Jefferson on 22/01/2017.
  */
-public class SplashScreenPresenter extends Presenter<ISplashScreenView> {
+public class SplashScreenPresenter extends Presenter<IView> {
 
     private final int SPLASH_TIMEOUT = 1000;
 

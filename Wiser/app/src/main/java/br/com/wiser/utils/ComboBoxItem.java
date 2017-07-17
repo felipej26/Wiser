@@ -1,7 +1,5 @@
 package br.com.wiser.utils;
 
-import com.google.gson.annotations.SerializedName;
-
 public class ComboBoxItem {
 
     private int id;
@@ -9,11 +7,6 @@ public class ComboBoxItem {
 
     public ComboBoxItem() {
 
-    }
-
-    public ComboBoxItem(int id, String descricao) {
-        this.id = id;
-        this.descricao = descricao;
     }
 
     public int getId() {

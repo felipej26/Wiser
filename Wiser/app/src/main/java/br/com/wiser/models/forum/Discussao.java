@@ -4,12 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
-
-import br.com.wiser.models.usuario.Usuario;
-import br.com.wiser.models.forum.Resposta;
 
 /**
  * Created by Jefferson on 17/05/2016.

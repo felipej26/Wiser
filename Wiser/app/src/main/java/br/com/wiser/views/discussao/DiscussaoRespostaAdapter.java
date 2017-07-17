@@ -6,18 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.LinkedList;
-import java.util.Map;
 
 import br.com.wiser.R;
-import br.com.wiser.Sistema;
+import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.models.forum.Resposta;
-import br.com.wiser.models.usuario.Usuario;
-import br.com.wiser.utils.UtilsDate;
-import br.com.wiser.utils.Utils;
 
 /**
  * Created by Jefferson on 20/05/2016.
@@ -45,8 +41,9 @@ public class DiscussaoRespostaAdapter extends RecyclerView.Adapter<DiscussaoResp
         final Resposta r = listaRespostas.get(position);
         Usuario usuario = null;
 
-        if (Sistema.getListaUsuarios().containsKey(r.getUsuario())) {
-            usuario = Sistema.getListaUsuarios().get(r.getUsuario());
+        /*
+        if (Sistema.getListaUsuarios().containsKey(r.getDestinatario())) {
+            usuario = Sistema.getListaUsuarios().get(r.getDestinatario());
         }
 
         holder.viewSeparator.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
@@ -56,6 +53,7 @@ public class DiscussaoRespostaAdapter extends RecyclerView.Adapter<DiscussaoResp
         holder.lblAutor.setText(usuario.getPerfil().getFirstName());
         holder.lblDataHora.setText(UtilsDate.formatDate(r.getData(), UtilsDate.DDMMYYYY_HHMMSS));
         holder.lblResposta.setText(Utils.decode(r.getResposta()));
+        */
     }
 
     @Override

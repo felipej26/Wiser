@@ -4,18 +4,20 @@ import android.util.Log;
 
 import java.net.HttpURLConnection;
 
+import br.com.wiser.APIClient;
+import br.com.wiser.features.parametros.CodigoParametro;
+import br.com.wiser.features.parametros.ParametroDAO;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.interfaces.ICallback;
-import br.com.wiser.models.configuracoes.Configuracoes;
-import br.com.wiser.models.usuario.IUsuarioService;
-import br.com.wiser.utils.Utils;
-import br.com.wiser.views.configuracoes.IConfiguracoesView;
-import br.com.wiser.APIClient;
 import br.com.wiser.dialogs.DialogConfirmar;
 import br.com.wiser.dialogs.DialogInformar;
 import br.com.wiser.dialogs.IDialog;
+import br.com.wiser.features.usuario.IUsuarioService;
+import br.com.wiser.interfaces.ICallback;
+import br.com.wiser.models.configuracoes.Configuracoes;
 import br.com.wiser.presenters.Presenter;
+import br.com.wiser.utils.Utils;
+import br.com.wiser.views.configuracoes.IConfiguracoesView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,12 +36,10 @@ public class ConfiguracoesPresenter extends Presenter<IConfiguracoesView> {
 
         service = APIClient.getClient().create(IUsuarioService.class);
 
-        if (Sistema.getUsuario().isSetouConfiguracoes()) {
-            view.onSetSelectionCmbIdioma(Sistema.getUsuario().getIdioma());
-            view.onSetSelectionCmbFluencia(Sistema.getUsuario().getFluencia());
-            view.onSetTextTxtStatus(Utils.decode(Sistema.getUsuario().getStatus()));
-            view.onSetSelectionTxtStatus(view.onGetTextTxtStatus().length());
-        }
+        view.onSetSelectionCmbIdioma(Sistema.getUsuario().getIdioma());
+        view.onSetSelectionCmbFluencia(Sistema.getUsuario().getFluencia());
+        view.onSetTextTxtStatus(Utils.decode(Sistema.getUsuario().getStatus()));
+        view.onSetSelectionTxtStatus(view.onGetTextTxtStatus().length());
     }
 
     public void setTextChangedTxtStatus(int tamanho) {
@@ -48,8 +48,9 @@ public class ConfiguracoesPresenter extends Presenter<IConfiguracoesView> {
 
     public void salvar(){
         final Configuracoes configuracoes = new Configuracoes();
+        final ParametroDAO parametroDAO = new ParametroDAO();
 
-        configuracoes.setId(Sistema.getUsuario().getUserID());
+        configuracoes.setId(Sistema.getUsuario().getId());
         configuracoes.setIdioma(view.onGetItemIdCmbIdioma());
         configuracoes.setFluencia(String.valueOf(view.onGetItemIdCmbFluencia()));
         configuracoes.setStatus(Utils.encode(view.onGetTextTxtStatus()));
@@ -60,7 +61,8 @@ public class ConfiguracoesPresenter extends Presenter<IConfiguracoesView> {
                 Sistema.getUsuario().setIdioma(view.onGetItemIdCmbIdioma());
                 Sistema.getUsuario().setFluencia(view.onGetItemIdCmbFluencia());
                 Sistema.getUsuario().setStatus(view.onGetTextTxtStatus());
-                Sistema.getUsuario().setSetouConfiguracoes(true);
+
+                parametroDAO.update(CodigoParametro.SALVOU_CONFIGURACOES, "SIM");
             }
 
             @Override
@@ -108,7 +110,7 @@ public class ConfiguracoesPresenter extends Presenter<IConfiguracoesView> {
     private void desativarConta() {
         final DialogInformar informar = new DialogInformar(view.getActivity());
 
-        desativarConta(Sistema.getUsuario().getUserID(), new ICallback() {
+        desativarConta(Sistema.getUsuario().getId(), new ICallback() {
             @Override
             public void onSuccess() {
                 informar.setMensagem(view.getContext().getString(R.string.sucesso_conta_desativada));

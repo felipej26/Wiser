@@ -3,7 +3,7 @@ package br.com.wiser.models.procurarusuarios;
 import java.util.LinkedList;
 import java.util.Map;
 
-import br.com.wiser.models.usuario.Usuario;
+import br.com.wiser.features.usuario.Usuario;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.QueryMap;

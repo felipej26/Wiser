@@ -11,7 +11,6 @@ import android.widget.ProgressBar;
 import java.util.LinkedList;
 
 import br.com.wiser.R;
-import br.com.wiser.Sistema;
 import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.models.forum.Discussao;
 import br.com.wiser.presenters.discussao.DiscussaoPresenter;
@@ -59,7 +58,7 @@ public class MinhasDiscussoesActivity extends AbstractActivity implements IMinha
 
     @Override
     public void onClickPerfil(int posicao) {
-        discussaoPresenter.openPerfil(Sistema.getListaUsuarios().get(adapter.getItem(posicao).getUsuario()));
+        //discussaoPresenter.openPerfil(Sistema.getListaUsuarios().get(adapter.getItem(posicao).getUsuario()));
     }
 
     @Override

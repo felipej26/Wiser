@@ -1,9 +1,7 @@
-package br.com.wiser.models.contatos;
+package br.com.wiser.features.contato;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import br.com.wiser.models.usuario.Usuario;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;

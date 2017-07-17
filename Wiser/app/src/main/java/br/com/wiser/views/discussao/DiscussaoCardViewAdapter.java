@@ -1,25 +1,20 @@
 package br.com.wiser.views.discussao;
 
-import android.app.Activity;
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import br.com.wiser.Sistema;
 import br.com.wiser.R;
+import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.models.forum.Discussao;
-import br.com.wiser.models.usuario.Usuario;
-import br.com.wiser.utils.UtilsDate;
-import br.com.wiser.utils.Utils;
-import android.widget.ProgressBar;
 
 /**
  * Created by Jefferson on 16/05/2016.
@@ -48,30 +43,32 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
         Usuario usuario = null;
         String texto = objDiscussao.getDescricao();
 
-        if (Sistema.getListaUsuarios().containsKey(objDiscussao.getUsuario())) {
-            usuario = Sistema.getListaUsuarios().get(objDiscussao.getUsuario());
+        /*
+        if (Sistema.getListaUsuarios().containsKey(objDiscussao.getDestinatario())) {
+            usuario = Sistema.getListaUsuarios().get(objDiscussao.getDestinatario());
         }
 
         if(texto.length() > 80){
             texto = texto.substring(0, 80) + "...";
         }
 
-        Utils.loadImageInBackground(view.getContext(), usuario.getPerfil().getUrlProfilePicture(), viewHolder.imgPerfil, viewHolder.prgBarra);
+        Utils.loadImageInBackground(view.getAppContext(), usuario.getPerfil().getUrlProfilePicture(), viewHolder.imgPerfil, viewHolder.prgBarra);
         viewHolder.lblIDDiscussao.setText("#" + objDiscussao.getId());
         viewHolder.lblAutorDiscussao.setText(usuario.getPerfil().getFirstName());
         viewHolder.lblTituloDiscussao.setText(Utils.decode(objDiscussao.getTitulo()));
         viewHolder.lblDescricaoDiscussao.setText(Utils.decode(texto));
         viewHolder.lblContRespostas.setText(
-                view.getContext().getString(objDiscussao.getListaRespostas().size() == 1 ? R.string.resposta : R.string.respostas,
+                view.getAppContext().getString(objDiscussao.getListaRespostas().size() == 1 ? R.string.resposta : R.string.respostas,
                         objDiscussao.getListaRespostas().size()));
         viewHolder.lblDataHora.setText(UtilsDate.formatDate(objDiscussao.getData(), UtilsDate.DDMMYYYY_HHMMSS));
-        viewHolder.btnDesativar.setText(objDiscussao.isAtiva() ? view.getContext().getString(R.string.desativar) : view.getContext().getString(R.string.ativar));
+        viewHolder.btnDesativar.setText(objDiscussao.isAtiva() ? view.getAppContext().getString(R.string.desativar) : view.getAppContext().getString(R.string.ativar));
 
-        if (usuario.getUserID() != Sistema.getUsuario().getUserID()) {
+        if (usuario.getId() != Sistema.getDestinatario().getId()) {
             viewHolder.btnDesativar.setVisibility(View.INVISIBLE);
         }
 
         viewHolder.setPosicao(position);
+        */
     }
 
     @Override

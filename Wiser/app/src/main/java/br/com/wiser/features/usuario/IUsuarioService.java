@@ -1,4 +1,4 @@
-package br.com.wiser.models.usuario;
+package br.com.wiser.features.usuario;
 
 import java.util.List;
 

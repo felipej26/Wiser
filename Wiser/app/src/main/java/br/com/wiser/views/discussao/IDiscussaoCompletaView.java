@@ -1,10 +1,8 @@
 package br.com.wiser.views.discussao;
 
 import java.util.LinkedList;
-import java.util.Map;
 
 import br.com.wiser.models.forum.Resposta;
-import br.com.wiser.models.usuario.Usuario;
 
 /**
  * Created by Jefferson on 25/01/2017.

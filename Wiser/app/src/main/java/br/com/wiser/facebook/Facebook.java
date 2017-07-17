@@ -13,13 +13,11 @@ import android.util.Log;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphRequestBatch;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -34,10 +32,11 @@ import java.util.List;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
+import br.com.wiser.WiserApplication;
+import br.com.wiser.features.usuario.Usuario;
+import br.com.wiser.features.usuario.UsuarioDAO;
 import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.models.assunto.Pagina;
-import br.com.wiser.models.usuario.Perfil;
-import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.utils.UtilsDate;
 
 /**
@@ -49,8 +48,8 @@ public class Facebook {
 
     private static String nomeIndisponivel = "";
 
-    public Facebook(Context context) {
-        this.context = context;
+    public Facebook() {
+        this.context = WiserApplication.getAppContext();
 
         try {
             nomeIndisponivel = context.getResources().getString(R.string.usuario);
@@ -63,20 +62,12 @@ public class Facebook {
 
         if (callbackManager == null) {
             callbackManager = CallbackManager.Factory.create();
-
-            LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-                @Override
-                public void onSuccess(LoginResult loginResult) { }
-
-                @Override
-                public void onCancel() { }
-
-                @Override
-                public void onError(FacebookException error) {
-                    error.printStackTrace();
-                }
-            });
         }
+    }
+
+    public Facebook(FacebookCallback callback) {
+        this();
+        LoginManager.getInstance().registerCallback(callbackManager, callback);
     }
 
     private void getSignatures() {
@@ -100,7 +91,7 @@ public class Facebook {
     }
 
     public void login(Activity activity) {
-        LoginManager.getInstance().logInWithReadPermissions(activity, Sistema.getAccessToken().getPermissions());
+        LoginManager.getInstance().logInWithReadPermissions(activity, AccessToken.getCurrentAccessToken().getPermissions());
     }
 
     /**
@@ -167,8 +158,6 @@ public class Facebook {
 
     public void carregarPerfil(final Usuario usuario, final ICallback callback) {
 
-        usuario.setPerfil(new Perfil());
-
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -202,13 +191,7 @@ public class Facebook {
         }
 
         for (Usuario usuario : listaUsuarios) {
-            if (usuario.getPerfil() == null) {
-                usuario.setPerfil(new Perfil());
-            }
-
-            if (!usuario.isPerfilLoaded()) {
-                listaRequest.add(getGraphRequestCarregarPerfil(usuario, null));
-            }
+            listaRequest.add(getGraphRequestCarregarPerfil(usuario, null));
         }
 
         if (listaRequest.size() == 0) {
@@ -221,10 +204,12 @@ public class Facebook {
 
     public void carregarPaginasEmComum(final long destinatario, final ICallbackPaginas callbackPaginas) {
 
+        final UsuarioDAO usuarioDAO = new UsuarioDAO();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
-                carregarContextID(destinatario, new ICallbackContextID() {
+                carregarContextID(usuarioDAO.getById(destinatario), new ICallbackContextID() {
                     @Override
                     public void onSuccess(String userContextID) {
                         carregarPaginasEmComum(userContextID, callbackPaginas);
@@ -304,10 +289,10 @@ public class Facebook {
         }).start();
     }
 
-    private void carregarContextID(Long destinatario, final ICallbackContextID callback) {
+    private void carregarContextID(Usuario destinatario, final ICallbackContextID callback) {
         GraphRequest request = GraphRequest.newGraphPathRequest(
                 createAccessToken(Sistema.getUsuario()),
-                "/" + Sistema.getListaUsuarios().get(destinatario).getFacebookID(),
+                "/" + destinatario.getFacebookID(),
                 new GraphRequest.Callback() {
                     @Override
                     public void onCompleted(GraphResponse response) {
@@ -357,9 +342,8 @@ public class Facebook {
 
                     @Override
                     public void onCompleted(GraphResponse graphResponse) {
-                        Perfil perfil = new Perfil();
-                        perfil.setFirstName(nomeIndisponivel);
-                        perfil.setFullName(nomeIndisponivel);
+                        usuario.setNome(nomeIndisponivel);
+                        usuario.setPrimeiroNome(nomeIndisponivel);
 
                         if (graphResponse != null) {
                             if (graphResponse.getError() != null) {
@@ -380,30 +364,37 @@ public class Facebook {
                                     }
 
                                     if (json.has("first_name"))
-                                        perfil.setFirstName(json.getString("first_name"));
+                                        usuario.setPrimeiroNome(json.getString("first_name"));
 
                                     if (json.has("name"))
-                                        perfil.setFullName(json.getString("name"));
+                                        usuario.setNome(json.getString("name"));
 
                                     if (json.has("picture"))
-                                        perfil.setUrlProfilePicture(json.getJSONObject("picture")
+                                        usuario.setUrlFotoPerfil(json.getJSONObject("picture")
                                                 .getJSONObject("data").optString("url"));
 
                                     if (json.has("birthday") && json.optString("birthday").length() == 10) {
+                                        /* TODO Idade
                                         long diferenca = new Date().getTime() - UtilsDate.parseDate(json.getString("birthday"), UtilsDate.MMDDYYYY).getTime();
-                                        perfil.setIdade((int) Math.floor(diferenca / 86400000 / 365));
+                                        usuario.set((int) Math.floor(diferenca / 86400000 / 365));
+                                        */
+                                        usuario.setDataNascimento(UtilsDate.parseDate(json.getString("birthday"), UtilsDate.MMDDYYYY));
                                     } else {
-                                        if (json.has("age_range"))
+                                        if (json.has("age_range")) {
+                                            usuario.setDataNascimento(new Date());
+                                            /* TODO Arrumar
                                             perfil.setIdade(json.getJSONObject("age_range").getInt("min"));
+                                            */
+                                        }
+                                        else {
+                                            usuario.setDataNascimento(new Date());
+                                        }
                                     }
                                 }
                             }
                             catch (Exception e) {
-                                Log.e("Facebook", "Erro ao carregar o Perfil do Usuario: " + usuario.getUserID(), e);
+                                Log.e("Facebook", "Erro ao carregar o Perfil do Usuario: " + usuario.getId(), e);
                             }
-
-                            usuario.setPerfilLoaded(true);
-                            usuario.setPerfil(perfil);
 
                             if (callback != null) {
                                 callback.onSuccess();

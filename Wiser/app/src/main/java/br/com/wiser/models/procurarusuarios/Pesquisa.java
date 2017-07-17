@@ -2,7 +2,7 @@ package br.com.wiser.models.procurarusuarios;
 
 import java.util.LinkedList;
 
-import br.com.wiser.models.usuario.Usuario;
+import br.com.wiser.features.usuario.Usuario;
 
 /**
  * Created by Wesley on 03/04/2016.

@@ -1,10 +1,8 @@
 package br.com.wiser.views.usuariosencontrados;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
-import br.com.wiser.models.contatos.Contato;
-import br.com.wiser.models.usuario.Usuario;
+import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.views.IView;
 
 /**

@@ -3,7 +3,6 @@ package br.com.wiser;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
@@ -14,22 +13,19 @@ import android.widget.Spinner;
 import com.facebook.AccessToken;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import br.com.wiser.facebook.AccessTokenModel;
 import br.com.wiser.facebook.Facebook;
+import br.com.wiser.features.usuario.IUsuarioService;
+import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.interfaces.ICallback;
-import br.com.wiser.models.usuario.IUsuarioService;
-import br.com.wiser.models.usuario.Usuario;
 import br.com.wiser.models.assunto.Assunto;
 import br.com.wiser.models.sistema.ISistemaService;
 import br.com.wiser.utils.ComboBoxItem;
-import br.com.wiser.features.login.LoginActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,17 +52,17 @@ public class Sistema {
     private static Set assuntos;
     private static List listaIdiomas;
     private static List listaFluencias;
-    private static Map<Long, Usuario> listaUsuarios;
+    //private static Map<Long, Usuario> listaUsuarios;
 
     private static ISistemaService service;
     private static IUsuarioService usuarioService;
 
     public static void inicializarSistema(Context context, final ICallback callback) {
 
-        listaUsuarios = new HashMap<>();
+        //listaUsuarios = new HashMap<>();
 
         try {
-            new Facebook(context);
+            new Facebook();
 
             service = APIClient.getClient().create(ISistemaService.class);
             usuarioService = APIClient.getClient().create(IUsuarioService.class);
@@ -270,7 +266,7 @@ public class Sistema {
     }
 
     public static void logout(Context context) {
-        new Facebook(context).logout();
+        new Facebook().logout();
         Sistema.usuario = null;
     }
 
@@ -282,6 +278,7 @@ public class Sistema {
         Sistema.usuario = usuario;
     }
 
+    /*
     public static void logout(Activity activity) {
         Intent i = new Intent(activity, LoginActivity.class);
 
@@ -290,6 +287,7 @@ public class Sistema {
         activity.startActivity(i);
         activity.finish();
     }
+    */
 
     public static int getIDComboBox(Spinner cmb) {
         return ((ComboBoxItem)cmb.getItemAtPosition(cmb.getSelectedItemPosition())).getId();
@@ -375,6 +373,7 @@ public class Sistema {
         return assuntos;
     }
 
+    /*
     public static Map<Long, Usuario> getListaUsuarios() {
         return listaUsuarios;
     }
@@ -382,13 +381,13 @@ public class Sistema {
     public static void carregarUsuarios(final Context context, List<Long> listaUsuarios, final ICallback callback) {
 
         if (listaUsuarios.size() > 0) {
-            Call<List<Usuario>> call = usuarioService.carregarUsuarios(Sistema.getUsuario().getUserID(), listaUsuarios.toArray());
-            call.enqueue(new Callback<List<Usuario>>() {
+            Call<List<Usuario>> call = usuarioService.carregarUsuarios(Sistema.getDestinatario().getId(), listaUsuarios.toArray());
+            call.enqueue(new ICallback<List<Usuario>>() {
                 @Override
                 public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
                     if (response.isSuccessful()) {
                         for (Usuario usuario : response.body()) {
-                            Sistema.getListaUsuarios().put(usuario.getUserID(), usuario);
+                            Sistema.getListaUsuarios().put(usuario.getId(), usuario);
                         }
 
                         carregarPerfis(context, callback);
@@ -416,4 +415,5 @@ public class Sistema {
 
         facebook.carregarUsuarios(listaUsuarios.values(), callback);
     }
+    */
 }

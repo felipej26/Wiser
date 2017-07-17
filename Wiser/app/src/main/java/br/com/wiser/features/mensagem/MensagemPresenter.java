@@ -10,8 +10,9 @@ import java.util.Map;
 
 import br.com.wiser.APIClient;
 import br.com.wiser.Sistema;
+import br.com.wiser.features.conversa.Conversa;
 import br.com.wiser.interfaces.ICallback;
-import br.com.wiser.interfaces.ICallbackSuccess;
+import br.com.wiser.interfaces.ICallbackFinish;
 import br.com.wiser.utils.Utils;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,30 +24,29 @@ import retrofit2.Response;
 public class MensagemPresenter {
 
     private IMensagemService service;
-    private MensagemDAO mensagensDAO;
+    private MensagemDAO mensagensDAO = new MensagemDAO();
 
-    public MensagemPresenter(MensagemDAO mensagensDAO) {
+    public MensagemPresenter() {
         service = APIClient.getClient().create(IMensagemService.class);
-        this.mensagensDAO = mensagensDAO;
     }
 
-    public List<Mensagem> carregarMensagens(long conversa) throws ParseException {
-        return mensagensDAO.get(conversa);
+    public List<Mensagem> carregarMensagens(Conversa conversa) throws ParseException {
+        return mensagensDAO.get(conversa.getId());
     }
 
-    public void atualizarMensagensLidas(long conversa, final ICallbackSuccess callback) {
+    public void atualizarMensagensLidas(Conversa conversa, final ICallbackFinish callback) {
         Map<String, Long> map = new HashMap<>();
 
-        map.put("conversa", conversa);
-        map.put("usuario", Sistema.getUsuario().getUserID());
-        map.put("mensagem", mensagensDAO.getMaxIdServer(conversa));
+        map.put("conversa", conversa.getId());
+        map.put("usuario", Sistema.getUsuario().getId());
+        map.put("mensagem", mensagensDAO.getMaxId(conversa.getId()));
 
         Call<Object> call = service.atualizarMensagensLidas(map);
         call.enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call call, Response response) {
                 if (response.isSuccessful()) {
-                    callback.onSuccess();
+                    callback.onFinish();
                 }
             }
 
@@ -59,19 +59,14 @@ public class MensagemPresenter {
 
     public void enviarMensagem(long conversa, long destinatario, String textoMensagem, final ICallback callback) {
         Map<String, String> map = new HashMap<>();
-        Mensagem mensagem = new Mensagem();
-
-        final long idMensagem[] = {0};
+        final Mensagem mensagem = new Mensagem();
 
         mensagem.setConversa(conversa);
-        mensagem.setUsuario(Sistema.getUsuario().getUserID());
+        mensagem.setUsuario(Sistema.getUsuario().getId());
         mensagem.setEstado(Mensagem.Estado.ENVIANDO);
         mensagem.setData(new Date());
         mensagem.setMensagem(textoMensagem.trim());
         mensagem.setLida(true);
-
-        idMensagem[0] = mensagensDAO.insert(mensagem);
-        mensagem.setId(idMensagem[0]);
 
         if (!textoMensagem.trim().isEmpty()) {
             map.put("conversa", String.valueOf(conversa));
@@ -85,11 +80,8 @@ public class MensagemPresenter {
                 @Override
                 public void onResponse(Call<Mensagem> call, Response<Mensagem> response) {
                     if (response.isSuccessful()) {
-                        Mensagem mensagem = response.body();
-                        mensagem.setIdServer(mensagem.getId());
-                        mensagem.setId(idMensagem[0]);
-
-                        mensagensDAO.update(mensagem);
+                        mensagem.setId(response.body().getId());
+                        mensagensDAO.insert(mensagem);
                         callback.onSuccess();
                     }
                 }

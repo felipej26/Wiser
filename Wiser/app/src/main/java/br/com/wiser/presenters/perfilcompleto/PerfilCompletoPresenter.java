@@ -9,21 +9,20 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import br.com.wiser.APIClient;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.APIClient;
-import br.com.wiser.interfaces.ICallback;
+import br.com.wiser.features.contato.ContatoDAO;
+import br.com.wiser.features.contato.IContatosService;
+import br.com.wiser.features.conversa.Conversa;
+import br.com.wiser.features.mensagem.MensagemActivity;
+import br.com.wiser.features.usuario.IUsuarioService;
+import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.models.forum.Discussao;
 import br.com.wiser.models.forum.IForumService;
-import br.com.wiser.models.forum.Resposta;
-import br.com.wiser.models.usuario.IUsuarioService;
-import br.com.wiser.models.usuario.Usuario;
-import br.com.wiser.features.conversa.Conversa;
-import br.com.wiser.models.contatos.IContatosService;
 import br.com.wiser.presenters.Presenter;
 import br.com.wiser.utils.Utils;
 import br.com.wiser.views.discussao.DiscussaoActivity;
-import br.com.wiser.features.mensagem.MensagemActivity;
 import br.com.wiser.views.perfilcompleto.IPerfilCompletoView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,7 +44,7 @@ public class PerfilCompletoPresenter extends Presenter<IPerfilCompletoView> {
     public void onCreate(IPerfilCompletoView view, Usuario usuario) {
         super.onCreate(view);
         view.onInitView();
-
+ContatoDAO contatoDAO = new ContatoDAO();
         service = APIClient.getClient().create(IContatosService.class);
         usuarioService = APIClient.getClient().create(IUsuarioService.class);
         forumService = APIClient.getClient().create(IForumService.class);
@@ -54,19 +53,19 @@ public class PerfilCompletoPresenter extends Presenter<IPerfilCompletoView> {
 
         view.onSetVisibilityProgressBar(View.VISIBLE);
 
-        if (Sistema.getUsuario().getUserID() == usuario.getUserID()) {
+        if (Sistema.getUsuario().getId() == usuario.getId()) {
             view.onLoadAsUser();
         }
-        else if (usuario.isContato()) {
+        else if (contatoDAO.isContato(usuario.getId())) {
             view.onLoadAsFriend(usuario);
         }
         else {
             view.onLoadAsNotFriend(usuario);
         }
 
-        view.onLoadProfilePicture(usuario.getPerfil().getUrlProfilePicture());
-        view.onSetTextLblNome(usuario.getPerfil().getFullName());
-        view.onSetTextLblIdade(", " + usuario.getPerfil().getIdade());
+        view.onLoadProfilePicture(usuario.getUrlFotoPerfil());
+        view.onSetTextLblNome(usuario.getNome());
+        view.onSetTextLblIdade(", " + 18); //usuario.getPerfil().getIdade());
         view.onSetTextLblIdiomaNivel(view.getContext().getString(R.string.fluencia_idioma,
                 Sistema.getDescricaoFluencia(usuario.getFluencia()), Sistema.getDescricaoIdioma(usuario.getIdioma())));
         view.onSetTextLblStatus(Utils.decode(usuario.getStatus()));
@@ -76,7 +75,7 @@ public class PerfilCompletoPresenter extends Presenter<IPerfilCompletoView> {
 
     private void carregarDiscussoes() {
 
-        Call<LinkedList<Discussao>> call = forumService.carregarDiscussoes(usuario.getUserID(), true);
+        Call<LinkedList<Discussao>> call = forumService.carregarDiscussoes(usuario.getId(), true);
         call.enqueue(new Callback<LinkedList<Discussao>>() {
             @Override
             public void onResponse(Call<LinkedList<Discussao>> call, Response<LinkedList<Discussao>> response) {
@@ -102,18 +101,19 @@ public class PerfilCompletoPresenter extends Presenter<IPerfilCompletoView> {
     private void carregarUsuarios() {
         List<Long> usuariosParaCarregarAPI = new ArrayList<>();
 
+        /*
         for (Discussao discussao : listaDiscussoes) {
             for (Resposta resposta : discussao.getListaRespostas()) {
-                if (!Sistema.getListaUsuarios().containsKey(resposta.getUsuario())) {
-                    Sistema.getListaUsuarios().put(resposta.getUsuario(), new Usuario(resposta.getUsuario()));
-                    usuariosParaCarregarAPI.add(resposta.getUsuario());
+                if (!Sistema.getListaUsuarios().containsKey(resposta.getDestinatario())) {
+                    Sistema.getListaUsuarios().put(resposta.getDestinatario(), new Usuario(resposta.getDestinatario()));
+                    usuariosParaCarregarAPI.add(resposta.getDestinatario());
                 }
             }
         }
 
-        Sistema.carregarUsuarios(getContext(), usuariosParaCarregarAPI, new ICallback() {
+        Sistema.carregarUsuarios(getAppContext(), usuariosParaCarregarAPI, new ICallback() {
             @Override
-            public void onSuccess() {
+            public void onFinish() {
                 view.onLoadListaDiscussoes(listaDiscussoes);
             }
 
@@ -122,11 +122,12 @@ public class PerfilCompletoPresenter extends Presenter<IPerfilCompletoView> {
                 Log.e("Carregar Perfis", mensagemErro);
             }
         });
+        */
     }
 
     public void adicionarContato() {
 
-        Call<Object> call = service.adicionarContato(Sistema.getUsuario().getUserID(), usuario.getUserID());
+        Call<Object> call = service.adicionarContato(Sistema.getUsuario().getId(), usuario.getId());
         call.enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
@@ -149,7 +150,7 @@ public class PerfilCompletoPresenter extends Presenter<IPerfilCompletoView> {
 
     public void openChat() {
         Conversa conversa = new Conversa();
-        conversa.setDestinatario(usuario.getUserID());
+        conversa.setUsuario(usuario);
 
         Intent i = new Intent(getContext(), MensagemActivity.class);
         i.putExtra(Sistema.CONVERSA, conversa);

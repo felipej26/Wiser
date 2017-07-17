@@ -1,4 +1,4 @@
-package br.com.wiser.views.contatos;
+package br.com.wiser.features.contato;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,8 +12,6 @@ import java.util.ArrayList;
 
 import br.com.wiser.R;
 import br.com.wiser.interfaces.IClickListener;
-import br.com.wiser.models.contatos.Contato;
-import br.com.wiser.presenters.contatos.ContatosPresenter;
 import br.com.wiser.views.AbstractFragment;
 
 /**
@@ -42,11 +40,13 @@ public class ContatosFragment extends AbstractFragment implements IContatosView 
         return view;
     }
 
+    /*
     @Override
     public void onResume() {
         super.onResume();
         contatosPresenter.onResume();
     }
+    */
 
     @Override
     public void onInitView() {

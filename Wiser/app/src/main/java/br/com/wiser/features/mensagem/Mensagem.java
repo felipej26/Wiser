@@ -27,7 +27,6 @@ public class Mensagem implements Serializable {
     }
 
     private long id;
-    private long idServer;
     private long conversa;
     private long usuario;
     private Estado estado = Estado.ENVIADO;
@@ -41,14 +40,6 @@ public class Mensagem implements Serializable {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public long getIdServer() {
-        return idServer;
-    }
-
-    public void setIdServer(long idServer) {
-        this.idServer = idServer;
     }
 
     public long getConversa() {
@@ -104,6 +95,6 @@ public class Mensagem implements Serializable {
     }
 
     public boolean isDestinatario() {
-        return usuario != Sistema.getUsuario().getUserID();
+        return usuario != Sistema.getUsuario().getId();
     }
 }

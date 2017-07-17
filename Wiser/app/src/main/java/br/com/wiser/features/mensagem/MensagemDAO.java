@@ -1,7 +1,6 @@
 package br.com.wiser.features.mensagem;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -22,22 +21,16 @@ public class MensagemDAO {
 
     private Database database;
 
-    public MensagemDAO(Context context) {
-        database = Database.getInstance(context);
+    public MensagemDAO() {
+        database = Database.getInstance();
     }
 
-    /***
-     * @param mensagem objeto Mensagem
-     * @return id da Mensagem
-     */
-    public long insert(Mensagem mensagem) {
+    public void insert(Mensagem mensagem) {
         SQLiteDatabase sql = database.getWritableDatabase();
         ContentValues valores = new ContentValues();
 
-        long id = 0;
-
         try {
-            valores.put("id_server", mensagem.getId());
+            valores.put("id", mensagem.getId());
             valores.put("conversa", mensagem.getConversa());
             valores.put("estado", mensagem.getEstado().getEstado());
             valores.put("usuario", mensagem.getUsuario());
@@ -45,15 +38,13 @@ public class MensagemDAO {
             valores.put("mensagem", mensagem.getMensagem());
             valores.put("lida", mensagem.isLida());
 
-            id = sql.insertOrThrow(database.MENSAGENS, null, valores);
+            sql.insertOrThrow(database.MENSAGENS, null, valores);
 
             EventBus.getDefault().post(mensagem);
         }
         catch (Exception ex) {
             ex.printStackTrace();
         }
-
-        return id;
     }
 
     public void insert(Map<Long, List<Mensagem>> mapMensagens) {
@@ -68,7 +59,6 @@ public class MensagemDAO {
         SQLiteDatabase sql = database.getWritableDatabase();
         ContentValues valores = new ContentValues();
 
-        valores.put("id_server", mensagem.getIdServer());
         valores.put("estato", mensagem.getEstado().getEstado());
         valores.put("mensagem", mensagem.getMensagem());
         valores.put("lida", mensagem.isLida());
@@ -119,24 +109,10 @@ public class MensagemDAO {
         return max;
     }
 
-    public long getMaxIdServer() {
-        SQLiteDatabase db = database.getReadableDatabase();
-        String sql = "SELECT MAX(id_server) AS id FROM " + database.MENSAGENS;
-
-        long max = 0;
-
-        Cursor c = db.rawQuery(sql, null);
-        if (c.moveToNext()) {
-            max = c.getLong(c.getColumnIndex("id"));
-        }
-
-        return max;
-    }
-
-    public long getMaxIdServer(long conversa) {
+    public long getMaxId(long conversa) {
         SQLiteDatabase db = database.getReadableDatabase();
         String sql =
-                "SELECT MAX(id_server) AS id FROM " + database.MENSAGENS +
+                "SELECT MAX(id) AS id FROM " + database.MENSAGENS +
                 " WHERE conversa = " + conversa;
 
         long max = 0;

@@ -13,8 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import br.com.wiser.R;
-import br.com.wiser.Sistema;
-import br.com.wiser.features.mensagem.Mensagem;
 import br.com.wiser.utils.Utils;
 import br.com.wiser.utils.UtilsDate;
 
@@ -56,23 +54,12 @@ public class ConversaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void addAll(List<Conversa> listaConversas) {
-        listaConversas.addAll(listaConversas);
+        this.listaConversas.addAll(listaConversas);
         notifyDataSetChanged();
     }
 
-    public void updateItem(Mensagem mensagem) {
-        for (Conversa conversa : listaConversas) {
-            if (conversa.getId() == mensagem.getConversa()) {
-                for (Mensagem m : conversa.getMensagens()) {
-                    if (m.getIdServer() == mensagem.getIdServer()) {
-                        m = mensagem;
-                        notifyItemChanged(listaConversas.indexOf(conversa));
-                        break;
-                    }
-                }
-                break;
-            }
-        }
+    public void updateItem(Conversa conversa) {
+        notifyItemChanged(listaConversas.indexOf(conversa));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -100,7 +87,7 @@ public class ConversaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             imgPerfil = (ImageView) itemLayoutView.findViewById(R.id.imgPerfil);
             prgBarra = (ProgressBar) itemLayoutView.findViewById(R.id.prgBarra);
 
-            lblNome = (TextView) itemLayoutView.findViewById(R.id.txtNome);
+            lblNome = (TextView) itemLayoutView.findViewById(R.id.lblNome);
             lblDataHora = (TextView) itemLayoutView.findViewById(R.id.lblDataHora);
             lblMensagens = (TextView) itemLayoutView.findViewById(R.id.lblMensagens);
             lblContMensagens = (TextView) itemLayoutView.findViewById(R.id.lblContMensagens);
@@ -110,13 +97,8 @@ public class ConversaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.posicao = posicao;
             viewSeparator.setVisibility(posicao == 0 ? View.INVISIBLE : View.VISIBLE);
 
-            if (Sistema.getListaUsuarios().get(conversa.getDestinatario()) != null) {
-                Utils.loadImageInBackground(context,
-                        Sistema.getListaUsuarios().get(conversa.getDestinatario()).getPerfil().getUrlProfilePicture(),
-                        imgPerfil, prgBarra);
-                lblNome.setText(Sistema.getListaUsuarios().get(conversa.getDestinatario()).getPerfil().getFullName());
-            }
-
+            Utils.loadImageInBackground(context, conversa.getUsuario().getUrlFotoPerfil(), imgPerfil, prgBarra);
+            lblNome.setText(conversa.getUsuario().getNome());
             lblDataHora.setText(UtilsDate.formatDate(conversa.getMensagens().getLast().getData(), UtilsDate.HHMM));
             lblMensagens.setText(conversa.getMensagens().getLast().getMensagem());
             lblContMensagens.setText(conversa.getContMsgNaoLidas() + " " + context.getString(conversa.getContMsgNaoLidas() <= 1 ? R.string.nao_lida : R.string.nao_lidas));
