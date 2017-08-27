@@ -43,7 +43,7 @@
         android:layout_marginLeft="5dp"
         android:textSize="14dp"
         android:singleLine="true"
-        android:layout_below="@+id/txtNome"
+        android:layout_below="@+id/lblNome"
         android:layout_alignStart="@+id/viewSeparator"
         android:layout_alignBottom="@+id/frmImgPerfil"
         android:layout_alignParentEnd="true"

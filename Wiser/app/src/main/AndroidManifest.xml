@@ -45,7 +45,7 @@
 
         <!-- Activity da Tela Configurações do App -->
         <activity
-            android:name=".views.configuracoes.ConfiguracoesActivity"
+            android:name=".features.configuracoes.ConfiguracoesActivity"
             android:label="@string/app_configuracoes_title"
             android:screenOrientation="portrait" />
 
@@ -62,7 +62,7 @@
 
         <!-- Activity da Tela Principal do App -->
         <activity
-            android:name=".views.principal.PrincipalActivity"
+            android:name=".features.principal.PrincipalActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppCompatTema"/>
 

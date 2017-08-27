@@ -1,4 +1,4 @@
-package br.com.wiser.views.principal;
+package br.com.wiser.features.principal;
 
 import android.view.View;
 

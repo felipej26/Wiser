@@ -32,7 +32,7 @@ import retrofit2.Response;
 
 public class Sistema {
 
-    public static final String SERVIDOR_WS = "http://nodejs-wiserserver.rhcloud.com/";
+    public static final String SERVIDOR_WS = "http://wiser-server.herokuapp.com/";
     public static final int PERMISSION_ALL = 0;
     public static final boolean PERMITIR_PAGINAS_NAO_VERIFICADAS = false;
 
@@ -42,9 +42,6 @@ public class Sistema {
     public static final String LISTAUSUARIOS = "listausuarios";
     public static final String DISCUSSAO = "discussao";
 
-    private static final int NUM_LISTAS_PARA_CARREGAR = 4;
-    private static int NUM_LISTAS_CARREGADAS = 0;
-
     private static AccessToken accessToken;
     private static String appLinguagem;
 
@@ -52,14 +49,11 @@ public class Sistema {
     private static Set assuntos;
     private static List listaIdiomas;
     private static List listaFluencias;
-    //private static Map<Long, Usuario> listaUsuarios;
 
     private static ISistemaService service;
     private static IUsuarioService usuarioService;
 
     public static void inicializarSistema(Context context, final ICallback callback) {
-
-        //listaUsuarios = new HashMap<>();
 
         try {
             new Facebook();
@@ -67,9 +61,10 @@ public class Sistema {
             service = APIClient.getClient().create(ISistemaService.class);
             usuarioService = APIClient.getClient().create(IUsuarioService.class);
 
-            /* Carrega linguagem do celular */
+            /* Carregar linguagem do celular */
             appLinguagem = context.getResources().getConfiguration().locale.getLanguage();
 
+            /* TODO Carregar de uma unica vez todos os parametros ao inves de um de cada vez */
             carregarAccessToken(new ICallback() {
                 @Override
                 public void onSuccess() {
@@ -79,6 +74,9 @@ public class Sistema {
                             carregarListaFluencias(new ICallback() {
                                 @Override
                                 public void onSuccess() {
+                                    callback.onSuccess();
+
+                                    /*
                                     carregarListaAssuntos(new ICallback() {
                                         @Override
                                         public void onSuccess() {
@@ -90,6 +88,7 @@ public class Sistema {
 
                                         }
                                     });
+                                    */
                                 }
 
                                 @Override
@@ -111,9 +110,6 @@ public class Sistema {
 
                 }
             });
-
-
-
         }
         catch (Exception e) {
             Log.e("Inicializar Sistema", e.getMessage());

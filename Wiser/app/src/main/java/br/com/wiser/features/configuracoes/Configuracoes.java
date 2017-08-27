@@ -1,4 +1,4 @@
-package br.com.wiser.models.configuracoes;
+package br.com.wiser.features.configuracoes;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -13,7 +13,7 @@ public class Configuracoes {
     private int idioma;
 
     @SerializedName("fluencia")
-    private String fluencia;
+    private int fluencia;
 
     @SerializedName("status")
     private String status;
@@ -34,11 +34,11 @@ public class Configuracoes {
         this.idioma = idioma;
     }
 
-    public String getFluencia() {
+    public int getFluencia() {
         return fluencia;
     }
 
-    public void setFluencia(String fluencia) {
+    public void setFluencia(int fluencia) {
         this.fluencia = fluencia;
     }
 

@@ -25,6 +25,7 @@ import org.json.JSONObject;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -91,7 +92,7 @@ public class Facebook {
     }
 
     public void login(Activity activity) {
-        LoginManager.getInstance().logInWithReadPermissions(activity, AccessToken.getCurrentAccessToken().getPermissions());
+        LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("public_profile,user_friends,user_likes,user_birthday"));
     }
 
     /**

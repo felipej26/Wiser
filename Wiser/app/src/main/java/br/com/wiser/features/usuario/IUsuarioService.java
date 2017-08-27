@@ -2,7 +2,7 @@ package br.com.wiser.features.usuario;
 
 import java.util.List;
 
-import br.com.wiser.models.configuracoes.Configuracoes;
+import br.com.wiser.features.configuracoes.Configuracoes;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;

@@ -27,8 +27,7 @@ import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.facebook.Facebook;
 import br.com.wiser.interfaces.ICallback;
-import br.com.wiser.services.CarregarConversasService;
-import br.com.wiser.views.principal.PrincipalActivity;
+import br.com.wiser.features.principal.PrincipalActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -216,14 +215,18 @@ public class LoginActivity extends Activity {
     }
 
     private void startService() {
+        /*
         carregarConversasServices = new Intent(this, CarregarConversasService.class);
         startService(carregarConversasServices);
+        */
     }
 
     private void stopService() {
+        /*
         if (carregarConversasServices != null) {
             stopService(carregarConversasServices);
         }
+        */
     }
 
     private void startPrincipalActivity() {

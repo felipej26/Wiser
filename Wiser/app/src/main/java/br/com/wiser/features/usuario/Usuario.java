@@ -28,6 +28,9 @@ public class Usuario implements Serializable {
     @SerializedName("conta_ativa")
     private boolean contaAtiva;
 
+    @SerializedName("setou_configuracoes")
+    private boolean setouConfiguracoes;
+
     private double latitude;
     private double longitude;
     private int idioma;
@@ -110,6 +113,14 @@ public class Usuario implements Serializable {
 
     public void setContaAtiva(boolean contaAtiva) {
         this.contaAtiva = contaAtiva;
+    }
+
+    public boolean isSetouConfiguracoes() {
+        return setouConfiguracoes;
+    }
+
+    public void setSetouConfiguracoes(boolean setouConfiguracoes) {
+        this.setouConfiguracoes = setouConfiguracoes;
     }
 
     public double getLatitude() {
