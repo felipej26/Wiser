@@ -10,7 +10,7 @@ import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.features.login.LoginActivity;
 import br.com.wiser.interfaces.ICallback;
-import br.com.wiser.views.AbstractActivity;
+import br.com.wiser.AbstractActivity;
 
 public class SplashScreenActivity extends AbstractActivity {
 

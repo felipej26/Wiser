@@ -7,7 +7,7 @@ import br.com.wiser.Sistema;
 import br.com.wiser.facebook.Facebook;
 import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.interfaces.ICallback;
-import br.com.wiser.presenters.Presenter;
+import br.com.wiser.Presenter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

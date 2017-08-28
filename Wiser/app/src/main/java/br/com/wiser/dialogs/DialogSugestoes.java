@@ -1,8 +1,6 @@
 package br.com.wiser.dialogs;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +11,7 @@ import android.widget.LinearLayout;
 import java.util.HashSet;
 
 import br.com.wiser.R;
-import br.com.wiser.views.IView;
+import br.com.wiser.IView;
 
 /**
  * Created by Jefferson on 30/10/2016.

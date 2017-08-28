@@ -2,7 +2,7 @@ package br.com.wiser.facebook;
 
 import java.util.HashSet;
 
-import br.com.wiser.models.assunto.Pagina;
+import br.com.wiser.features.assunto.Pagina;
 
 /**
  * Created by Jefferson on 02/11/2016.

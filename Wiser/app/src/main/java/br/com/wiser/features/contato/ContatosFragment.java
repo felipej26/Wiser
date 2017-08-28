@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import br.com.wiser.R;
 import br.com.wiser.interfaces.IClickListener;
-import br.com.wiser.views.AbstractFragment;
+import br.com.wiser.AbstractFragment;
 
 /**
  * Created by Jefferson on 22/09/2016.

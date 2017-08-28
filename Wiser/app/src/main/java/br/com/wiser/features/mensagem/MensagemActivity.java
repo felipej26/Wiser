@@ -23,7 +23,7 @@ import br.com.wiser.dialogs.DialogSugestoes;
 import br.com.wiser.features.conversa.Conversa;
 import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.interfaces.ICallbackFinish;
-import br.com.wiser.views.AbstractActivity;
+import br.com.wiser.AbstractActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

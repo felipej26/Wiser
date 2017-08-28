@@ -37,7 +37,7 @@ import br.com.wiser.WiserApplication;
 import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.features.usuario.UsuarioDAO;
 import br.com.wiser.interfaces.ICallback;
-import br.com.wiser.models.assunto.Pagina;
+import br.com.wiser.features.assunto.Pagina;
 import br.com.wiser.utils.UtilsDate;
 
 /**

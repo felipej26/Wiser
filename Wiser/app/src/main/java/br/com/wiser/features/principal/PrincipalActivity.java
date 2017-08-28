@@ -16,10 +16,10 @@ import com.squareup.picasso.Target;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.views.AbstractAppCompatActivity;
+import br.com.wiser.AbstractAppCompatActivity;
 import br.com.wiser.features.configuracoes.ConfiguracoesActivity;
-import br.com.wiser.views.minhasdiscussoes.MinhasDiscussoesActivity;
-import br.com.wiser.views.sobre.SobreActivity;
+import br.com.wiser.features.minhasdiscussoes.MinhasDiscussoesActivity;
+import br.com.wiser.features.sobre.SobreActivity;
 
 public class PrincipalActivity extends AbstractAppCompatActivity {
 

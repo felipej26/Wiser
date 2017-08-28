@@ -17,7 +17,7 @@ import br.com.wiser.dialogs.IDialog;
 import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.utils.ComboBoxItem;
 import br.com.wiser.utils.Utils;
-import br.com.wiser.views.AbstractActivity;
+import br.com.wiser.AbstractActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

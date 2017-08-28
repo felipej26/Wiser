@@ -19,7 +19,7 @@ import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.features.mensagem.Mensagem;
 import br.com.wiser.features.mensagem.MensagemActivity;
-import br.com.wiser.views.AbstractFragment;
+import br.com.wiser.AbstractFragment;
 
 /**
  * Created by Jefferson on 16/05/2016.
