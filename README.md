@@ -14,6 +14,7 @@ Como forma de agilizar o desenvolvimento e utlizar algumas das bibliotecas mais 
 - Retrofit
 - Butterknife
 - Google Play Services: Location
+- Fabric
 
 ### Futuras implementações
 A aplicação não está totalmente finalizada, falta consertar alguns bugs e desenvolver e finalizar algumas features, assim as futuras implementações são:

@@ -21,6 +21,10 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="cb35ebfa32186cb0603bd8f2346d5b7d1a1610aa" />
+
         <service android:name=".services.CarregarConversasService" />
 
         <!-- Activity do Splash Screen -->
