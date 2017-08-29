@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.LinkedList;
 
+import br.com.wiser.features.contato.ContatosFragment;
+
 /**
  * Created by Jefferson on 21/05/2016.
  */
@@ -16,8 +18,8 @@ public class PrincipalTabs extends FragmentPagerAdapter {
         super(fm);
 
         abasFragmentos = new LinkedList<>();
-        /*
         abasFragmentos.add(0, ContatosFragment.newInstance());
+        /*
         abasFragmentos.add(1, ConversaFragment.newInstance());
         abasFragmentos.add(2, ForumFragment.newInstance());
         */

@@ -1,5 +1,6 @@
 package br.com.wiser.features.contato;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,20 +11,29 @@ import android.widget.Button;
 
 import java.util.ArrayList;
 
-import br.com.wiser.R;
-import br.com.wiser.interfaces.IClickListener;
 import br.com.wiser.AbstractFragment;
+import br.com.wiser.R;
+import br.com.wiser.Sistema;
+import br.com.wiser.features.conversa.Conversa;
+import br.com.wiser.features.mensagem.MensagemActivity;
+import br.com.wiser.features.procurarusuarios.ProcurarUsuariosActivity;
+import br.com.wiser.features.usuario.Usuario;
+import br.com.wiser.interfaces.ICallback;
+import br.com.wiser.interfaces.IClickListener;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Jefferson on 22/09/2016.
  */
-public class ContatosFragment extends AbstractFragment implements IContatosView {
+public class ContatosFragment extends AbstractFragment {
 
     private ContatosPresenter contatosPresenter;
 
     private View view;
-    private Button btnEncontrarUsuarios;
-    private RecyclerView recyclerView;
+    @BindView(R.id.btnEncontrarUsuarios) Button btnEncontrarUsuarios;
+    @BindView(R.id.recycler_view) RecyclerView recyclerView;
     private ContatosAdapter adapter;
 
     public static ContatosFragment newInstance() {
@@ -35,55 +45,53 @@ public class ContatosFragment extends AbstractFragment implements IContatosView 
         view = inflater.inflate(R.layout.contatos_principal, container, false);
 
         contatosPresenter = new ContatosPresenter();
-        contatosPresenter.onCreate(this);
+        contatosPresenter.carregarContatos(new ICallback() {
+            @Override
+            public void onSuccess() {
+                adapter.setItems(contatosPresenter.getContatos());
+            }
+
+            @Override
+            public void onError(String mensagemErro) {
+                showToast(mensagemErro);
+            }
+        });
+
+        ButterKnife.bind(this, view);
+        onLoad();
 
         return view;
     }
 
-    /*
-    @Override
-    public void onResume() {
-        super.onResume();
-        contatosPresenter.onResume();
-    }
-    */
-
-    @Override
-    public void onInitView() {
-        btnEncontrarUsuarios = (Button) view.findViewById(R.id.btnEncontrarUsuarios);
-        btnEncontrarUsuarios.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                contatosPresenter.startProcurarUsuarios();
-            }
-        });
-
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+    public void onLoad() {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-        adapter = new ContatosAdapter(view.getContext(), new ArrayList<Contato>());
+        adapter = new ContatosAdapter(getContext(), new ArrayList<Usuario>());
         adapter.setClickListener(new IClickListener() {
             @Override
             public void itemClicked(View view, int position) {
-                contatosPresenter.startChat(position);
+                startChat(position);
             }
         });
         recyclerView.setAdapter(adapter);
     }
 
-    @Override
-    public void onLoadListaContatos(ArrayList<Contato> listaContatos) {
-        adapter.setItems(listaContatos);
+    @OnClick(R.id.btnEncontrarUsuarios)
+    public void onEncontrarUsuariosClicked() {
+        startProcurarUsuarios();
     }
 
-    @Override
-    public void onNotifyDataSetChanged() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                adapter.notifyDataSetChanged();
-            }
-        });
+    private void startChat(int posicao) {
+        Intent i = new Intent(getContext(), MensagemActivity.class);
+        Conversa conversa = new Conversa();
+        conversa.setUsuario(contatosPresenter.getContato(posicao));
+
+        i.putExtra(Sistema.CONVERSA, conversa);
+        startActivity(i);
+    }
+
+    private void startProcurarUsuarios() {
+        startActivity(new Intent(getContext(), ProcurarUsuariosActivity.class));
     }
 }

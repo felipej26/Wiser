@@ -36,6 +36,8 @@ public class PrincipalActivity extends AbstractAppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_principal);
 
+        onInitView();
+
         if (Sistema.getUsuario().isSetouConfiguracoes()) {
             showSnackBar();
         }

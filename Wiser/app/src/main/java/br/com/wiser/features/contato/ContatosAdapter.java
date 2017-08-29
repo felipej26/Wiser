@@ -22,11 +22,11 @@ import br.com.wiser.utils.Utils;
 public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.ViewHolder> {
 
     private Context context;
-    private List<Contato> listaContatos;
+    private List<Usuario> listaContatos;
 
     private IClickListener clickListener;
 
-    public ContatosAdapter(Context context, List<Contato> listaContatos) {
+    public ContatosAdapter(Context context, List<Usuario> listaContatos) {
         this.context = context;
         this.listaContatos = listaContatos;
     }
@@ -42,7 +42,7 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Usuario contato = listaContatos.get(position).getDestinatario();
+        Usuario contato = listaContatos.get(position);
 
         holder.viewSeparator.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
         Utils.loadImageInBackground(context, contato.getUrlFotoPerfil(), holder.imgPerfil, holder.prgBarra);
@@ -54,7 +54,7 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.ViewHo
         return listaContatos.size();
     }
 
-    public void setItems(List<Contato> listaContatos) {
+    public void setItems(List<Usuario> listaContatos) {
         this.listaContatos = listaContatos;
         notifyDataSetChanged();
     }
