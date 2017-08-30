@@ -20,6 +20,7 @@ import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
@@ -31,19 +32,30 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
-import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.WiserApplication;
+import br.com.wiser.features.assunto.Pagina;
 import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.features.usuario.UsuarioDAO;
 import br.com.wiser.interfaces.ICallback;
-import br.com.wiser.features.assunto.Pagina;
 import br.com.wiser.utils.UtilsDate;
+
+import static br.com.wiser.R.string.usuario;
 
 /**
  * Created by Jefferson on 03/04/2016.
  */
 public class Facebook {
+
+    public interface ICallbackProfileInfo {
+        void onCompleted(String nome, String primeiroNome, Date dataNascimento);
+    }
+
+    private interface ICallbackContextID {
+        void onSuccess(String userContextID);
+        void onError(String mensagemErro);
+    }
+
     private Context context;
     private static CallbackManager callbackManager;
 
@@ -53,7 +65,7 @@ public class Facebook {
         this.context = WiserApplication.getAppContext();
 
         try {
-            nomeIndisponivel = context.getResources().getString(R.string.usuario);
+            nomeIndisponivel = context.getResources().getString(usuario);
         }
         catch (Exception e) {
             nomeIndisponivel = "Usuário";
@@ -155,6 +167,32 @@ public class Facebook {
         catch (Exception e) {
             return null;
         }
+    }
+
+    public void getProfile(final ICallbackProfileInfo callbackProfileInfo) {
+        GraphRequest request = GraphRequest.newMeRequest(
+                getAccessToken(),
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject json, GraphResponse response) {
+                        try {
+                            // TODO Arrumar data
+                            callbackProfileInfo.onCompleted(
+                                    json.getString("name"),
+                                    json.getString("first_name"),
+                                    new Date()
+                            );
+                        }
+                        catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "name,first_name,birthday,age_range");
+        request.setParameters(parameters);
+        request.executeAsync();
     }
 
     public void carregarPerfil(final Usuario usuario, final ICallback callback) {
@@ -324,7 +362,7 @@ public class Facebook {
         AccessToken accessToken;
         String node;
 
-        parametros.putString("fields", "first_name,name,picture.width(1000).height(1000){url},birthday,age_range");
+        parametros.putString("fields", "first_name,name,birthday,age_range");
 
         if (usuario.getAccessToken() == null) {
             parametros.putString("ids", usuario.getFacebookID());
@@ -369,10 +407,6 @@ public class Facebook {
 
                                     if (json.has("name"))
                                         usuario.setNome(json.getString("name"));
-
-                                    if (json.has("picture"))
-                                        usuario.setUrlFotoPerfil(json.getJSONObject("picture")
-                                                .getJSONObject("data").optString("url"));
 
                                     if (json.has("birthday") && json.optString("birthday").length() == 10) {
                                         /* TODO Idade
@@ -441,10 +475,5 @@ public class Facebook {
         catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private interface ICallbackContextID {
-        void onSuccess(String userContextID);
-        void onError(String mensagemErro);
     }
 }

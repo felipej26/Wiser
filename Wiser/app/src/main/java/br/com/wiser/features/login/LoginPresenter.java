@@ -7,7 +7,6 @@ import br.com.wiser.Sistema;
 import br.com.wiser.facebook.Facebook;
 import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.interfaces.ICallback;
-import br.com.wiser.Presenter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -15,7 +14,7 @@ import retrofit2.Response;
 /**
  * Created by Jefferson on 22/01/2017.
  */
-public class LoginPresenter extends Presenter<ILoginView> {
+public class LoginPresenter {
 
     private ILoginService service;
     private Facebook facebook;
@@ -25,36 +24,41 @@ public class LoginPresenter extends Presenter<ILoginView> {
         facebook = new Facebook();
     }
 
-    public void gravarLogin(double latitude, double longitude, final ICallback callback) {
-        Login login = new Login();
+    public void gravarLogin(final double latitude, final double longitude, final ICallback callback) {
 
-        login.setFacebookID(facebook.getAccessToken().getUserId());
-        login.setAccessToken(facebook.getAccessToken().getToken());
-        login.setDataUltimoAcesso(new Date());
-        login.setLatitude(latitude);
-        login.setLongitude(longitude);
-
-        Call<Usuario> call = service.salvar(login);
-        call.enqueue(new Callback<Usuario>() {
+        facebook.getProfile(new Facebook.ICallbackProfileInfo() {
             @Override
-            public void onResponse(final Call<Usuario> call, Response<Usuario> response) {
+            public void onCompleted(String nome, String primeiroNome, Date dataNascimento) {
+                Login login = new Login();
 
-                if (response.isSuccessful()) {
-                    Sistema.setUsuario(response.body());
+                login.setNome(nome);
+                login.setPrimeiroNome(primeiroNome);
+                login.setDataNascimento(dataNascimento);
+                login.setFacebookID(facebook.getAccessToken().getUserId());
+                login.setAccessToken(facebook.getAccessToken().getToken());
+                login.setDataUltimoAcesso(new Date());
+                login.setLatitude(latitude);
+                login.setLongitude(longitude);
 
-                    LoginDAO loginDAO = new LoginDAO();
-                    loginDAO.logarUsuario();
+                Call<Usuario> call = service.salvar(login);
+                call.enqueue(new Callback<Usuario>() {
+                    @Override
+                    public void onResponse(final Call<Usuario> call, Response<Usuario> response) {
 
-                    facebook.carregarPerfil(Sistema.getUsuario(), callback);
-                }
-                else {
-                    callback.onError(response.message());
-                }
-            }
+                        if (response.isSuccessful()) {
+                            Sistema.setUsuario(response.body());
+                            callback.onSuccess();
+                        }
+                        else {
+                            callback.onError(response.message());
+                        }
+                    }
 
-            @Override
-            public void onFailure(Call<Usuario> call, Throwable t) {
-                callback.onError(t.getMessage());
+                    @Override
+                    public void onFailure(Call<Usuario> call, Throwable t) {
+                        callback.onError(t.getMessage());
+                    }
+                });
             }
         });
     }

@@ -7,7 +7,15 @@ import java.util.Date;
 /**
  * Created by Jefferson on 22/01/2017.
  */
-public class Login {
+public class Login{
+    private String nome;
+
+    @SerializedName("primeiro_nome")
+    private String primeiroNome;
+
+    @SerializedName("data_nascimento")
+    private Date dataNascimento;
+
     @SerializedName("facebook_id")
     private String facebookID;
 
@@ -17,11 +25,32 @@ public class Login {
     @SerializedName("data_ultimo_acesso")
     private Date dataUltimoAcesso;
 
-    @SerializedName("latitude")
     private double latitude;
-
-    @SerializedName("longitude")
     private double longitude;
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getPrimeiroNome() {
+        return primeiroNome;
+    }
+
+    public void setPrimeiroNome(String primeiroNome) {
+        this.primeiroNome = primeiroNome;
+    }
+
+    public Date getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(Date dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
 
     public String getFacebookID() {
         return facebookID;

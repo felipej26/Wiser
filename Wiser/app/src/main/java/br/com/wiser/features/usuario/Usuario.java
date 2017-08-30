@@ -12,9 +12,12 @@ public class Usuario implements Serializable {
 
     private long id;
     private String nome;
+
+    @SerializedName("primeiro_nome")
     private String primeiroNome;
-    private String urlFotoPerfil;
-    private Date dataNascimento = new Date();
+
+    @SerializedName("data_nascimento")
+    private Date dataNascimento;
 
     @SerializedName("facebook_id")
     private String facebookID;
@@ -65,14 +68,6 @@ public class Usuario implements Serializable {
 
     public void setPrimeiroNome(String primeiroNome) {
         this.primeiroNome = primeiroNome;
-    }
-
-    public String getUrlFotoPerfil() {
-        return urlFotoPerfil;
-    }
-
-    public void setUrlFotoPerfil(String urlFotoPerfil) {
-        this.urlFotoPerfil = urlFotoPerfil;
     }
 
     public Date getDataNascimento() {
@@ -161,5 +156,9 @@ public class Usuario implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getUrlFotoPerfil() {
+        return "https://graph.facebook.com/" + facebookID + "/picture?type=large&w‌idth=720&height=720";
     }
 }

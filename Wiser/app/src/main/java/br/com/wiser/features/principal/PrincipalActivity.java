@@ -20,22 +20,24 @@ import br.com.wiser.AbstractAppCompatActivity;
 import br.com.wiser.features.configuracoes.ConfiguracoesActivity;
 import br.com.wiser.features.minhasdiscussoes.MinhasDiscussoesActivity;
 import br.com.wiser.features.sobre.SobreActivity;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class PrincipalActivity extends AbstractAppCompatActivity {
 
     private PrincipalTabs adapter;
 
-    private Toolbar toolbar;
-    private ViewPager viewPager;
-    private TabLayout tabLayout;
-
-    private View snackBar;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.viewpager) ViewPager viewPager;
+    @BindView(R.id.sliding_tabs) TabLayout tabLayout;
+    @BindView(R.id.snackbar_view) View snackBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_principal);
 
+        ButterKnife.bind(this);
         onInitView();
 
         if (Sistema.getUsuario().isSetouConfiguracoes()) {
@@ -94,33 +96,30 @@ public class PrincipalActivity extends AbstractAppCompatActivity {
                 break;
 
             case R.id.itmSair:
-                Sistema.logout(getActivity());
+                Sistema.logout(this);
                 break;
         }
         return (true);
     }
 
     private void startMinhasDiscussoesActivity() {
-        getContext().startActivity(new Intent(getContext(), MinhasDiscussoesActivity.class));
+        startActivity(new Intent(this, MinhasDiscussoesActivity.class));
     }
 
     private void startConfiguracoesActivity() {
-        getContext().startActivity(new Intent(getContext(), ConfiguracoesActivity.class));
+        startActivity(new Intent(this, ConfiguracoesActivity.class));
     }
 
     private void startSobreActivity() {
-        getContext().startActivity(new Intent(getContext(), SobreActivity.class));
+        startActivity(new Intent(this, SobreActivity.class));
     }
 
     public void onInitView() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         adapter = new PrincipalTabs(getSupportFragmentManager());
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(adapter);
 
-        tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        viewPager.setAdapter(adapter);
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -133,10 +132,7 @@ public class PrincipalActivity extends AbstractAppCompatActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) { }
         });
-
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         viewPager.setCurrentItem(1);
-
-        snackBar = findViewById(R.id.snackbar_view);
     }
 }

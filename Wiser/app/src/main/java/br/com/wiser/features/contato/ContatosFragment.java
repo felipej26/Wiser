@@ -31,7 +31,6 @@ public class ContatosFragment extends AbstractFragment {
 
     private ContatosPresenter contatosPresenter;
 
-    private View view;
     @BindView(R.id.btnEncontrarUsuarios) Button btnEncontrarUsuarios;
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
     private ContatosAdapter adapter;
@@ -42,7 +41,7 @@ public class ContatosFragment extends AbstractFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.contatos_principal, container, false);
+        View view = inflater.inflate(R.layout.contatos_principal, container, false);
 
         contatosPresenter = new ContatosPresenter();
         contatosPresenter.carregarContatos(new ICallback() {
@@ -65,7 +64,7 @@ public class ContatosFragment extends AbstractFragment {
 
     public void onLoad() {
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         adapter = new ContatosAdapter(getContext(), new ArrayList<Usuario>());
         adapter.setClickListener(new IClickListener() {

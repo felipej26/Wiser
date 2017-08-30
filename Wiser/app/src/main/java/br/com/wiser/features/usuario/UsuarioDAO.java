@@ -99,7 +99,6 @@ public class UsuarioDAO {
         usuario.setId(c.getLong(c.getColumnIndex("id")));
         usuario.setNome(c.getString(c.getColumnIndex("nome")));
         usuario.setPrimeiroNome(c.getString(c.getColumnIndex("primeiroNome")));
-        usuario.setUrlFotoPerfil(c.getString(c.getColumnIndex("urlFotoPerfil")));
         usuario.setFacebookID(c.getString(c.getColumnIndex("facebookID")));
         usuario.setAccessToken(c.getString(c.getColumnIndex("accessToken")));
         usuario.setContaAtiva(c.getInt(c.getColumnIndex("contaAtiva")) == 1);
