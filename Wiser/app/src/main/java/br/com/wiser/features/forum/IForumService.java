@@ -1,8 +1,10 @@
-package br.com.wiser.features.discussao;
+package br.com.wiser.features.forum;
 
 import java.util.LinkedList;
 import java.util.Map;
 
+import br.com.wiser.features.discussao.Discussao;
+import br.com.wiser.features.discussao.Resposta;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -28,6 +30,6 @@ public interface IForumService {
     Call<Resposta> responderDiscussao(@Body Map<String, String> parametros);
 
     @FormUrlEncoded
-    @POST("discussao/desativarDiscussao")
+    @POST("discussao/onDesativarCliked")
     Call<Object> desativarDiscussao(@Field("id") long discussaoID, @Field("desativar") boolean desativar);
 }

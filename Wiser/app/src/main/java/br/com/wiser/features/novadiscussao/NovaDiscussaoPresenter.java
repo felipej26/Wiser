@@ -13,7 +13,7 @@ import br.com.wiser.dialogs.DialogConfirmar;
 import br.com.wiser.dialogs.DialogInformar;
 import br.com.wiser.dialogs.IDialog;
 import br.com.wiser.features.discussao.Discussao;
-import br.com.wiser.features.discussao.IForumService;
+import br.com.wiser.features.forum.IForumService;
 import br.com.wiser.features.minhasdiscussoes.MinhasDiscussoesActivity;
 import br.com.wiser.Presenter;
 import br.com.wiser.utils.Utils;

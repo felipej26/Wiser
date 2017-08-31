@@ -16,6 +16,7 @@ import br.com.wiser.dialogs.DialogConfirmar;
 import br.com.wiser.dialogs.DialogPerfilUsuario;
 import br.com.wiser.dialogs.IDialog;
 import br.com.wiser.features.contato.ContatoDAO;
+import br.com.wiser.features.forum.IForumService;
 import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.features.usuario.UsuarioDAO;
 import br.com.wiser.features.usuario.UsuarioPresenter;
@@ -29,7 +30,7 @@ import retrofit2.Response;
 /**
  * Created by Jefferson on 23/01/2017.
  */
-public class DiscussaoPresenter extends Presenter<IDiscussaoView> {
+public class DiscussaoPresenter extends Presenter<IDiscussao> {
 
     private interface ICallback{
         void onFinished(Usuario usuario);
@@ -42,7 +43,7 @@ public class DiscussaoPresenter extends Presenter<IDiscussaoView> {
         service = APIClient.getClient().create(IForumService.class);
     }
 
-    public void onCreate(IDiscussaoView view, Discussao discussao) {
+    public void onCreate(IDiscussao view, Discussao discussao) {
         super.onCreate(view);
 
         this.discussao = discussao;
@@ -166,7 +167,7 @@ public class DiscussaoPresenter extends Presenter<IDiscussaoView> {
         confirmar.show();
     }
 
-    private void desativarDiscussao(final Discussao discussao, final br.com.wiser.interfaces.ICallback callback) {
+    public void desativarDiscussao(final Discussao discussao, final br.com.wiser.interfaces.ICallback callback) {
         Call<Object> call = service.desativarDiscussao(discussao.getId(), !discussao.isAtiva());
         call.enqueue(new Callback<Object>() {
             @Override

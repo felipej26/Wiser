@@ -68,7 +68,7 @@ public class DiscussaoActivity extends AbstractActivity implements IDiscussaoCom
 
         switch (item.getItemId()) {
             case R.id.itmCompartilhar:
-                compartilharDiscussao(findViewById(R.id.frmDiscussao));
+                onCompartilharClicked(findViewById(R.id.frmDiscussao));
                 break;
             default:
                 onBackPressed();
@@ -189,22 +189,22 @@ public class DiscussaoActivity extends AbstractActivity implements IDiscussaoCom
     }
 
     @Override
-    public void onClick(int posicao) {
+    public void onDiscussaoClicked(int posicao) {
 
     }
 
     @Override
-    public void onClickPerfil(int posicao) {
+    public void onPerfilClicked(int posicao) {
 
     }
 
     @Override
-    public void desativarDiscussao(int posicao) {
+    public void onDesativarCliked(int posicao) {
 
     }
 
     @Override
-    public void compartilharDiscussao(View view) {
+    public void onCompartilharClicked(View view) {
         discussaoPresenter.compartilhar(view);
     }
 }

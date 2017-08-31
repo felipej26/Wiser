@@ -21,12 +21,12 @@ import br.com.wiser.features.discussao.DiscussaoCardViewAdapter;
 import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.utils.Utils;
 import br.com.wiser.AbstractActivity;
-import br.com.wiser.features.discussao.IDiscussaoView;
+import br.com.wiser.features.discussao.IDiscussao;
 
 /**
  * Created by Lucas on 25/09/2016.
  */
-public class PerfilCompletoActivity extends AbstractActivity implements IPerfilCompletoView, IDiscussaoView {
+public class PerfilCompletoActivity extends AbstractActivity implements IPerfilCompletoView, IDiscussao {
 
     private PerfilCompletoPresenter perfilCompletoPresenter;
     private DiscussaoPresenter discussaoPresenter;
@@ -150,17 +150,17 @@ public class PerfilCompletoActivity extends AbstractActivity implements IPerfilC
     }
 
     @Override
-    public void onClick(int posicao) {
+    public void onDiscussaoClicked(int posicao) {
         perfilCompletoPresenter.openDiscussao(posicao);
     }
 
     @Override
-    public void onClickPerfil(int posicao) {
+    public void onPerfilClicked(int posicao) {
         //discussaoPresenter.openPerfil(Sistema.getListaUsuarios().get(adapter.getItem(posicao).getUsuario()));
     }
 
     @Override
-    public void desativarDiscussao(int posicao) {
+    public void onDesativarCliked(int posicao) {
         discussaoPresenter.confirmarDesativarDiscussao(adapter.getItem(posicao), new ICallback() {
             @Override
             public void onSuccess() {
@@ -174,7 +174,7 @@ public class PerfilCompletoActivity extends AbstractActivity implements IPerfilC
     }
 
     @Override
-    public void compartilharDiscussao(View view) {
+    public void onCompartilharClicked(View view) {
         discussaoPresenter.compartilhar(view);
     }
 

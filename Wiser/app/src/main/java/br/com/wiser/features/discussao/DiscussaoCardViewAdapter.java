@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import br.com.wiser.R;
@@ -20,10 +19,10 @@ import br.com.wiser.features.usuario.Usuario;
  */
 public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCardViewAdapter.ViewHolder> {
 
-    private IDiscussaoView view;
+    private IDiscussao view;
     private List<Discussao> listaDiscussoes;
 
-    public DiscussaoCardViewAdapter(IDiscussaoView view) {
+    public DiscussaoCardViewAdapter(IDiscussao view) {
         this.view = view;
     }
 
@@ -76,7 +75,7 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
         return listaDiscussoes.size();
     }
 
-    public void setItems(LinkedList<Discussao> listaDiscussoes) {
+    public void setItems(List<Discussao> listaDiscussoes) {
         this.listaDiscussoes = listaDiscussoes;
         notifyDataSetChanged();
     }
@@ -117,28 +116,28 @@ public class DiscussaoCardViewAdapter extends RecyclerView.Adapter<DiscussaoCard
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DiscussaoCardViewAdapter.this.view.onClick(posicao);
+                    DiscussaoCardViewAdapter.this.view.onDiscussaoClicked(posicao);
                 }
             });
 
             imgPerfil.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DiscussaoCardViewAdapter.this.view.onClickPerfil(posicao);
+                    DiscussaoCardViewAdapter.this.view.onPerfilClicked(posicao);
                 }
             });
 
             btnDesativar.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    DiscussaoCardViewAdapter.this.view.desativarDiscussao(posicao);
+                    DiscussaoCardViewAdapter.this.view.onDesativarCliked(posicao);
                 }
             });
 
             btnCompartilhar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DiscussaoCardViewAdapter.this.view.compartilharDiscussao(view);
+                    DiscussaoCardViewAdapter.this.view.onCompartilharClicked(view);
                 }
             });
         }

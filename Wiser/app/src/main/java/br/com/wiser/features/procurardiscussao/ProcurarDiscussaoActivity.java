@@ -19,12 +19,12 @@ import br.com.wiser.features.discussao.DiscussaoPresenter;
 import br.com.wiser.features.procurarusuarios.ProcurarDiscussaoPresenter;
 import br.com.wiser.AbstractActivity;
 import br.com.wiser.features.discussao.DiscussaoCardViewAdapter;
-import br.com.wiser.features.discussao.IDiscussaoView;
+import br.com.wiser.features.discussao.IDiscussao;
 
 /**
  * Created by Jefferson on 16/05/2016.
  */
-public class ProcurarDiscussaoActivity extends AbstractActivity implements IProcurarDiscussaoActivity, IDiscussaoView {
+public class ProcurarDiscussaoActivity extends AbstractActivity implements IProcurarDiscussaoActivity, IDiscussao {
 
     private ProcurarDiscussaoPresenter procurarDiscussaoPresenter;
     private DiscussaoPresenter discussaoPresenter;
@@ -58,17 +58,17 @@ public class ProcurarDiscussaoActivity extends AbstractActivity implements IProc
     }
 
     @Override
-    public void onClick(int posicao) {
+    public void onDiscussaoClicked(int posicao) {
         procurarDiscussaoPresenter.startDiscussao(posicao);
     }
 
     @Override
-    public void onClickPerfil(int posicao) {
+    public void onPerfilClicked(int posicao) {
         //discussaoPresenter.openPerfil(Sistema.getListaUsuarios().get(adapter.getItem(posicao).getUsuario()));
     }
 
     @Override
-    public void desativarDiscussao(int posicao) {
+    public void onDesativarCliked(int posicao) {
         discussaoPresenter.confirmarDesativarDiscussao(adapter.getItem(posicao), new ICallback() {
             @Override
             public void onSuccess() {
@@ -82,7 +82,7 @@ public class ProcurarDiscussaoActivity extends AbstractActivity implements IProc
     }
 
     @Override
-    public void compartilharDiscussao(View view) {
+    public void onCompartilharClicked(View view) {
         discussaoPresenter.compartilhar(view);
     }
 

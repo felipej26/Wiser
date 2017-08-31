@@ -12,7 +12,7 @@ import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.APIClient;
 import br.com.wiser.features.discussao.Discussao;
-import br.com.wiser.features.discussao.IForumService;
+import br.com.wiser.features.forum.IForumService;
 import br.com.wiser.features.usuario.IUsuarioService;
 import br.com.wiser.Presenter;
 import br.com.wiser.features.discussao.DiscussaoActivity;

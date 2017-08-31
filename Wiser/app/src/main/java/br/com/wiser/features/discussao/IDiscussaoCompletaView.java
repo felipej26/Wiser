@@ -5,7 +5,7 @@ import java.util.LinkedList;
 /**
  * Created by Jefferson on 25/01/2017.
  */
-public interface IDiscussaoCompletaView extends IDiscussaoView {
+public interface IDiscussaoCompletaView extends IDiscussao {
     void onInitView();
     void onLoadRespostas(LinkedList<Resposta> listaRespostas);
     void onLoadProfilePicture(String url);

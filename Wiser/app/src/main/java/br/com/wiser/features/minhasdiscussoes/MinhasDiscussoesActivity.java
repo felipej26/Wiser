@@ -16,12 +16,12 @@ import br.com.wiser.features.discussao.Discussao;
 import br.com.wiser.features.discussao.DiscussaoPresenter;
 import br.com.wiser.AbstractActivity;
 import br.com.wiser.features.discussao.DiscussaoCardViewAdapter;
-import br.com.wiser.features.discussao.IDiscussaoView;
+import br.com.wiser.features.discussao.IDiscussao;
 
 /**
  * Created by Jefferson on 19/05/2016.
  */
-public class MinhasDiscussoesActivity extends AbstractActivity implements IMinhasDiscussoesView, IDiscussaoView {
+public class MinhasDiscussoesActivity extends AbstractActivity implements IMinhasDiscussoesView, IDiscussao {
 
     private MinhasDiscussoesPresenter minhasDiscussoesPresenter;
     private DiscussaoPresenter discussaoPresenter;
@@ -51,17 +51,17 @@ public class MinhasDiscussoesActivity extends AbstractActivity implements IMinha
     }
 
     @Override
-    public void onClick(int posicao) {
+    public void onDiscussaoClicked(int posicao) {
         minhasDiscussoesPresenter.startDiscussao(posicao);
     }
 
     @Override
-    public void onClickPerfil(int posicao) {
+    public void onPerfilClicked(int posicao) {
         //discussaoPresenter.openPerfil(Sistema.getListaUsuarios().get(adapter.getItem(posicao).getUsuario()));
     }
 
     @Override
-    public void desativarDiscussao(int posicao) {
+    public void onDesativarCliked(int posicao) {
         discussaoPresenter.confirmarDesativarDiscussao(adapter.getItem(posicao), new ICallback() {
             @Override
             public void onSuccess() {
@@ -75,7 +75,7 @@ public class MinhasDiscussoesActivity extends AbstractActivity implements IMinha
     }
 
     @Override
-    public void compartilharDiscussao(View view) {
+    public void onCompartilharClicked(View view) {
         discussaoPresenter.compartilhar(view);
     }
 

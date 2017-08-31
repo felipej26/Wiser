@@ -15,7 +15,7 @@ import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.features.conversa.Conversa;
 import br.com.wiser.features.contato.IContatosService;
-import br.com.wiser.features.discussao.IForumService;
+import br.com.wiser.features.forum.IForumService;
 import br.com.wiser.features.usuario.IUsuarioService;
 import br.com.wiser.features.perfilcompleto.PerfilCompletoActivity;
 import br.com.wiser.features.mensagem.MensagemActivity;
