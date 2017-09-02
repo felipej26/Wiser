@@ -1,11 +1,10 @@
 package br.com.wiser.features.usuariosencontrados;
 
-import android.app.Activity;
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -14,55 +13,69 @@ import java.util.ArrayList;
 
 import br.com.wiser.R;
 import br.com.wiser.features.usuario.Usuario;
+import br.com.wiser.interfaces.IClickListener;
 import br.com.wiser.utils.Utils;
 
 /**
  * Created by Wesley on 08/04/2016.
  */
-public class UsuariosEncontradosAdapter extends ArrayAdapter<Usuario> {
+public class UsuariosEncontradosAdapter extends RecyclerView.Adapter<UsuariosEncontradosAdapter.ViewHolder> {
 
     private Context context;
-    private int layoutResourceId;
     private ArrayList<Usuario> listaUsuarios = null;
 
-    public UsuariosEncontradosAdapter(Context context, int layoutResourceId, ArrayList<Usuario> listaUsuarios) {
-        super(context, layoutResourceId, listaUsuarios);
+    private IClickListener clickListener;
+
+    public UsuariosEncontradosAdapter(Context context, ArrayList<Usuario> listaUsuarios) {
         this.context = context;
-        this.layoutResourceId = layoutResourceId;
         this.listaUsuarios = listaUsuarios;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(
+                R.layout.contatos_encontrar_pessoas_resultados_grid, parent, false);
 
-        View objView = convertView;;
-        RecordHolder objHolder;
-
-        if (objView == null) {
-            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-            objView = inflater.inflate(layoutResourceId, parent, false);
-
-            objHolder = new RecordHolder();
-            objHolder.imgPerfil = (ImageView) objView.findViewById(R.id.imgPerfil);
-            objHolder.prgBarra = (ProgressBar) objView.findViewById(R.id.prgBarra);
-            objHolder.txtNome = (TextView) objView.findViewById(R.id.txtNomeLista);
-
-            objView.setTag(objHolder);
-        }
-        else {
-            objHolder = (RecordHolder) objView.getTag();
-        }
-
-        Usuario usuario = listaUsuarios.get(position);
-        objHolder.txtNome.setText(usuario.getPrimeiroNome());
-        Utils.loadImageInBackground(context, usuario.getUrlFotoPerfil(), objHolder.imgPerfil, objHolder.prgBarra);
-
-        return objView;
+        ViewHolder viewHolder = new ViewHolder(itemLayoutView);
+        return viewHolder;
     }
 
-    private static class RecordHolder {
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        Usuario usuario = listaUsuarios.get(position);
+        holder.txtNome.setText(usuario.getPrimeiroNome());
+        Utils.loadImageInBackground(context, usuario.getUrlFotoPerfil(), holder.imgPerfil, holder.prgBarra);
+    }
+
+    @Override
+    public int getItemCount() {
+        return listaUsuarios.size();
+    }
+
+    public void setClickListener(IClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView imgPerfil;
         ProgressBar prgBarra;
         TextView txtNome;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+
+            itemView.setOnClickListener(this);
+
+            imgPerfil = (ImageView) itemView.findViewById(R.id.imgPerfil);
+            prgBarra = (ProgressBar) itemView.findViewById(R.id.prgBarra);
+            txtNome = (TextView) itemView.findViewById(R.id.txtNomeLista);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (clickListener != null) {
+                clickListener.itemClicked(v, getAdapterPosition());
+            }
+        }
     }
 }

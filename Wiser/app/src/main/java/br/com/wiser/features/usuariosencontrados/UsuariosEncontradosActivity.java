@@ -1,38 +1,45 @@
 package br.com.wiser.features.usuariosencontrados;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.GridView;
-import android.widget.AdapterView;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 
+import br.com.wiser.AbstractActivity;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
+import br.com.wiser.dialogs.DialogPerfilUsuario;
 import br.com.wiser.features.usuario.Usuario;
-import br.com.wiser.AbstractActivity;
-import android.widget.ProgressBar;
+import br.com.wiser.interfaces.IClickListener;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by Jefferson on 31/03/2016.
  */
-public class UsuariosEncontradosActivity extends AbstractActivity implements IUsuariosEncontradosView {
+public class UsuariosEncontradosActivity extends AbstractActivity {
 
     private UsuariosEncontradosPresenter usuariosEncontradosPresenter;
 
     private UsuariosEncontradosAdapter adapter;
-    private GridView grdResultado;
-    private ProgressBar pgbLoading;
+    @BindView(R.id.recycler_view) RecyclerView recyclerView;
+    @BindView(R.id.pgbLoading) ProgressBar pgbLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contatos_encontrar_usuarios_resultados);
 
-        usuariosEncontradosPresenter = new UsuariosEncontradosPresenter();
-        usuariosEncontradosPresenter.onCreate(this,
-                (ArrayList<Usuario>) getIntent().getBundleExtra(Sistema.LISTAUSUARIOS).get(Sistema.LISTAUSUARIOS));
+        usuariosEncontradosPresenter = new UsuariosEncontradosPresenter(
+                (ArrayList<Usuario>) getIntent().getBundleExtra(Sistema.LISTAUSUARIOS).get(Sistema.LISTAUSUARIOS)
+        );
+
+        ButterKnife.bind(this);
+        onLoad();
     }
 
     @Override
@@ -41,43 +48,29 @@ public class UsuariosEncontradosActivity extends AbstractActivity implements IUs
         return true;
     }
 
-    @Override
-    public void onInitView() {
+    public void onLoad() {
+        onPrgLoadingChanged(View.VISIBLE);
+
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        grdResultado = (GridView) findViewById(R.id.grdResultado);
-        grdResultado.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        adapter = new UsuariosEncontradosAdapter(this, usuariosEncontradosPresenter.getUsuarios());
+        adapter.setClickListener(new IClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                usuariosEncontradosPresenter.abrirPerfil(position);
+            public void itemClicked(View view, int posicao) {
+                DialogPerfilUsuario perfil = new DialogPerfilUsuario();
+                perfil.show(getContext(), usuariosEncontradosPresenter.getUsuarios().get(posicao));
             }
         });
+        recyclerView.setAdapter(adapter);
 
-        pgbLoading = (ProgressBar) findViewById(R.id.pgbLoading);
+        onPrgLoadingChanged(View.INVISIBLE);
     }
 
-    @Override
-    public void onLoad(ArrayList<Usuario> listaUsuarios) {
-        adapter = new UsuariosEncontradosAdapter(getContext(), R.layout.contatos_encontrar_pessoas_resultados_grid, listaUsuarios);
-        grdResultado.setAdapter(adapter);
-    }
-
-    @Override
-    public void onNotifyDataSetChanged() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                adapter.notifyDataSetChanged();
-            }
-        });
-    }
-
-    @Override
-    public void onSetVisibilityProgressBar(int visibility) {
-        if (visibility == View.VISIBLE) {
-            pgbLoading.bringToFront();
-        }
-
+    private void onPrgLoadingChanged(int visibility) {
+        pgbLoading.bringToFront();
         pgbLoading.setVisibility(visibility);
     }
 }

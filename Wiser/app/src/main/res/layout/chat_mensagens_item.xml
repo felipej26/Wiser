@@ -65,6 +65,4 @@
         android:layout_alignTop="@+id/lblContMensagens"
         android:layout_alignParentEnd="true" />
 
-
-
 </RelativeLayout>

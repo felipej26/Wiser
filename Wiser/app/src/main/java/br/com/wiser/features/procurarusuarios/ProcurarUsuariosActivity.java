@@ -1,5 +1,6 @@
 package br.com.wiser.features.procurarusuarios;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -9,23 +10,30 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
+import br.com.wiser.AbstractActivity;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.AbstractActivity;
+import br.com.wiser.features.usuariosencontrados.UsuariosEncontradosActivity;
+import br.com.wiser.interfaces.ICallback;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Jefferson on 31/03/2016.
  */
-public class ProcurarUsuariosActivity extends AbstractActivity implements IProcurarUsuariosView {
+public class ProcurarUsuariosActivity extends AbstractActivity {
 
     private ProcurarUsuariosPresenter procurarContatosPresenter;
 
-    private Spinner cmbIdioma;
-    private Spinner cmbFluencia;
-    private SeekBar skrDistancia;
-    private Button btnProcurar;
-    private ProgressBar pgbLoading;
-    private TextView lblDistanciaSelecionada;
+    @BindView(R.id.cmbIdiomaProcurar) Spinner cmbIdioma;
+    @BindView(R.id.cmbFluenciaProcurar) Spinner cmbFluencia;
+    @BindView(R.id.skrDistancia) SeekBar skrDistancia;
+    @BindView(R.id.btnProcurar) Button btnProcurar;
+    @BindView(R.id.pgbLoading) ProgressBar pgbLoading;
+    @BindView(R.id.lblDistanciaSelecionada) TextView lblDistanciaSelecionada;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,7 +41,9 @@ public class ProcurarUsuariosActivity extends AbstractActivity implements IProcu
         setContentView(R.layout.contatos_encontrar_pessoas);
 
         procurarContatosPresenter = new ProcurarUsuariosPresenter();
-        procurarContatosPresenter.onCreate(this);
+
+        ButterKnife.bind(this);
+        onInitView();
     }
 
     @Override
@@ -42,15 +52,8 @@ public class ProcurarUsuariosActivity extends AbstractActivity implements IProcu
         return true;
     }
 
-    @Override
     public void onInitView() {
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
-        cmbIdioma = (Spinner) findViewById(R.id.cmbIdiomaProcurar);
-        cmbFluencia = (Spinner) findViewById(R.id.cmbFluenciaProcurar);
-
-        skrDistancia = (SeekBar) findViewById(R.id.skrDistancia);
-        lblDistanciaSelecionada = (TextView) findViewById(R.id.lblDistanciaSelecionada);
 
         skrDistancia.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -65,36 +68,56 @@ public class ProcurarUsuariosActivity extends AbstractActivity implements IProcu
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-        btnProcurar = (Button) findViewById(R.id.btnProcurar);
-        btnProcurar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                procurarContatos();
-            }
-        });
-
-        pgbLoading = (ProgressBar) findViewById(R.id.pgbLoading);
-
         Sistema.carregarComboIdiomas(cmbIdioma, this, true);
         Sistema.carregarComboFluencia(cmbFluencia, this, true);
     }
 
-    @Override
-    public void onSetVisibilityProgressBar(int visibility) {
-        pgbLoading.setVisibility(visibility);
-
-        if (visibility == View.VISIBLE) {
-            pgbLoading.bringToFront();
-        }
-    }
-
-    private void procurarContatos() {
+    @OnClick(R.id.btnProcurar)
+    public void onProcurarClicked() {
         Pesquisa pesquisa = new Pesquisa();
+
+        onPrgLoadingChanged(View.VISIBLE);
 
         pesquisa.setIdioma(Sistema.getIDComboBox(cmbIdioma));
         pesquisa.setFluencia(Sistema.getIDComboBox(cmbFluencia));
         pesquisa.setDistancia(skrDistancia.getProgress());
 
-        procurarContatosPresenter.procurarUsuarios(pesquisa);
+        procurarContatosPresenter.procurarUsuarios(pesquisa, new ICallback() {
+            @Override
+            public void onSuccess() {
+
+                if (procurarContatosPresenter.getUsuarios().size() <= 0) {
+                    showToast(getString(R.string.usuarios_nao_encontrados));
+                }
+                else {
+                    startUsuariosEncontradosActivity();
+                }
+
+                onPrgLoadingChanged(View.INVISIBLE);
+            }
+
+            @Override
+            public void onError(String mensagemErro) {
+                showToast("Erro ao procurar usuarios");
+                onPrgLoadingChanged(View.INVISIBLE);
+            }
+        });
+    }
+
+    public void onPrgLoadingChanged(int visibility) {
+        if (visibility == View.VISIBLE) {
+            pgbLoading.bringToFront();
+        }
+
+        pgbLoading.setVisibility(visibility);
+    }
+
+    private void startUsuariosEncontradosActivity() {
+        Bundle bundle = new Bundle();
+        Intent i = new Intent(this, UsuariosEncontradosActivity.class);
+
+        bundle.putSerializable(Sistema.LISTAUSUARIOS, (ArrayList) procurarContatosPresenter.getUsuarios());
+        i.putExtra(Sistema.LISTAUSUARIOS, bundle);
+        startActivity(i);
     }
 }

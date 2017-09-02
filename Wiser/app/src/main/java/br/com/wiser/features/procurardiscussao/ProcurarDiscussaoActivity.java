@@ -16,7 +16,6 @@ import br.com.wiser.R;
 import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.features.discussao.Discussao;
 import br.com.wiser.features.discussao.DiscussaoPresenter;
-import br.com.wiser.features.procurarusuarios.ProcurarDiscussaoPresenter;
 import br.com.wiser.AbstractActivity;
 import br.com.wiser.features.discussao.DiscussaoCardViewAdapter;
 import br.com.wiser.features.discussao.IDiscussao;

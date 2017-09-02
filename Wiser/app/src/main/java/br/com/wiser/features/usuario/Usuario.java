@@ -39,6 +39,7 @@ public class Usuario implements Serializable {
     private int idioma;
     private int fluencia;
     private String status;
+    private boolean isContato;
 
     public Usuario() { }
 
@@ -156,6 +157,14 @@ public class Usuario implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public boolean isContato() {
+        return isContato;
+    }
+
+    public void setContato(boolean contato) {
+        isContato = contato;
     }
 
     public String getUrlFotoPerfil() {

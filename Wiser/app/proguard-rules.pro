@@ -15,3 +15,9 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+
+-keep class com.crashlytics.** { *; }
+-dontwarn com.crashlytics.**

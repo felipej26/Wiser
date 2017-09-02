@@ -2,7 +2,8 @@
     <string name="app_name" translatable="false">Wiser</string>
     <string name="facebook_app_id" translatable="false">570854019757986</string>
     <string name="facebook_user_id" translatable="false">1262642377098040</string>
-    <string name="com.crashlytics.android.build_id">RANDOM_UUID</string>
+    <string name="com.crashlytics.android.build_id" translatable="false">RANDOM_UUID</string>
+    <string name="sistema_link_playstore" translatable="false">https://play.google.com/store/apps/details?id=br.com.wiser</string> <!--exemplo-->
 
     <string name="app_perfil_title">Perfil Completo</string>
     <string name="app_configuracoes_title">Configurações</string>
@@ -93,7 +94,6 @@
     <string name="compartilhar_titulo" translatable="false">Wiser</string>
     <string name="compartilhar_discussao_sistema">Compartilhar discussão usando...</string>
     <string name="compartilhar_aplicativo_sistema">Compartilhar aplicativo usando...</string>
-    <string name="sistema_link_playstore" translatable="false">https://play.google.com/store/apps/details?id=br.com.wiser</string> <!--exemplo-->
     <string name="nao_lida">não lida</string>
     <string name="nao_lidas">não lidas</string>
     <string name="fluencia_idioma">%1$s em %2$s</string>

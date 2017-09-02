@@ -1,4 +1,4 @@
-package br.com.wiser.features.procurarusuarios;
+package br.com.wiser.features.procurardiscussao;
 
 import android.content.Intent;
 import android.os.Bundle;

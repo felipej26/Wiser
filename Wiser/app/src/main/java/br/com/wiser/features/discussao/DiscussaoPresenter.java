@@ -144,7 +144,7 @@ public class DiscussaoPresenter extends Presenter<IDiscussao> {
         DialogPerfilUsuario dialog = new DialogPerfilUsuario();
         ContatoDAO contatoDAO = new ContatoDAO();
 
-        dialog.show(view.getContext(), usuario, contatoDAO.isContato(usuario.getId()));
+        dialog.show(getContext(), usuario);
     }
 
     public void confirmarDesativarDiscussao(final Discussao discussao, final br.com.wiser.interfaces.ICallback callback) {
