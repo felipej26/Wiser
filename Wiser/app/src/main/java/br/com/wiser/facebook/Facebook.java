@@ -32,15 +32,13 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.WiserApplication;
 import br.com.wiser.features.assunto.Pagina;
 import br.com.wiser.features.usuario.Usuario;
-import br.com.wiser.features.usuario.UsuarioDAO;
 import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.utils.UtilsDate;
-
-import static br.com.wiser.R.string.usuario;
 
 /**
  * Created by Jefferson on 03/04/2016.
@@ -65,7 +63,7 @@ public class Facebook {
         this.context = WiserApplication.getAppContext();
 
         try {
-            nomeIndisponivel = context.getResources().getString(usuario);
+            nomeIndisponivel = context.getResources().getString(R.string.destinatario);
         }
         catch (Exception e) {
             nomeIndisponivel = "Usuário";
@@ -239,28 +237,6 @@ public class Facebook {
         else {
             requestBatch(listaRequest, callback);
         }
-    }
-
-    public void carregarPaginasEmComum(final long destinatario, final ICallbackPaginas callbackPaginas) {
-
-        final UsuarioDAO usuarioDAO = new UsuarioDAO();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                carregarContextID(usuarioDAO.getById(destinatario), new ICallbackContextID() {
-                    @Override
-                    public void onSuccess(String userContextID) {
-                        carregarPaginasEmComum(userContextID, callbackPaginas);
-                    }
-
-                    @Override
-                    public void onError(String mensagemErro) {
-
-                    }
-                });
-            }
-        }).start();
     }
 
     private void carregarPaginasEmComum(final String userContextID, final ICallbackPaginas callbackPaginas) {

@@ -1,7 +1,5 @@
 package br.com.wiser.features.conversa;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -15,9 +13,7 @@ import br.com.wiser.features.usuario.Usuario;
 public class Conversa implements Serializable {
 
     private long id;
-    @SerializedName("destinatario")
-    private long idDestinatario;
-    private Usuario usuario;
+    private Usuario destinatario;
     private LinkedList<Mensagem> mensagens = new LinkedList<>();
     private HashSet<String> sugestoes = new HashSet<>();
 
@@ -29,20 +25,12 @@ public class Conversa implements Serializable {
         this.id = id;
     }
 
-    public long getIdDestinatario() {
-        return idDestinatario;
+    public Usuario getDestinatario() {
+        return destinatario;
     }
 
-    public void setIdDestinatario(long idDestinatario) {
-        this.idDestinatario = idDestinatario;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setDestinatario(Usuario destinatario) {
+        this.destinatario = destinatario;
     }
 
     public LinkedList<Mensagem> getMensagens() {

@@ -6,8 +6,6 @@ import java.net.HttpURLConnection;
 
 import br.com.wiser.APIClient;
 import br.com.wiser.Sistema;
-import br.com.wiser.features.parametros.CodigoParametro;
-import br.com.wiser.features.parametros.ParametroDAO;
 import br.com.wiser.features.usuario.IUsuarioService;
 import br.com.wiser.interfaces.ICallback;
 import retrofit2.Call;
@@ -26,16 +24,12 @@ public class ConfiguracoesPresenter {
     }
 
     public void salvar(final Configuracoes configuracoes){
-        final ParametroDAO parametroDAO = new ParametroDAO();
-
         salvar(configuracoes, new ICallback() {
             @Override
             public void onSuccess() {
                 Sistema.getUsuario().setIdioma(configuracoes.getIdioma());
                 Sistema.getUsuario().setFluencia(configuracoes.getFluencia());
                 Sistema.getUsuario().setStatus(configuracoes.getStatus());
-
-                parametroDAO.update(CodigoParametro.SALVOU_CONFIGURACOES, "SIM");
             }
 
             @Override

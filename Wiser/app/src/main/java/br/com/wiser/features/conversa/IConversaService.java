@@ -12,4 +12,7 @@ import retrofit2.http.Query;
 public interface IConversaService {
     @GET("conversa/carregarConversas")
     Call<LinkedList<Conversa>> carregarConversas(@Query("usuario") long userID, @Query("mensagem") long lastMensagem);
+
+    @GET("conversa/carregarConversa")
+    Call<Conversa> carregarConversa(@Query("usuario") long usuario, @Query("destinatario") long destinatario);
 }

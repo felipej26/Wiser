@@ -13,9 +13,8 @@ import android.widget.Toast;
 /**
  * Created by Jefferson on 23/01/2017.
  */
-public abstract class AbstractFragment extends Fragment implements IView {
+public abstract class AbstractFragment extends Fragment {
 
-    @Override
     public void showToast(String mensagem) {
         Toast.makeText(getContext(), mensagem, Toast.LENGTH_SHORT).show();
     }

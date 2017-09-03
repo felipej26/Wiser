@@ -15,7 +15,7 @@ import android.widget.TextView;
 /**
  * Created by Jefferson on 22/01/2017.
  */
-public abstract class AbstractActivity extends Activity implements IView {
+public abstract class AbstractActivity extends Activity {
 
     public Context getContext() {
         return this;

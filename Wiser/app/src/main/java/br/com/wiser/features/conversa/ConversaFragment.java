@@ -12,27 +12,25 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.text.ParseException;
+import java.util.LinkedList;
 import java.util.List;
 
+import br.com.wiser.AbstractFragment;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.features.mensagem.Mensagem;
 import br.com.wiser.features.mensagem.MensagemActivity;
-import br.com.wiser.AbstractFragment;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by Jefferson on 16/05/2016.
  */
 public class ConversaFragment extends AbstractFragment {
 
-    private List<Conversa> listaConversas;
-
-    private ConversaPresenter conversasPresenter;
-
-    private View view;
-    private RecyclerView recyclerView;
+    private List<Conversa> listaConversas = new LinkedList<>();
     private ConversaAdapter adapter;
+
+    @BindView(R.id.recycler_view) RecyclerView recyclerView;
 
     public static ConversaFragment newInstance() {
         return new ConversaFragment();
@@ -40,11 +38,9 @@ public class ConversaFragment extends AbstractFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.chat_principal, container, false);
+        View view = inflater.inflate(R.layout.chat_principal, container, false);
 
-        conversasPresenter = new ConversaPresenter();
-        onLoad();
-        onLoadChat();
+        onLoad(view);
 
         return view;
     }
@@ -61,18 +57,34 @@ public class ConversaFragment extends AbstractFragment {
         super.onStop();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(Mensagem mensagem) {
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onEvent(LinkedList<Conversa> listaConversas) {
+        boolean encontrada;
+
+        List<Conversa> novasConversas = new LinkedList<>();
+
         for (Conversa conversa : listaConversas) {
-            if (conversa.getId() == mensagem.getConversa()) {
-                conversa.getMensagens().add(mensagem);
-                adapter.updateItem(conversa);
+            encontrada = false;
+            for (Conversa c : this.listaConversas) {
+                if (c.getId() == conversa.getId()) {
+                    c.getMensagens().addAll(conversa.getMensagens());
+                    adapter.addMensagens(c, conversa.getMensagens());
+                    encontrada = true;
+                }
+            }
+
+            if (!encontrada) {
+                novasConversas.add(conversa);
             }
         }
+
+        this.listaConversas.addAll(novasConversas);
+        adapter.addConversas(novasConversas);
     }
 
-    private void onLoad() {
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+    private void onLoad(View view) {
+        ButterKnife.bind(this, view);
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
@@ -81,19 +93,9 @@ public class ConversaFragment extends AbstractFragment {
             public void onClick(int posicao) {
                 Intent i = new Intent(getContext(), MensagemActivity.class);
                 i.putExtra(Sistema.CONVERSA, listaConversas.get(posicao));
-                getContext().startActivity(i);
+                startActivity(i);
             }
         });
         recyclerView.setAdapter(adapter);
-    }
-
-    private void onLoadChat() {
-        try {
-            listaConversas = conversasPresenter.carregarConversas();
-            adapter.addAll(listaConversas);
-        }
-        catch (ParseException e) {
-            e.printStackTrace();
-        }
     }
 }

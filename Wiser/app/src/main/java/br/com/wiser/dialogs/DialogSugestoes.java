@@ -1,6 +1,8 @@
 package br.com.wiser.dialogs;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,14 +13,13 @@ import android.widget.LinearLayout;
 import java.util.HashSet;
 
 import br.com.wiser.R;
-import br.com.wiser.IView;
 
 /**
  * Created by Jefferson on 30/10/2016.
  */
 public class DialogSugestoes {
 
-    public interface CallbackSugestao extends IView {
+    public interface CallbackSugestao {
         void setSugestao(String sugestao);
     }
 
@@ -29,28 +30,26 @@ public class DialogSugestoes {
     private AlertDialog alert;
     private AlertDialog.Builder builder;
 
-    public DialogSugestoes(CallbackSugestao callback) {
+    public void show(Context context, CallbackSugestao callback, HashSet<String> assuntos) {
         this.callback = callback;
-    }
 
-    public void show(HashSet<String> assuntos) {
-        LayoutInflater inflater = callback.getActivity().getLayoutInflater();
+        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_sugestao, null);
 
         lytBotoes = (LinearLayout) view.findViewById(R.id.lytBotoes);
 
         if (assuntos.size() > 0) {
-            carregaBotoes(assuntos);
+            carregaBotoes(context, assuntos);
         }
 
-        builder = new AlertDialog.Builder(callback.getContext());
+        builder = new AlertDialog.Builder(context);
         builder.setView(view);
 
         alert = builder.create();
         alert.show();
     }
 
-    private void carregaBotoes(HashSet<String> assuntos) {
+    private void carregaBotoes(Context context, HashSet<String> assuntos) {
 
         int cont = 0;
 
@@ -58,13 +57,13 @@ public class DialogSugestoes {
         layoutParams.gravity = Gravity.CENTER;
 
         for (final String assunto : assuntos) {
-            final Button button = new Button(callback.getContext());
+            final Button button = new Button(context);
             ViewGroup.MarginLayoutParams margin;
 
             button.setText(assunto);
             button.setTextSize(10);
             button.setLayoutParams(layoutParams);
-            button.setBackground(callback.getContext().getDrawable(R.drawable.btndefaultshape));
+            button.setBackground(context.getDrawable(R.drawable.btndefaultshape));
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -15,6 +15,7 @@ import br.com.wiser.AbstractFragment;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.features.conversa.Conversa;
+import br.com.wiser.features.conversa.ConversaPresenter;
 import br.com.wiser.features.mensagem.MensagemActivity;
 import br.com.wiser.features.procurarusuarios.ProcurarUsuariosActivity;
 import br.com.wiser.features.usuario.Usuario;
@@ -79,19 +80,23 @@ public class ContatosFragment extends AbstractFragment {
 
     @OnClick(R.id.btnEncontrarUsuarios)
     public void onEncontrarUsuariosClicked() {
-        startProcurarUsuarios();
+        startActivity(new Intent(getContext(), ProcurarUsuariosActivity.class));
     }
 
     private void startChat(int posicao) {
-        Intent i = new Intent(getContext(), MensagemActivity.class);
-        Conversa conversa = new Conversa();
-        conversa.setUsuario(contatosPresenter.getContato(posicao));
+        ConversaPresenter conversaPresenter = new ConversaPresenter();
+        conversaPresenter.getConversa(contatosPresenter.getContato(posicao), new ConversaPresenter.ICallbackConversa() {
+            @Override
+            public void onSuccess(Conversa conversa) {
+                Intent i = new Intent(getContext(), MensagemActivity.class);
+                i.putExtra(Sistema.CONVERSA, conversa);
+                startActivity(i);
+            }
 
-        i.putExtra(Sistema.CONVERSA, conversa);
-        startActivity(i);
-    }
+            @Override
+            public void onError() {
 
-    private void startProcurarUsuarios() {
-        startActivity(new Intent(getContext(), ProcurarUsuariosActivity.class));
+            }
+        });
     }
 }

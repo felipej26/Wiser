@@ -1,18 +1,46 @@
 package br.com.wiser.features.conversa;
 
-import java.text.ParseException;
-import java.util.List;
+import br.com.wiser.APIClient;
+import br.com.wiser.Sistema;
+import br.com.wiser.features.usuario.Usuario;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Jefferson on 25/01/2017.
  */
 public class ConversaPresenter {
 
-    private ConversaDAO conversaDAO = new ConversaDAO();
+    public interface ICallbackConversa {
+        void onSuccess(Conversa conversa);
+        void onError();
+    }
 
-    public List<Conversa> carregarConversas() throws ParseException {
-        List<Conversa> listaConversa = conversaDAO.get();
+    private IConversaService conversaService;
 
-        return listaConversa;
+    public ConversaPresenter() {
+        conversaService = APIClient.getClient().create(IConversaService.class);
+    }
+
+    public void getConversa(final Usuario destinatario, final ICallbackConversa callback) {
+        Call<Conversa> call = conversaService.carregarConversa(Sistema.getUsuario().getId(), destinatario.getId());
+        call.enqueue(new Callback<Conversa>() {
+            @Override
+            public void onResponse(Call<Conversa> call, Response<Conversa> response) {
+                if (response.isSuccessful()) {
+                    response.body().setDestinatario(destinatario);
+                    callback.onSuccess(response.body());
+                }
+                else {
+                    callback.onError();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Conversa> call, Throwable t) {
+                callback.onError();
+            }
+        });
     }
 }

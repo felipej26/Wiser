@@ -6,7 +6,7 @@
     <string name="menu_sobre_title">About</string>
     <string name="app_configuracoes_title">Settings</string>
     <string name="chat_resultados_title">Results</string>
-    <string name="usuario">User</string>
+    <string name="destinatario">User</string>
     <string name="app_sobre_item_versao">Version %1$s</string>
     <string name="necessario_permitir">Wiser requires Location permission!</string>
     <string name="nao">No</string>

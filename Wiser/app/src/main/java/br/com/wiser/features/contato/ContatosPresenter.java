@@ -17,7 +17,6 @@ import retrofit2.Response;
  * Created by Jefferson on 23/01/2017.
  */
 public class ContatosPresenter {
-
     private IContatosService service;
     private List<Usuario> listaContatos;
 

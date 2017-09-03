@@ -15,6 +15,7 @@ import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.features.contato.IContatosService;
 import br.com.wiser.features.conversa.Conversa;
+import br.com.wiser.features.conversa.ConversaPresenter;
 import br.com.wiser.features.mensagem.MensagemActivity;
 import br.com.wiser.features.perfilcompleto.PerfilCompletoActivity;
 import br.com.wiser.features.usuario.Usuario;
@@ -87,13 +88,22 @@ public class DialogPerfilUsuario {
     private void loadAsFriend(){
         btnAbrirChat.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent i = new Intent(v.getContext(), MensagemActivity.class);
-                Conversa conversa = new Conversa();
-                conversa.setUsuario(contato);
-                i.putExtra(Sistema.CONVERSA, conversa);
-                v.getContext().startActivity(i);
-                alert.dismiss();
+            public void onClick(final View v) {
+                ConversaPresenter conversaPresenter = new ConversaPresenter();
+                conversaPresenter.getConversa(contato, new ConversaPresenter.ICallbackConversa() {
+                    @Override
+                    public void onSuccess(Conversa conversa) {
+                        Intent i = new Intent(v.getContext(), MensagemActivity.class);
+                        i.putExtra(Sistema.CONVERSA, conversa);
+                        v.getContext().startActivity(i);
+                        alert.dismiss();
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
             }
         });
     }

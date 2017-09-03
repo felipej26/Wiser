@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import br.com.wiser.R;
+import br.com.wiser.features.mensagem.Mensagem;
 import br.com.wiser.utils.Utils;
 import br.com.wiser.utils.UtilsDate;
 
@@ -53,9 +54,34 @@ public class ConversaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return listaConversas.size();
     }
 
-    public void addAll(List<Conversa> listaConversas) {
+    public void addConversa(Conversa conversa) {
+        this.listaConversas.add(conversa);
+        notifyItemInserted(listaConversas.size());
+    }
+
+    public void addConversas(List<Conversa> listaConversas) {
         this.listaConversas.addAll(listaConversas);
         notifyDataSetChanged();
+    }
+
+    public void addMensagem(Conversa conversa, Mensagem mensagem) {
+        for (Conversa c : this.listaConversas) {
+            if (c.getId() == conversa.getId()) {
+                c.getMensagens().add(mensagem);
+                notifyItemInserted(this.listaConversas.indexOf(c));
+                break;
+            }
+        }
+    }
+
+    public void addMensagens(Conversa conversa, List<Mensagem> listaMensagens) {
+        for (Conversa c : this.listaConversas) {
+            if (c.getId() == conversa.getId()) {
+                c.getMensagens().addAll(listaMensagens);
+                notifyItemChanged(this.listaConversas.indexOf(c));
+                break;
+            }
+        }
     }
 
     public void updateItem(Conversa conversa) {
@@ -97,8 +123,8 @@ public class ConversaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.posicao = posicao;
             viewSeparator.setVisibility(posicao == 0 ? View.INVISIBLE : View.VISIBLE);
 
-            Utils.loadImageInBackground(context, conversa.getUsuario().getUrlFotoPerfil(), imgPerfil, prgBarra);
-            lblNome.setText(conversa.getUsuario().getNome());
+            Utils.loadImageInBackground(context, conversa.getDestinatario().getUrlFotoPerfil(), imgPerfil, prgBarra);
+            lblNome.setText(conversa.getDestinatario().getNome());
             lblDataHora.setText(UtilsDate.formatDate(conversa.getMensagens().getLast().getData(), UtilsDate.HHMM));
             lblMensagens.setText(conversa.getMensagens().getLast().getMensagem());
             lblContMensagens.setText(conversa.getContMsgNaoLidas() + " " + context.getString(conversa.getContMsgNaoLidas() <= 1 ? R.string.nao_lida : R.string.nao_lidas));

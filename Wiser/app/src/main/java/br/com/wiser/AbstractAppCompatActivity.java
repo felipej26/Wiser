@@ -15,7 +15,7 @@ import android.widget.Toast;
 /**
  * Created by Jefferson on 22/01/2017.
  */
-public abstract class AbstractAppCompatActivity extends AppCompatActivity implements IView {
+public abstract class AbstractAppCompatActivity extends AppCompatActivity {
     public Context getContext() {
         return this;
     }

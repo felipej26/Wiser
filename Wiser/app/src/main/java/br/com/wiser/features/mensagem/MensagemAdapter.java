@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Jefferson on 30/05/2016.
  */
-public class MensagemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements IMensagemAdapter {
+public class MensagemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public interface Callback {
         void onSugestaoClick();
@@ -89,19 +89,16 @@ public class MensagemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return listaMensagens.size() + (hasSugestao ? 1 : 0);
     }
 
-    @Override
     public void addItem(Mensagem mensagem) {
         listaMensagens.add(mensagem);
         notifyItemInserted(listaMensagens.size());
     }
 
-    @Override
     public void addAll(List<Mensagem> listaMensagens) {
         this.listaMensagens.addAll(listaMensagens);
         notifyDataSetChanged();
     }
 
-    @Override
     public void onSetSugestao(Callback callback) {
         this.callback = callback;
         hasSugestao = true;

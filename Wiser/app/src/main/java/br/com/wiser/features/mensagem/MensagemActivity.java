@@ -14,16 +14,14 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.text.ParseException;
-import java.util.LinkedList;
+import java.util.List;
 
+import br.com.wiser.AbstractActivity;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.dialogs.DialogSugestoes;
 import br.com.wiser.features.conversa.Conversa;
 import br.com.wiser.interfaces.ICallback;
-import br.com.wiser.interfaces.ICallbackFinish;
-import br.com.wiser.AbstractActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -34,10 +32,8 @@ import butterknife.OnTextChanged;
  */
 public class MensagemActivity extends AbstractActivity implements DialogSugestoes.CallbackSugestao {
 
-    private Conversa conversa;
-
     private MensagemPresenter mensagensPresenter;
-    private IMensagemAdapter adapter;
+    private MensagemAdapter adapter;
 
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
     @BindView(R.id.lblContResposta) TextView lblContResposta;
@@ -50,14 +46,19 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_mensagens);
 
-        conversa = (Conversa) getIntent().getSerializableExtra(Sistema.CONVERSA);
-        mensagensPresenter = new MensagemPresenter();
+        mensagensPresenter = new MensagemPresenter((Conversa) getIntent().getSerializableExtra(Sistema.CONVERSA));
 
         onLoad();
         onLoadMessages();
-        mensagensPresenter.atualizarMensagensLidas(conversa, new ICallbackFinish() {
+
+        mensagensPresenter.atualizarMensagensLidas(new ICallback() {
             @Override
-            public void onFinish() {
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError(String mensagemErro) {
 
             }
         });
@@ -81,10 +82,13 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(Mensagem mensagem) {
-        if (this.conversa.getId() == mensagem.getConversa()) {
-            conversa.getMensagens().add(mensagem);
-            adapter.addItem(mensagem);
+    public void onEvent(List<Conversa> listaConversas) {
+        for (Conversa conversa : listaConversas) {
+            if (conversa.getId() == mensagensPresenter.getConversa().getId()) {
+                mensagensPresenter.getConversa().getMensagens().addAll(conversa.getMensagens());
+                adapter.addAll(conversa.getMensagens());
+                break;
+            }
         }
     }
 
@@ -98,7 +102,7 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
         ButterKnife.bind(this);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setTitle(conversa.getUsuario().getNome());
+        getActionBar().setTitle(mensagensPresenter.getConversa().getDestinatario().getNome());
 
         lblSugestao.setText("");
         lblSugestao.setVisibility(View.INVISIBLE);
@@ -107,44 +111,34 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         adapter = new MensagemAdapter(this);
-        recyclerView.setAdapter((RecyclerView.Adapter) adapter);
-
         adapter.onSetSugestao(new MensagemAdapter.Callback() {
             @Override
             public void onSugestaoClick() {
                 DialogSugestoes sugestoes = new DialogSugestoes(MensagemActivity.this);
-                sugestoes.show(conversa.getSugestoes());
+                sugestoes.show(mensagensPresenter.getConversa().getSugestoes());
             }
         });
+        recyclerView.setAdapter(adapter);
     }
 
     private void onLoadMessages() {
-
-        try {
-            conversa.setMensagens(new LinkedList<>(mensagensPresenter.carregarMensagens(conversa)));
-        }
-        catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        adapter.addAll(conversa.getMensagens());
+        adapter.addAll(mensagensPresenter.getConversa().getMensagens());
         recyclerView.getLayoutManager().scrollToPosition(adapter.getItemCount());
     }
 
     @OnClick(R.id.btnEnviarResposta)
-    public void onSendMessage() {
-        mensagensPresenter.enviarMensagem(conversa.getId(), conversa.getUsuario().getId(), txtResposta.getText().toString(), new ICallback() {
+    public void onEnviarRespostaClicked() {
+        mensagensPresenter.enviarMensagem(txtResposta.getText().toString(), new ICallback() {
             @Override
             public void onSuccess() {
-
+                limparCampos();
             }
 
             @Override
             public void onError(String mensagemErro) {
-
+                showToast("Erro ao enviar a mensagem!");
             }
         });
-        clearFiels();
     }
 
     @OnTextChanged(value = R.id.txtResposta, callback = OnTextChanged.Callback.TEXT_CHANGED)
@@ -152,7 +146,7 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
         lblContResposta.setText(editable.length() + " / 250");
     }
 
-    private void clearFiels() {
+    private void limparCampos() {
         txtResposta.setText("");
         lblSugestao.setText("");
         lblSugestao.setVisibility(View.INVISIBLE);

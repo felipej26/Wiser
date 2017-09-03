@@ -51,7 +51,7 @@
     <string name="ok" translatable="false">OK</string>
     <string name="sim">Sim</string>
     <string name="nao">Não</string>
-    <string name="usuario">Usuário</string>
+    <string name="destinatario">Usuário</string>
     <string name="idioma">Idioma</string>
     <string name="fluencia">Fluência</string>
 
@@ -60,7 +60,6 @@
     <string name="resposta">%1$s Resposta</string>
     <string name="respostas">%1$s Respostas</string>
     <string name="boas_vindas">Olá %1$s ;)</string>
-
 
     <string name="digite_status">Digite seus status aqui...</string>
     <string name="falha_login">Login Falhou. Tente novamente!</string>
