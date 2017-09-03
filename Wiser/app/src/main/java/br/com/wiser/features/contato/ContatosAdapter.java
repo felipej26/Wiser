@@ -15,6 +15,8 @@ import br.com.wiser.R;
 import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.interfaces.IClickListener;
 import br.com.wiser.utils.Utils;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by Jefferson on 23/09/2016.
@@ -65,19 +67,16 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public View viewSeparator;
-        public ImageView imgPerfil;
-        public ProgressBar prgBarra;
-        public TextView lblNome;
+        @BindView(R.id.viewSeparator) View viewSeparator;
+        @BindView(R.id.imgPerfil) ImageView imgPerfil;
+        @BindView(R.id.prgBarra) ProgressBar prgBarra;
+        @BindView(R.id.lblNome) TextView lblNome;
 
         public ViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
 
-            imgPerfil = (ImageView) itemView.findViewById(R.id.imgPerfil);
-            prgBarra = (ProgressBar) itemView.findViewById(R.id.prgBarra);
-            lblNome = (TextView) itemView.findViewById(R.id.lblNome);
-            viewSeparator = itemView.findViewById(R.id.viewSeparator);
+            ButterKnife.bind(this, itemView);
         }
 
         @Override

@@ -3,13 +3,15 @@ package br.com.wiser.features.discussao;
 import java.io.Serializable;
 import java.util.Date;
 
+import br.com.wiser.features.usuario.Usuario;
+
 /**
  * Created by Jefferson on 20/05/2016.
  */
 public class Resposta implements Serializable {
 
     private long id;
-    private long usuario;
+    private Usuario usuario;
     private Date data;
     private String resposta;
 
@@ -21,11 +23,11 @@ public class Resposta implements Serializable {
         this.id = id;
     }
 
-    public long getUsuario() {
+    public Usuario getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(long usuario) {
+    public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
 

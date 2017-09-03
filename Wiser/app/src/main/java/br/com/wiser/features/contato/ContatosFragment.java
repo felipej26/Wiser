@@ -56,13 +56,14 @@ public class ContatosFragment extends AbstractFragment {
             }
         });
 
-        ButterKnife.bind(this, view);
-        onLoad();
+        onLoad(view);
 
         return view;
     }
 
-    public void onLoad() {
+    public void onLoad(View view) {
+        ButterKnife.bind(this, view);
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 

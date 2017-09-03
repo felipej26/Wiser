@@ -10,9 +10,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import br.com.wiser.R;
-import br.com.wiser.features.usuario.Usuario;
+import br.com.wiser.utils.Utils;
+import br.com.wiser.utils.UtilsDate;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by Jefferson on 20/05/2016.
@@ -24,6 +28,7 @@ public class DiscussaoRespostaAdapter extends RecyclerView.Adapter<DiscussaoResp
 
     public DiscussaoRespostaAdapter(Context context) {
         this.context = context;
+        listaRespostas = new LinkedList<>();
     }
 
     @Override
@@ -37,22 +42,15 @@ public class DiscussaoRespostaAdapter extends RecyclerView.Adapter<DiscussaoResp
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final Resposta r = listaRespostas.get(position);
-        Usuario usuario = null;
-
-        /*
-        if (Sistema.getListaUsuarios().containsKey(r.getDestinatario())) {
-            usuario = Sistema.getListaUsuarios().get(r.getDestinatario());
-        }
+        Resposta r = listaRespostas.get(position);
 
         holder.viewSeparator.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
 
-        Utils.loadImageInBackground(context, usuario.getPerfil().getUrlProfilePicture(), holder.imgPerfil, holder.prgBarra);
+        Utils.loadImageInBackground(context, r.getUsuario().getUrlFotoPerfil(), holder.imgPerfil, holder.prgBarra);
         holder.lblIDResposta.setText("#" + (position + 1));
-        holder.lblAutor.setText(usuario.getPerfil().getFirstName());
+        holder.lblAutor.setText(r.getUsuario().getPrimeiroNome());
         holder.lblDataHora.setText(UtilsDate.formatDate(r.getData(), UtilsDate.DDMMYYYY_HHMMSS));
         holder.lblResposta.setText(Utils.decode(r.getResposta()));
-        */
     }
 
     @Override
@@ -60,33 +58,29 @@ public class DiscussaoRespostaAdapter extends RecyclerView.Adapter<DiscussaoResp
         return listaRespostas.size();
     }
 
-    public void setItems(LinkedList<Resposta> listaRespostas) {
-        this.listaRespostas = listaRespostas;
+    public void addItem(Resposta resposta) {
+        listaRespostas.add(resposta);
+        notifyItemInserted(listaRespostas.size());
+    }
+
+    public void addItems(List<Resposta> respostas) {
+        listaRespostas.addAll(respostas);
         notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public View viewSeparator;
-
-        public ImageView imgPerfil;
-        public ProgressBar prgBarra;
-        public TextView lblIDResposta;
-        public TextView lblAutor;
-        public TextView lblDataHora;
-        public TextView lblResposta;
+        @BindView(R.id.viewSeparator) View viewSeparator;
+        @BindView(R.id.imgPerfil) ImageView imgPerfil;
+        @BindView(R.id.prgBarra) ProgressBar prgBarra;
+        @BindView(R.id.lblIDResposta) TextView lblIDResposta;
+        @BindView(R.id.lblAutor) TextView lblAutor;
+        @BindView(R.id.lblDataHora) TextView lblDataHora;
+        @BindView(R.id.lblResposta) TextView lblResposta;
 
         public ViewHolder(View view) {
             super(view);
-
-            viewSeparator = view.findViewById(R.id.viewSeparator);
-
-            imgPerfil = (ImageView) view.findViewById(R.id.imgPerfil);
-            prgBarra = (ProgressBar) view.findViewById(R.id.prgBarra);
-            lblIDResposta = (TextView) view.findViewById(R.id.lblIDResposta);
-            lblAutor = (TextView) view.findViewById(R.id.lblAutor);
-            lblDataHora = (TextView) view.findViewById(R.id.lblDataHora);
-            lblResposta = (TextView) view.findViewById(R.id.lblResposta);
+            ButterKnife.bind(this, view);
         }
     }
 }

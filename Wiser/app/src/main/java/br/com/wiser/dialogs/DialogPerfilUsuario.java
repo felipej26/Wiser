@@ -33,9 +33,6 @@ public class DialogPerfilUsuario {
 
     private IContatosService service;
 
-    private AlertDialog alert;
-    private AlertDialog.Builder builder;
-    private View viewDetalhes;
     @BindView(R.id.imgPerfil) ImageView imgPerfil;
     @BindView(R.id.prgBarra) ProgressBar prgBarra;
     @BindView(R.id.lblNomeDetalhe) TextView lblNome;
@@ -46,17 +43,33 @@ public class DialogPerfilUsuario {
 
     private Usuario contato;
 
-    public void show(Context context, Usuario contato) {
-        service = APIClient.getClient().create(IContatosService.class);
-        viewDetalhes = ((Activity) context).getLayoutInflater().inflate(R.layout.dialog_perfil, null);
+    private AlertDialog alert;
 
-        ButterKnife.bind(this, viewDetalhes);
+    public DialogPerfilUsuario() {
+        service = APIClient.getClient().create(IContatosService.class);
+    }
+
+    public void show(Context context, Usuario contato) {
+        AlertDialog.Builder builder;
 
         this.contato = contato;
 
-        Utils.loadImageInBackground(context, contato.getUrlFotoPerfil(), imgPerfil, prgBarra);
+        View view = ((Activity) context).getLayoutInflater().inflate(R.layout.dialog_perfil, null);
+
+        onLoad(view, contato);
+
+        builder = new AlertDialog.Builder(context);
+        builder.setView(view);
+        alert = builder.create();
+        alert.show();
+    }
+
+    private void onLoad(View view, Usuario contato) {
+        ButterKnife.bind(this, view);
+
+        Utils.loadImageInBackground(view.getContext(), contato.getUrlFotoPerfil(), imgPerfil, prgBarra);
         lblNome.setText(contato.getNome());
-        lblIdiomaNivel.setText(context.getString(R.string.fluencia_idioma,
+        lblIdiomaNivel.setText(view.getContext().getString(R.string.fluencia_idioma,
                 Sistema.getDescricaoFluencia(contato.getFluencia()), Sistema.getDescricaoIdioma(contato.getIdioma())));
         lblStatus.setText(Utils.decode(contato.getStatus()));
 
@@ -67,26 +80,11 @@ public class DialogPerfilUsuario {
             btnAbrirChat.setText(R.string.adicionar_amigo);
         }
         else {
-           loadAsFriend();
+            loadAsFriend();
         }
-
-        btnPerfCompleto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), PerfilCompletoActivity.class);
-                intent.putExtra(Sistema.CONTATO, DialogPerfilUsuario.this.contato);
-                v.getContext().startActivity(intent);
-                alert.dismiss();
-            }
-        });
-
-        builder = new AlertDialog.Builder(context);
-        builder.setView(viewDetalhes);
-        alert = builder.create();
-        alert.show();
     }
 
-    public void loadAsFriend(){
+    private void loadAsFriend(){
         btnAbrirChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,6 +93,7 @@ public class DialogPerfilUsuario {
                 conversa.setUsuario(contato);
                 i.putExtra(Sistema.CONVERSA, conversa);
                 v.getContext().startActivity(i);
+                alert.dismiss();
             }
         });
     }
@@ -118,5 +117,13 @@ public class DialogPerfilUsuario {
                 btnAbrirChat.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    @OnClick(R.id.btnPerfCompleto)
+    public void onPerfilClicked(View v) {
+        Intent intent = new Intent(v.getContext(), PerfilCompletoActivity.class);
+        intent.putExtra(Sistema.CONTATO, contato);
+        v.getContext().startActivity(intent);
+        alert.dismiss();
     }
 }

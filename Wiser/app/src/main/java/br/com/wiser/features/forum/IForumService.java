@@ -30,6 +30,6 @@ public interface IForumService {
     Call<Resposta> responderDiscussao(@Body Map<String, String> parametros);
 
     @FormUrlEncoded
-    @POST("discussao/onDesativarCliked")
+    @POST("discussao/desativarDiscussao")
     Call<Object> desativarDiscussao(@Field("id") long discussaoID, @Field("desativar") boolean desativar);
 }

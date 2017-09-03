@@ -40,7 +40,7 @@ public class ConfiguracoesActivity extends AbstractActivity {
 
         configuracoesPresenter = new ConfiguracoesPresenter();
 
-        onInitView();
+        onLoad();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ConfiguracoesActivity extends AbstractActivity {
         return true;
     }
 
-    private void onInitView() {
+    private void onLoad() {
         ButterKnife.bind(this);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -86,7 +86,7 @@ public class ConfiguracoesActivity extends AbstractActivity {
     }
 
     private void confirmarDesativarConta() {
-        DialogConfirmar confirmar = new DialogConfirmar(this);
+        DialogConfirmar confirmar = new DialogConfirmar();
 
         confirmar.setMensagem(getString(R.string.confirmar_desativar_conta));
         confirmar.setYesClick(new IDialog() {
@@ -96,7 +96,7 @@ public class ConfiguracoesActivity extends AbstractActivity {
             }
         });
 
-        confirmar.show();
+        confirmar.show(this);
     }
 
     private void desativarConta() {

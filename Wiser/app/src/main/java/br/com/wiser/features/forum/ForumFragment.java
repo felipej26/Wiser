@@ -12,7 +12,7 @@ import android.widget.ProgressBar;
 
 import br.com.wiser.AbstractFragment;
 import br.com.wiser.R;
-import br.com.wiser.features.discussao.DiscussaoCardViewAdapter;
+import br.com.wiser.features.discussao.DiscussaoAdapter;
 import br.com.wiser.features.discussao.DiscussaoPartial;
 import br.com.wiser.features.discussao.IDiscussao;
 import br.com.wiser.features.novadiscussao.NovaDiscussaoActivity;
@@ -35,7 +35,7 @@ public class ForumFragment extends AbstractFragment implements IDiscussao {
     @BindView(R.id.pgbLoading) ProgressBar pgbLoading;
 
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
-    private DiscussaoCardViewAdapter adapter;
+    private DiscussaoAdapter adapter;
     private DiscussaoPartial discussaoPartial;
 
     private ICallback callbackCarregarDiscussoes;
@@ -47,12 +47,13 @@ public class ForumFragment extends AbstractFragment implements IDiscussao {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.forum_principal, container, false);
-        discussaoPartial = new DiscussaoPartial(getActivity());
+        discussaoPartial = new DiscussaoPartial();
 
         callbackCarregarDiscussoes = new ICallback() {
             @Override
             public void onSuccess() {
-                adapter.setItems(forumPresenter.getDiscussoes());
+                adapter.limparLista();
+                adapter.addItems(forumPresenter.getDiscussoes());
                 onPrgLoadingChanged(View.INVISIBLE);
             }
 
@@ -66,38 +67,39 @@ public class ForumFragment extends AbstractFragment implements IDiscussao {
         forumPresenter = new ForumPresenter();
         forumPresenter.carregarDiscussoes(callbackCarregarDiscussoes);
 
-        ButterKnife.bind(this, view);
-        onLoad();
-
-        onPrgLoadingChanged(View.VISIBLE);
+        onLoad(view);
 
         return view;
     }
 
-    public void onLoad() {
+    public void onLoad(View view) {
+        ButterKnife.bind(this, view);
+
+        onPrgLoadingChanged(View.VISIBLE);
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter = new DiscussaoCardViewAdapter(this);
+        adapter = new DiscussaoAdapter(getContext(), this);
         recyclerView.setAdapter(adapter);
     }
 
     @Override
     public void onDiscussaoClicked(int posicao) {
-        discussaoPartial.onDiscussaoClicked(forumPresenter.getDiscussao(posicao));
+        discussaoPartial.onDiscussaoClicked(getContext(), forumPresenter.getDiscussao(posicao));
     }
 
     @Override
     public void onPerfilClicked(int posicao) {
-        discussaoPartial.onPerfilClicked(posicao);
+        discussaoPartial.onPerfilClicked(getContext(), forumPresenter.getDiscussao(posicao).getUsuario());
     }
 
     @Override
-    public void onDesativarCliked(int posicao) {
-        discussaoPartial.onDesativarCliked(forumPresenter.getDiscussao(posicao), new ICallback() {
+    public void onDesativarCliked(final int posicao) {
+        discussaoPartial.onDesativarCliked(getContext(), forumPresenter.getDiscussao(posicao), new ICallback() {
             @Override
             public void onSuccess() {
-
+                adapter.updateItem(posicao);
             }
 
             @Override

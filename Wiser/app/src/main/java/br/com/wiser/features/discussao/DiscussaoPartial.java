@@ -1,6 +1,6 @@
 package br.com.wiser.features.discussao;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,7 +8,9 @@ import android.view.View;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.dialogs.DialogConfirmar;
+import br.com.wiser.dialogs.DialogPerfilUsuario;
 import br.com.wiser.dialogs.IDialog;
+import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.utils.Utils;
 
@@ -17,45 +19,39 @@ import br.com.wiser.utils.Utils;
  */
 public class DiscussaoPartial {
 
-    private Activity activity;
-    private DiscussaoPresenter discussaoPresenter;
-
-    public DiscussaoPartial(Activity activity) {
-        this.activity = activity;
-        discussaoPresenter = new DiscussaoPresenter();
-    }
-
-    public void onDiscussaoClicked(Discussao discussao) {
+    public void onDiscussaoClicked(Context context, Discussao discussao) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(Sistema.DISCUSSAO, discussao);
 
-        Intent i = new Intent(activity, DiscussaoActivity.class);
+        Intent i = new Intent(context, DiscussaoActivity.class);
         i.putExtra(Sistema.DISCUSSAO, bundle);
-        activity.startActivity(i);
+        context.startActivity(i);
     }
 
-    public void onPerfilClicked(int posicao) {
-        //discussaoPresenter.openPerfil(Sistema.getListaUsuarios().get(adapter.getItem(posicao).getUsuario()));
+    public void onPerfilClicked(Context context, Usuario usuario) {
+        DialogPerfilUsuario perfil = new DialogPerfilUsuario();
+        perfil.show(context, usuario);
     }
 
-    public void onDesativarCliked(final Discussao discussao, final ICallback callback) {
-        DialogConfirmar confirmar = new DialogConfirmar(activity);
+    public void onDesativarCliked(Context context, final Discussao discussao, final ICallback callback) {
+        DialogConfirmar confirmar = new DialogConfirmar();
 
         confirmar.setYesClick(new IDialog() {
             @Override
             public void onClick() {
-                discussaoPresenter.desativarDiscussao(discussao, callback);
+                DiscussaoPresenter discussaoPresenter = new DiscussaoPresenter(discussao);
+                discussaoPresenter.desativarDiscussao(callback);
             }
         });
 
         if (discussao.isAtiva()) {
-            confirmar.setMensagem(activity.getString(R.string.confirmar_desativar_discussao));
+            confirmar.setMensagem(context.getString(R.string.confirmar_desativar_discussao));
         }
         else {
-            confirmar.setMensagem(activity.getString(R.string.confirmar_reativar_discussao));
+            confirmar.setMensagem(context.getString(R.string.confirmar_reativar_discussao));
         }
 
-        confirmar.show();
+        confirmar.show(context);
     }
 
     public void onCompartilharClicked(View view) {

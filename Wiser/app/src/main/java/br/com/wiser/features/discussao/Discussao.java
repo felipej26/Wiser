@@ -6,24 +6,17 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
 
+import br.com.wiser.features.usuario.Usuario;
+
 /**
  * Created by Jefferson on 17/05/2016.
  */
 public class Discussao implements Serializable {
 
-    @SerializedName("id")
     private long id;
-
-    @SerializedName("usuario")
-    private long usuario;
-
-    @SerializedName("titulo")
+    private Usuario usuario;
     private String titulo;
-
-    @SerializedName("descricao")
     private String descricao;
-
-    @SerializedName("data")
     private Date data;
 
     @SerializedName("discussao_ativa")
@@ -40,11 +33,11 @@ public class Discussao implements Serializable {
         this.id = id;
     }
 
-    public long getUsuario() {
+    public Usuario getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(long usuario) {
+    public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
 

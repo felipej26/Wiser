@@ -1,28 +1,30 @@
 package br.com.wiser.features.sobre;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import br.com.wiser.R;
 import br.com.wiser.AbstractActivity;
+import br.com.wiser.R;
+import br.com.wiser.utils.Utils;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class SobreActivity extends AbstractActivity implements ISobreView {
+public class SobreActivity extends AbstractActivity {
 
-    private SobrePresenter sobrePresenter;
-    private TextView lblVersao;
-
-    private Button btnCompartilhar;
+    @BindView(R.id.lblVersao) TextView lblVersao;
+    @BindView(R.id.btnCompartilhar) Button btnCompartilhar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_sobre);
 
-        sobrePresenter = new SobrePresenter();
-        sobrePresenter.onCreate(this);
+        ButterKnife.bind(this);
+        onLoad();
     }
 
     @Override
@@ -31,29 +33,20 @@ public class SobreActivity extends AbstractActivity implements ISobreView {
         return true;
     }
 
-    @Override
-    public void onInitView() {
-        lblVersao = (TextView) findViewById(R.id.lblVersao);
-        lblVersao.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sobrePresenter.compartilharApp();
-            }
-        });
-
-        btnCompartilhar = (Button) findViewById(R.id.btnCompartilhar);
-        btnCompartilhar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sobrePresenter.compartilharApp();
-            }
-        });
-
+    public void onLoad() {
         getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        try {
+            lblVersao.setText(getString(R.string.app_sobre_item_versao,
+                    getPackageManager().getPackageInfo(getPackageName(), 0).versionName));
+        }
+        catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
-    @Override
-    public void onSetTextLblVersao(String versao){
-        lblVersao.setText(versao);
+    @OnClick(R.id.btnCompartilhar)
+    public void onCompatilharClicked() {
+        Utils.compartilharAppComoTexto(this);
     }
 }

@@ -1,5 +1,6 @@
 package br.com.wiser.features.perfilcompleto;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,49 +11,61 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.util.LinkedList;
-
+import br.com.wiser.AbstractActivity;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.interfaces.ICallback;
-import br.com.wiser.features.discussao.Discussao;
-import br.com.wiser.features.discussao.DiscussaoPresenter;
-import br.com.wiser.features.discussao.DiscussaoCardViewAdapter;
-import br.com.wiser.features.usuario.Usuario;
-import br.com.wiser.utils.Utils;
-import br.com.wiser.AbstractActivity;
+import br.com.wiser.features.conversa.Conversa;
+import br.com.wiser.features.discussao.DiscussaoAdapter;
+import br.com.wiser.features.discussao.DiscussaoPartial;
 import br.com.wiser.features.discussao.IDiscussao;
+import br.com.wiser.features.mensagem.MensagemActivity;
+import br.com.wiser.features.usuario.Usuario;
+import br.com.wiser.interfaces.ICallback;
+import br.com.wiser.utils.Utils;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Lucas on 25/09/2016.
  */
-public class PerfilCompletoActivity extends AbstractActivity implements IPerfilCompletoView, IDiscussao {
+public class PerfilCompletoActivity extends AbstractActivity implements IDiscussao {
 
     private PerfilCompletoPresenter perfilCompletoPresenter;
-    private DiscussaoPresenter discussaoPresenter;
+    private DiscussaoPartial discussaoPartial;
+    private DiscussaoAdapter adapter;
 
-    private ImageView imgPerfil;
-
-    private TextView lblNomeDetalhe;
-    private TextView lblIdade;
-    private TextView lblIdiomaNivel;
-    private TextView lblStatus;
-    private Button btnAbrirChat;
-
-    private RecyclerView recyclerView;
-    private DiscussaoCardViewAdapter adapter;
-    private ProgressBar prgBarra;
+    @BindView(R.id.imgPerfil) ImageView imgPerfil;
+    @BindView(R.id.lblNomeDetalhe) TextView lblNomeDetalhe;
+    @BindView(R.id.lblIdade) TextView lblIdade;
+    @BindView(R.id.lblIdiomaNivel) TextView lblIdiomaNivel;
+    @BindView(R.id.lblStatus) TextView lblStatus;
+    @BindView(R.id.btnAbrirChat) Button btnAbrirChat;
+    @BindView(R.id.prgBarra) ProgressBar prgBarra;
+    @BindView(R.id.recyclerView) RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_perfil_completo);
 
-        perfilCompletoPresenter = new PerfilCompletoPresenter();
-        perfilCompletoPresenter.onCreate(this, (Usuario) getIntent().getExtras().get(Sistema.CONTATO));
+        perfilCompletoPresenter = new PerfilCompletoPresenter((Usuario) getIntent().getExtras().get(Sistema.CONTATO));
+        perfilCompletoPresenter.carregarDiscussoes(new ICallback() {
+            @Override
+            public void onSuccess() {
+                adapter.addItems(perfilCompletoPresenter.getDiscussoes());
+                onSetVisibilityProgressBar(View.INVISIBLE);
+            }
 
-        discussaoPresenter = new DiscussaoPresenter();
-        discussaoPresenter.onCreate(this);
+            @Override
+            public void onError(String mensagemErro) {
+                onSetVisibilityProgressBar(View.INVISIBLE);
+            }
+        });
+        discussaoPartial = new DiscussaoPartial();
+
+        onLoad();
+        onLoadData();
     }
 
     @Override
@@ -61,122 +74,102 @@ public class PerfilCompletoActivity extends AbstractActivity implements IPerfilC
         return true;
     }
 
-    @Override
-    public void onInitView() {
+    private void onLoad() {
+        ButterKnife.bind(this);
+
+        onSetVisibilityProgressBar(View.VISIBLE);
+
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        imgPerfil = (ImageView) findViewById(R.id.imgPerfil);
-        prgBarra = (ProgressBar) findViewById(R.id.prgBarra);
-        lblNomeDetalhe = (TextView) findViewById(R.id.lblNomeDetalhe);
-        lblIdade = (TextView) findViewById(R.id.lblIdade);
-        lblIdiomaNivel = (TextView) findViewById(R.id.lblIdiomaNivel);
-        lblStatus = (TextView) findViewById(R.id.lblStatus);
-        btnAbrirChat = (Button) findViewById(R.id.btnAbrirChat);
-
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
 
-        adapter = new DiscussaoCardViewAdapter(this);
+        adapter = new DiscussaoAdapter(getContext(), this);
         recyclerView.setAdapter(adapter);
     }
 
-    @Override
-    public void onLoadAsUser() {
-        btnAbrirChat.setVisibility(View.INVISIBLE);
-    }
+    private void onLoadData() {
+        Usuario usuario = perfilCompletoPresenter.getUsuario();
 
-    @Override
-    public void onLoadAsFriend(final Usuario usuario) {
-
-        btnAbrirChat.setText(PerfilCompletoActivity.this.getString(R.string.enviar_mensagem));
-        btnAbrirChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                perfilCompletoPresenter.openChat();
-            }
-        });
-    }
-
-    @Override
-    public void onLoadAsNotFriend(final Usuario usuario) {
-
-        btnAbrirChat.setText(getString(R.string.adicionar_amigo));
-        btnAbrirChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                perfilCompletoPresenter.adicionarContato();
-            }
-        });
-    }
-
-    @Override
-    public void onLoadListaDiscussoes(LinkedList<Discussao> listaDiscussoes) {
-        adapter.setItems(listaDiscussoes);
-    }
-
-    @Override
-    public void onLoadProfilePicture(String urlProfilePicture) {
-        Utils.loadImageInBackground(this, urlProfilePicture, imgPerfil, prgBarra);
-    }
-
-    @Override
-    public void onSetTextLblNome(String nome) {
-        lblNomeDetalhe.setText(nome);
-    }
-
-    @Override
-    public void onSetTextLblIdade(String idade) {
-        lblIdade.setText(idade);
-    }
-
-    @Override
-    public void onSetTextLblIdiomaNivel(String idioma) {
-        lblIdiomaNivel.setText(idioma);
-    }
-
-    @Override
-    public void onSetTextLblStatus(String status) {
-        lblStatus.setText(status);
-    }
-
-    @Override
-    public void onSetVisibilityProgressBar(int visibility) {
-        if (visibility == View.VISIBLE) {
-            prgBarra.bringToFront();
+        if (Sistema.getUsuario().getId() == usuario.getId()) {
+            btnAbrirChat.setVisibility(View.INVISIBLE);
+        }
+        else if (usuario.isContato()) {
+            btnAbrirChat.setText(R.string.enviar_mensagem);
+        }
+        else {
+            btnAbrirChat.setText(R.string.adicionar_amigo);
         }
 
-        prgBarra.setVisibility(visibility);
+        Utils.loadImageInBackground(this, usuario.getUrlFotoPerfil(), imgPerfil, prgBarra);
+        lblNomeDetalhe.setText(usuario.getNome());
+        lblIdade.setText(", " + 18);
+        lblIdiomaNivel.setText(getString(R.string.fluencia_idioma,
+                Sistema.getDescricaoFluencia(usuario.getFluencia()), Sistema.getDescricaoIdioma(usuario.getIdioma())));
+        lblStatus.setText(Utils.decode(usuario.getStatus()));
+    }
+
+    @OnClick(R.id.btnAbrirChat)
+    public void onOpenChatClicked() {
+        if (perfilCompletoPresenter.getUsuario().isContato()) {
+            startChat();
+        }
+        else {
+            perfilCompletoPresenter.adicionarContato(new ICallback() {
+                @Override
+                public void onSuccess() {
+                    btnAbrirChat.setText(R.string.enviar_mensagem);
+                }
+
+                @Override
+                public void onError(String mensagemErro) {
+                    showToast(mensagemErro);
+                }
+            });
+        }
     }
 
     @Override
     public void onDiscussaoClicked(int posicao) {
-        perfilCompletoPresenter.openDiscussao(posicao);
+        discussaoPartial.onDiscussaoClicked(this, perfilCompletoPresenter.getDiscussoes().get(posicao));
     }
 
     @Override
     public void onPerfilClicked(int posicao) {
-        //discussaoPresenter.openPerfil(Sistema.getListaUsuarios().get(adapter.getItem(posicao).getUsuario()));
+        discussaoPartial.onPerfilClicked(this, perfilCompletoPresenter.getUsuario());
     }
 
     @Override
-    public void onDesativarCliked(int posicao) {
-        discussaoPresenter.confirmarDesativarDiscussao(adapter.getItem(posicao), new ICallback() {
+    public void onDesativarCliked(final int posicao) {
+        discussaoPartial.onDesativarCliked(this, perfilCompletoPresenter.getDiscussoes().get(posicao), new ICallback() {
             @Override
             public void onSuccess() {
-                adapter.notifyDataSetChanged();
+                adapter.updateItem(posicao);
             }
 
             @Override
             public void onError(String mensagemErro) {
+
             }
         });
     }
 
     @Override
     public void onCompartilharClicked(View view) {
-        discussaoPresenter.compartilhar(view);
+        discussaoPartial.onCompartilharClicked(view);
     }
 
+    private void startChat() {
+        Conversa conversa = new Conversa();
+        conversa.setUsuario(perfilCompletoPresenter.getUsuario());
 
+        Intent i = new Intent(getContext(), MensagemActivity.class);
+        i.putExtra(Sistema.CONVERSA, conversa);
+        getContext().startActivity(i);
+    }
+
+    public void onSetVisibilityProgressBar(int visibility) {
+        prgBarra.bringToFront();
+        prgBarra.setVisibility(visibility);
+    }
 }

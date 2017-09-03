@@ -38,7 +38,6 @@ public class UsuariosEncontradosActivity extends AbstractActivity {
                 (ArrayList<Usuario>) getIntent().getBundleExtra(Sistema.LISTAUSUARIOS).get(Sistema.LISTAUSUARIOS)
         );
 
-        ButterKnife.bind(this);
         onLoad();
     }
 
@@ -49,6 +48,8 @@ public class UsuariosEncontradosActivity extends AbstractActivity {
     }
 
     public void onLoad() {
+        ButterKnife.bind(this);
+
         onPrgLoadingChanged(View.VISIBLE);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);

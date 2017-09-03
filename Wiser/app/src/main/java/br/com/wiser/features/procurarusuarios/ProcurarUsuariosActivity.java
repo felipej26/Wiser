@@ -42,8 +42,7 @@ public class ProcurarUsuariosActivity extends AbstractActivity {
 
         procurarContatosPresenter = new ProcurarUsuariosPresenter();
 
-        ButterKnife.bind(this);
-        onInitView();
+        onLoad();
     }
 
     @Override
@@ -52,7 +51,9 @@ public class ProcurarUsuariosActivity extends AbstractActivity {
         return true;
     }
 
-    public void onInitView() {
+    public void onLoad() {
+        ButterKnife.bind(this);
+
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         skrDistancia.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -105,10 +106,7 @@ public class ProcurarUsuariosActivity extends AbstractActivity {
     }
 
     public void onPrgLoadingChanged(int visibility) {
-        if (visibility == View.VISIBLE) {
-            pgbLoading.bringToFront();
-        }
-
+        pgbLoading.bringToFront();
         pgbLoading.setVisibility(visibility);
     }
 

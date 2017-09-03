@@ -1,5 +1,6 @@
 package br.com.wiser.features.minhasdiscussoes;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -8,29 +9,29 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import java.util.LinkedList;
-
-import br.com.wiser.R;
-import br.com.wiser.interfaces.ICallback;
-import br.com.wiser.features.discussao.Discussao;
-import br.com.wiser.features.discussao.DiscussaoPresenter;
 import br.com.wiser.AbstractActivity;
-import br.com.wiser.features.discussao.DiscussaoCardViewAdapter;
+import br.com.wiser.R;
+import br.com.wiser.features.discussao.DiscussaoAdapter;
+import br.com.wiser.features.discussao.DiscussaoPartial;
 import br.com.wiser.features.discussao.IDiscussao;
+import br.com.wiser.features.novadiscussao.NovaDiscussaoActivity;
+import br.com.wiser.interfaces.ICallback;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Jefferson on 19/05/2016.
  */
-public class MinhasDiscussoesActivity extends AbstractActivity implements IMinhasDiscussoesView, IDiscussao {
+public class MinhasDiscussoesActivity extends AbstractActivity implements IDiscussao {
 
     private MinhasDiscussoesPresenter minhasDiscussoesPresenter;
-    private DiscussaoPresenter discussaoPresenter;
+    private DiscussaoPartial discussaoPartial;
+    private DiscussaoAdapter adapter;
 
-    private Button btnNovaDiscussao;
-
-    private RecyclerView recyclerView;
-    private DiscussaoCardViewAdapter adapter;
-    private ProgressBar pgbLoading;
+    @BindView(R.id.btnNovaDiscussao) Button btnNovaDiscussao;
+    @BindView(R.id.pgbLoading) ProgressBar pgbLoading;
+    @BindView(R.id.recycler_view) RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +39,46 @@ public class MinhasDiscussoesActivity extends AbstractActivity implements IMinha
         setContentView(R.layout.forum_minhas_discussoes);
 
         minhasDiscussoesPresenter = new MinhasDiscussoesPresenter();
-        minhasDiscussoesPresenter.onCreate(this);
+        minhasDiscussoesPresenter.carregarDiscussoes(new ICallback() {
+            @Override
+            public void onSuccess() {
+                if (minhasDiscussoesPresenter.getDiscussoes().size() <= 0) {
+                    showToast(getString(R.string.erro_usuario_sem_discussao));
+                }
+                else {
+                    adapter.addItems(minhasDiscussoesPresenter.getDiscussoes());
+                }
 
-        discussaoPresenter = new DiscussaoPresenter();
-        discussaoPresenter.onCreate(this);
+                onPrgLoadingChanged(View.INVISIBLE);
+            }
+
+            @Override
+            public void onError(String mensagemErro) {
+                onPrgLoadingChanged(View.INVISIBLE);
+            }
+        });
+        discussaoPartial = new DiscussaoPartial();
+
+        onLoad();
+    }
+
+    public void onLoad() {
+        ButterKnife.bind(this);
+
+        onPrgLoadingChanged(View.VISIBLE);
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        adapter = new DiscussaoAdapter(getContext(), this);
+        recyclerView.setAdapter(adapter);
+    }
+
+    @OnClick(R.id.btnNovaDiscussao)
+    public void onNovaDiscussaoClicked() {
+        startActivity(new Intent(this, NovaDiscussaoActivity.class));
     }
 
     @Override
@@ -52,66 +89,36 @@ public class MinhasDiscussoesActivity extends AbstractActivity implements IMinha
 
     @Override
     public void onDiscussaoClicked(int posicao) {
-        minhasDiscussoesPresenter.startDiscussao(posicao);
+        discussaoPartial.onDiscussaoClicked(this, minhasDiscussoesPresenter.getDiscussao(posicao));
     }
 
     @Override
     public void onPerfilClicked(int posicao) {
-        //discussaoPresenter.openPerfil(Sistema.getListaUsuarios().get(adapter.getItem(posicao).getUsuario()));
+        discussaoPartial.onPerfilClicked(this, minhasDiscussoesPresenter.getDiscussao(posicao).getUsuario());
     }
 
     @Override
-    public void onDesativarCliked(int posicao) {
-        discussaoPresenter.confirmarDesativarDiscussao(adapter.getItem(posicao), new ICallback() {
+    public void onDesativarCliked(final int posicao) {
+        discussaoPartial.onDesativarCliked(this, minhasDiscussoesPresenter.getDiscussao(posicao), new ICallback() {
             @Override
             public void onSuccess() {
-                adapter.notifyDataSetChanged();
+                adapter.updateItem(posicao);
             }
 
             @Override
             public void onError(String mensagemErro) {
+
             }
         });
     }
 
     @Override
     public void onCompartilharClicked(View view) {
-        discussaoPresenter.compartilhar(view);
+        discussaoPartial.onCompartilharClicked(view);
     }
 
-    @Override
-    public void onInitView() {
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
-        btnNovaDiscussao = (Button) findViewById(R.id.btnNovaDiscussao);
-        btnNovaDiscussao.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                minhasDiscussoesPresenter.startNovaDiscussao();
-            }
-        });
-
-        pgbLoading = (ProgressBar) findViewById(R.id.pgbLoading);
-
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(MinhasDiscussoesActivity.this));
-
-        adapter = new DiscussaoCardViewAdapter(MinhasDiscussoesActivity.this);
-        recyclerView.setAdapter(adapter);
-    }
-
-    @Override
-    public void onLoadListaDiscussoes(LinkedList<Discussao> listaDiscussoes) {
-        adapter.setItems(listaDiscussoes);
-    }
-
-    @Override
-    public void onSetVisibilityProgressBar(int visibility) {
-        if (visibility == View.VISIBLE) {
-            pgbLoading.bringToFront();
-        }
-
+    public void onPrgLoadingChanged(int visibility) {
+        pgbLoading.bringToFront();
         pgbLoading.setVisibility(visibility);
     }
 }

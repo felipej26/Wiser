@@ -1,21 +1,14 @@
 package br.com.wiser.features.novadiscussao;
 
-import android.content.Intent;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import br.com.wiser.APIClient;
-import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.dialogs.DialogConfirmar;
-import br.com.wiser.dialogs.DialogInformar;
-import br.com.wiser.dialogs.IDialog;
 import br.com.wiser.features.discussao.Discussao;
 import br.com.wiser.features.forum.IForumService;
-import br.com.wiser.features.minhasdiscussoes.MinhasDiscussoesActivity;
-import br.com.wiser.Presenter;
+import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.utils.Utils;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,48 +17,15 @@ import retrofit2.Response;
 /**
  * Created by Jefferson on 25/01/2017.
  */
-public class NovaDiscussaoPresenter extends Presenter<INovaDiscussaoView> {
+public class NovaDiscussaoPresenter {
 
     private IForumService service;
 
-    @Override
-    protected void onCreate() {
-        view.onInitView();
-
+    public NovaDiscussaoPresenter() {
         service = APIClient.getClient().create(IForumService.class);
     }
 
-    public void setTextChangedLblTitulo(int tamanho) {
-        view.onSetTextLblContTitulo(tamanho + " / 30");
-    }
-
-    public void setTextChangedLblDescricao(int tamanho) {
-        view.onSetTextLblContDescricao(tamanho + " / 250");
-    }
-
-    public void criarNovaDiscussao(final String titulo, final String descricao) {
-        DialogConfirmar confirmar = new DialogConfirmar(getActivity());
-        DialogInformar informar = new DialogInformar(getActivity());
-
-        if (titulo.trim().isEmpty() || descricao.trim().isEmpty()) {
-            informar.setMensagem(getContext().getString(R.string.erro_criar_discussao_campos));
-            informar.show();
-            return;
-        }
-
-        confirmar.setMensagem(getContext().getString(R.string.confirmar_salvar));
-        confirmar.setYesClick(new IDialog() {
-            @Override
-            public void onClick() {
-                salvarDiscussao(titulo, descricao);
-                view.getActivity().finish();
-            }
-        });
-        confirmar.show();
-    }
-
-    private void salvarDiscussao(String titulo, String descricao) {
-        final DialogInformar informar = new DialogInformar(getActivity());
+    public void salvarDiscussao(String titulo, String descricao, final ICallback callback) {
         Map<String, String> parametros = new HashMap<>();
 
         parametros.put("id", "0");
@@ -79,24 +39,16 @@ public class NovaDiscussaoPresenter extends Presenter<INovaDiscussaoView> {
             @Override
             public void onResponse(Call<Discussao> call, Response<Discussao> response) {
                 if (response.isSuccessful()) {
-                    informar.setMensagem(getContext().getString(R.string.sucesso_criar_discussao));
-                    informar.setOkClick(new IDialog() {
-                        @Override
-                        public void onClick() {
-                            getContext().startActivity(new Intent(getContext(), MinhasDiscussoesActivity.class));
-                            getActivity().finish();
-                        }
-                    });
-                    return;
+                    callback.onSuccess();
                 }
-
-                onFailure(call, null);
+                else {
+                    callback.onError("");
+                }
             }
 
             @Override
             public void onFailure(Call<Discussao> call, Throwable t) {
-                informar.setMensagem(getContext().getString(R.string.erro_criar_discussao));
-                informar.show();
+                callback.onError(t.getMessage());
             }
         });
     }

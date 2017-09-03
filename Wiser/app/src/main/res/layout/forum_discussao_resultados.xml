@@ -61,7 +61,7 @@
             android:id="@+id/lblDescricaoDiscussao"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Descrição da Discussao"
+            android:text="Descrição da Discussão"
             android:textStyle="italic"
             android:textColor="@color/colorSecondaryText"
             android:layout_below="@+id/lblTituloDiscussao"
@@ -69,7 +69,8 @@
             android:layout_alignParentEnd="true"
             android:paddingLeft="5dp"
             android:lines="3"
-            android:maxLines="3" />
+            android:maxLines="3"
+            android:ellipsize="end"/>
 
         <TextView
             android:id="@+id/lblContRespostas"
