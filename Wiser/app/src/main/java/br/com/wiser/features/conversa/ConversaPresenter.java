@@ -1,7 +1,10 @@
 package br.com.wiser.features.conversa;
 
+import java.util.LinkedList;
+
 import br.com.wiser.APIClient;
 import br.com.wiser.Sistema;
+import br.com.wiser.features.mensagem.Mensagem;
 import br.com.wiser.features.usuario.Usuario;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,13 +36,19 @@ public class ConversaPresenter {
                     callback.onSuccess(response.body());
                 }
                 else {
-                    callback.onError();
+                    Conversa conversa = new Conversa();
+                    conversa.setDestinatario(destinatario);
+                    conversa.setMensagens(new LinkedList<Mensagem>());
+                    callback.onSuccess(conversa);
                 }
             }
 
             @Override
             public void onFailure(Call<Conversa> call, Throwable t) {
-                callback.onError();
+                Conversa conversa = new Conversa();
+                conversa.setDestinatario(destinatario);
+                conversa.setMensagens(new LinkedList<Mensagem>());
+                callback.onSuccess(conversa);
             }
         });
     }

@@ -51,17 +51,19 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
         onLoad();
         onLoadMessages();
 
-        mensagensPresenter.atualizarMensagensLidas(new ICallback() {
-            @Override
-            public void onSuccess() {
+        if (mensagensPresenter.getConversa().getId() > 0) {
+            mensagensPresenter.atualizarMensagensLidas(new ICallback() {
+                @Override
+                public void onSuccess() {
 
-            }
+                }
 
-            @Override
-            public void onError(String mensagemErro) {
+                @Override
+                public void onError(String mensagemErro) {
 
-            }
-        });
+                }
+            });
+        }
     }
 
     @Override
@@ -114,8 +116,8 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
         adapter.onSetSugestao(new MensagemAdapter.Callback() {
             @Override
             public void onSugestaoClick() {
-                DialogSugestoes sugestoes = new DialogSugestoes(MensagemActivity.this);
-                sugestoes.show(mensagensPresenter.getConversa().getSugestoes());
+                DialogSugestoes sugestoes = new DialogSugestoes();
+                sugestoes.show(getContext(), MensagemActivity.this, mensagensPresenter.getConversa().getSugestoes());
             }
         });
         recyclerView.setAdapter(adapter);

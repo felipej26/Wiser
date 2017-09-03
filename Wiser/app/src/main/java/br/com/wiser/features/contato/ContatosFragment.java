@@ -83,7 +83,7 @@ public class ContatosFragment extends AbstractFragment {
         startActivity(new Intent(getContext(), ProcurarUsuariosActivity.class));
     }
 
-    private void startChat(int posicao) {
+    private void startChat(final int posicao) {
         ConversaPresenter conversaPresenter = new ConversaPresenter();
         conversaPresenter.getConversa(contatosPresenter.getContato(posicao), new ConversaPresenter.ICallbackConversa() {
             @Override
@@ -95,7 +95,6 @@ public class ContatosFragment extends AbstractFragment {
 
             @Override
             public void onError() {
-
             }
         });
     }
