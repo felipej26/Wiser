@@ -31,7 +31,8 @@ import retrofit2.Response;
 
 public class Sistema {
 
-    public static final String SERVIDOR_WS = "http://wiser-server.herokuapp.com/";
+    //public static final String SERVIDOR_WS = "http://wiser-server.herokuapp.com/";
+    public static final String SERVIDOR_WS = "http://192.168.0.10:1337/";
     public static final int PERMISSION_ALL = 0;
     public static final boolean PERMITIR_PAGINAS_NAO_VERIFICADAS = false;
 
@@ -73,9 +74,6 @@ public class Sistema {
                             carregarListaFluencias(new ICallback() {
                                 @Override
                                 public void onSuccess() {
-                                    callback.onSuccess();
-
-                                    /*
                                     carregarListaAssuntos(new ICallback() {
                                         @Override
                                         public void onSuccess() {
@@ -87,7 +85,6 @@ public class Sistema {
 
                                         }
                                     });
-                                    */
                                 }
 
                                 @Override
@@ -295,6 +292,14 @@ public class Sistema {
             }
         }
         return 0;
+    }
+
+    public static List<ComboBoxItem> getListaIdiomas() {
+        return listaIdiomas;
+    }
+
+    public static List<ComboBoxItem> getListaFluencias() {
+        return listaFluencias;
     }
 
     public static String getDescricaoFluencia(int id) {

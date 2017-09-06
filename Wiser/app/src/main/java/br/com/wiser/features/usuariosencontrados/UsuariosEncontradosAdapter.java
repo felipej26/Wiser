@@ -10,6 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import br.com.wiser.R;
 import br.com.wiser.features.usuario.Usuario;
@@ -54,6 +55,16 @@ public class UsuariosEncontradosAdapter extends RecyclerView.Adapter<UsuariosEnc
 
     public void setClickListener(IClickListener clickListener) {
         this.clickListener = clickListener;
+    }
+
+    public void addItems(List<Usuario> usuarios) {
+        listaUsuarios.addAll(usuarios);
+        notifyDataSetChanged();
+    }
+
+    public void limparDados() {
+        listaUsuarios = new ArrayList<>();
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

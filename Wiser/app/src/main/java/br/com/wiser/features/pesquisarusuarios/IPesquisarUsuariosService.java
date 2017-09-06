@@ -1,4 +1,4 @@
-package br.com.wiser.features.procurarusuarios;
+package br.com.wiser.features.pesquisarusuarios;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -11,7 +11,7 @@ import retrofit2.http.QueryMap;
 /**
  * Created by Jefferson on 23/01/2017.
  */
-public interface IProcurarUsuariosService {
+public interface IPesquisarUsuariosService {
     @GET("usuario/procurarUsuarios")
     Call<ArrayList<Usuario>> procurarUsuarios(@QueryMap Map<String, String> parametros);
 }

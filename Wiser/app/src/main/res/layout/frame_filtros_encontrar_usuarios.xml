@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorStatusBar">
+
+    <TextView
+        android:id="@+id/lblIdioma"
+        android:layout_width="75dp"
+        android:layout_height="wrap_content"
+        android:text="Idioma" />
+
+    <TextView
+        android:id="@+id/lblIdiomasEscolhidos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/lblIdioma"
+        android:text="Português" />
+
+    <TextView
+        android:id="@+id/lblFluencia"
+        android:layout_width="75dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lblIdioma"
+        android:text="Nivel" />
+
+    <TextView
+        android:id="@+id/lblFluenciasEscolhidas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lblIdioma"
+        android:layout_toEndOf="@+id/lblFluencia"
+        android:text="Iniciante" />
+
+    <Button
+        android:id="@+id/btnFiltrar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:text="Filtrar" />
+
+</RelativeLayout>

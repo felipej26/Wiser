@@ -1,4 +1,4 @@
-package br.com.wiser.features.procurarusuarios;
+package br.com.wiser.features.pesquisarusuarios;
 
 import android.util.Log;
 
@@ -18,13 +18,13 @@ import retrofit2.Response;
 /**
  * Created by Jefferson on 23/01/2017.
  */
-public class ProcurarUsuariosPresenter {
+public class PesquisarUsuariosPresenter {
 
-    private IProcurarUsuariosService service;
+    private IPesquisarUsuariosService service;
     private ArrayList<Usuario> listaUsuarios;
 
-    public ProcurarUsuariosPresenter() {
-        service = APIClient.getClient().create(IProcurarUsuariosService.class);
+    public PesquisarUsuariosPresenter() {
+        service = APIClient.getClient().create(IPesquisarUsuariosService.class);
     }
 
     public List<Usuario> getUsuarios() {
@@ -38,12 +38,9 @@ public class ProcurarUsuariosPresenter {
         map.put("usuario", String.valueOf(Sistema.getUsuario().getId()));
         map.put("latitude", String.valueOf(Sistema.getUsuario().getLatitude()));
         map.put("longitude", String.valueOf(Sistema.getUsuario().getLongitude()));
-        map.put("distancia", String.valueOf(pesquisa.getDistancia()));
+        map.put("idioma", pesquisa.getIdioma());
 
-        if (pesquisa.getIdioma() > 0)
-            map.put("idioma", String.valueOf(pesquisa.getIdioma()));
-
-        if (pesquisa.getFluencia() > 0)
+        if (pesquisa.getFluencia().length() > 0)
             map.put("fluencia", String.valueOf(pesquisa.getFluencia()));
 
         Call<ArrayList<Usuario>> call = service.procurarUsuarios(map);

@@ -98,4 +98,5 @@
     <string name="fluencia_idioma">%1$s em %2$s</string>
     <string name="ativar">Ativar</string>
     <string name="app_servidor_manutencao">Servidor em Manutenção</string>
+    <string name="title_activity_procurar_usuarios">Encontrar Wisers</string>
 </resources>
