@@ -35,6 +35,9 @@
     <string name="sucesso">Sucesso</string>
     <string name="erro">Erro</string>
     <string name="atualizar">Atualizar</string>
+    <string name="limpar">Limpar</string>
+    <string name="filtrar">Filtrar</string>
+    <string name="mostrar_filtros">Mostrar Filtros</string>
     <string name="nova">Nova</string>
     <string name="procurar_discussao">Procurar Discussão</string>
     <string name="excluir">Excluir</string>
@@ -99,4 +102,6 @@
     <string name="ativar">Ativar</string>
     <string name="app_servidor_manutencao">Servidor em Manutenção</string>
     <string name="title_activity_procurar_usuarios">Encontrar Wisers</string>
+    <string name="todos">Todos</string>
+
 </resources>

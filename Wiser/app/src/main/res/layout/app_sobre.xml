@@ -42,6 +42,7 @@
         android:layout_height="match_parent"
         android:id="@+id/imgSobre"
         android:nestedScrollingEnabled="false"
+        android:src="@mipmap/logo_wiser_2"
         android:layout_below="@id/lblVersao"
         android:layout_above="@+id/lblSobreRodape"
         android:layout_marginLeft="45dp"

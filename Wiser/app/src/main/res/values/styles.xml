@@ -48,11 +48,15 @@
     </style>
 
     <style name="AppCompatTema" parent="@style/Theme.AppCompat.Light.NoActionBar">
-        <item name="android:textColorPrimary">@color/colorForeground</item>
+
+        <item name="android:textColorPrimary">@color/colorPrimaryText</item>
         <item name="android:statusBarColor">@color/colorStatusBar</item>
 
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryText</item>
+        <item name="android:colorBackground">@color/colorWindowBackground</item>
     </style>
 
     <style name="AppCompatTema.CheckBokFilter">
@@ -72,12 +76,11 @@
     <style name="AppCompatTema.TextViewTitulo">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">16dp</item>
         <item name="android:textSize">14sp</item>
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">#deffffff</item>
+        <item name="android:textColor">@color/colorPrimaryText</item>
         <item name="android:lineSpacingExtra">10sp</item>
     </style>
 

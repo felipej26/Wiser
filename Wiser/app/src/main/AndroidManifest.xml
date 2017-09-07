@@ -77,19 +77,14 @@
 
         <!-- Activity da Tela Encontrar Usuarios do App -->
         <activity
-            android:name=".features.pesquisarusuarios.PesquisarUsuariosActivity"
-            android:label="@string/app_pesquisa_title"
-            android:screenOrientation="portrait" />
+            android:name=".features.procurarusuarios.ProcurarUsuariosActivity"
+            android:label="@string/title_activity_procurar_usuarios"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppCompatTema" />
 
         <!-- Activity da Tela de Conversa do Chat -->
         <activity
             android:name=".features.mensagem.MensagemActivity"
-            android:label="@string/chat_resultados_title"
-            android:screenOrientation="portrait" />
-
-        <!-- Activity da Tela de Resultados do Chat -->
-        <activity
-            android:name=".features.usuariosencontrados.UsuariosEncontradosActivity"
             android:label="@string/chat_resultados_title"
             android:screenOrientation="portrait" />
 
@@ -116,11 +111,6 @@
             android:name=".features.procurardiscussao.ProcurarDiscussaoActivity"
             android:label="@string/forum_pesquisa_title"
             android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".features.procurarusuarios.ProcurarUsuariosActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppCompatTema" />
 
     </application>
 

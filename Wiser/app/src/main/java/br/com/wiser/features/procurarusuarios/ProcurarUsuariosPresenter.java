@@ -1,4 +1,4 @@
-package br.com.wiser.features.pesquisarusuarios;
+package br.com.wiser.features.procurarusuarios;
 
 import android.util.Log;
 
@@ -9,6 +9,7 @@ import java.util.Map;
 
 import br.com.wiser.APIClient;
 import br.com.wiser.Sistema;
+import br.com.wiser.features.contato.IContatosService;
 import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.interfaces.ICallback;
 import retrofit2.Call;
@@ -18,13 +19,13 @@ import retrofit2.Response;
 /**
  * Created by Jefferson on 23/01/2017.
  */
-public class PesquisarUsuariosPresenter {
+public class ProcurarUsuariosPresenter {
 
-    private IPesquisarUsuariosService service;
+    private IProcurarUsuariosService service;
     private ArrayList<Usuario> listaUsuarios;
 
-    public PesquisarUsuariosPresenter() {
-        service = APIClient.getClient().create(IPesquisarUsuariosService.class);
+    public ProcurarUsuariosPresenter() {
+        service = APIClient.getClient().create(IProcurarUsuariosService.class);
     }
 
     public List<Usuario> getUsuarios() {
@@ -65,5 +66,24 @@ public class PesquisarUsuariosPresenter {
         });
     }
 
+    public void adicionarContato(Usuario usuario, final ICallback callback) {
+        IContatosService contatosService = APIClient.getClient().create(IContatosService.class);
+        Call<Object> call = contatosService.adicionarContato(Sistema.getUsuario().getId(), usuario.getId());
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess();
+                }
+                else {
+                    callback.onError("");
+                }
+            }
 
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
 }

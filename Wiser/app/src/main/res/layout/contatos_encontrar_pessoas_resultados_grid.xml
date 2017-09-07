@@ -1,26 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="70dp"
-    android:layout_height="90dp"
-    android:orientation="vertical"
-    android:background="@drawable/bordershadow">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="16dp">
+
+    <View
+        android:id="@+id/viewSeparator"
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:layout_marginBottom="5dp"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/frmImgPerfil"
+        android:background="@color/colorForeground" />
 
     <include
-        layout="@layout/frm_foto_usuario"
+        layout="@layout/frm_foto_usuario_circular"
+        android:id="@+id/frmImgPerfil"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10sp" />
 
     <TextView
-        android:id="@+id/txtNomeLista"
+        android:id="@+id/txtNome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         android:layout_gravity="center_horizontal"
         android:text="Nome"
-        android:textSize="15sp" >
+        android:textSize="15sp"
+        android:layout_marginLeft="16dp"
+        android:layout_alignTop="@+id/frmImgPerfil"
+        android:layout_toEndOf="@+id/frmImgPerfil">
     </TextView>
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/lblIdiomaNivel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtNome"
+        android:layout_toEndOf="@+id/frmImgPerfil"
+        android:layout_marginLeft="16dp"
+        android:text="Nivel no Idioma" />
+
+    <Button
+        android:id="@+id/btnChat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:textColor="@color/colorPrimary"
+        android:background="@android:color/transparent"
+        android:textAllCaps="true"
+        android:text="Chat" />
+
+</RelativeLayout>

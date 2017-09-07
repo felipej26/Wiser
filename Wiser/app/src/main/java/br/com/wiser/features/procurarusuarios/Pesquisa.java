@@ -1,4 +1,4 @@
-package br.com.wiser.features.pesquisarusuarios;
+package br.com.wiser.features.procurarusuarios;
 
 /**
  * Created by Wesley on 03/04/2016.

@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
     android:paddingBottom="16dp">
 
     <TextView
@@ -17,21 +19,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/lytIdiomas"
         android:layout_below="@id/lblIdioma"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginTop="6dp"
         app:flexWrap="wrap">
-
-        <CheckBox
-            android:id="@+id/chkEnglish"
-            android:text="Inglês"
-            style="@style/AppCompatTema.CheckBokFilter" />
-
-        <CheckBox
-            android:id="@+id/chkSpanish"
-            android:layout_toEndOf="@+id/chkEnglish"
-            android:layout_marginLeft="5dp"
-            android:text="Espanhol"
-            style="@style/AppCompatTema.CheckBokFilter" />
 
     </com.google.android.flexbox.FlexboxLayout>
 
@@ -39,37 +28,16 @@
         android:id="@+id/lblFluencia"
         android:layout_below="@+id/lytIdiomas"
         android:text="@string/fluencia"
-        style="@style/AppCompatTema.TextViewTitulo" />
+        android:layout_marginTop="18dp"
+        style="@style/AppCompatTema.TextViewTitulo"/>
 
     <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/lytFluencias"
         android:layout_below="@id/lblFluencia"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginTop="6dp"
         app:flexWrap="wrap">
-
-        <!--
-        <CheckBox
-            android:id="@+id/checkBox"
-            android:text="Iniciante"
-            style="@style/AppCompatTema.CheckBokFilter" />
-
-        <CheckBox
-            android:id="@+id/checkBox2"
-            android:layout_toEndOf="@+id/checkBox"
-            android:layout_marginLeft="5dp"
-            android:text="Avançado"
-            style="@style/AppCompatTema.CheckBokFilter" />
-
-        <CheckBox
-            android:id="@+id/checkBox3"
-            android:layout_toEndOf="@+id/checkBox2"
-            android:layout_marginLeft="5dp"
-            android:text="Fluente"
-            style="@style/AppCompatTema.CheckBokFilter" />
-        -->
 
     </com.google.android.flexbox.FlexboxLayout>
 
@@ -81,11 +49,12 @@
         android:textSize="14sp"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
-        android:textColor="#ffffff"
+        android:textColor="@color/colorPrimaryText"
         android:layout_marginRight="12dp"
         android:layout_below="@id/lytFluencias"
-        android:layout_toLeftOf="@id/btnProcurar"
-        android:text="Limpar" />
+        android:layout_marginTop="12dp"
+        android:layout_toLeftOf="@+id/btnProcurar"
+        android:text="@string/limpar" />
 
     <Button
         android:id="@+id/btnProcurar"
@@ -95,10 +64,10 @@
         android:textSize="14sp"
         android:fontFamily="sans-serif-medium"
         android:textStyle="normal"
-        android:textColor="#ffffff"
-        android:background="@color/colorAccent"
-        android:layout_marginRight="16dp"
+        android:background="@color/colorAlpha"
+        android:textColor="@color/colorPrimaryText"
         android:layout_below="@id/lytFluencias"
-        android:text="Procurar" />
+        android:layout_marginTop="12dp"
+        android:text="@string/procurar" />
 
 </RelativeLayout>
