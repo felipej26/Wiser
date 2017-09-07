@@ -1,6 +1,5 @@
 <resources>
     <style name="AppTheme" parent="android:Theme.Material.Light">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -21,9 +20,6 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
 
     <!-- Tema do App -->
 
@@ -48,15 +44,16 @@
     </style>
 
     <style name="AppCompatTema" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
 
         <item name="android:textColorPrimary">@color/colorPrimaryText</item>
         <item name="android:statusBarColor">@color/colorStatusBar</item>
-
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryText</item>
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryText</item>
         <item name="android:colorBackground">@color/colorWindowBackground</item>
+        <item name="android:textColorSecondary">@color/colorPrimaryText</item>
     </style>
 
     <style name="AppCompatTema.CheckBokFilter">

@@ -40,6 +40,7 @@ public class Sistema {
     public static final String CONTATO = "contato";
     public static final String DISCUSSAO = "discussao";
 
+    public static String minVersao;
     private static AccessToken accessToken;
     private static String appLinguagem;
 
@@ -51,13 +52,34 @@ public class Sistema {
     private static ISistemaService service;
     private static IUsuarioService usuarioService;
 
+    public static void getMinVersao(final ICallback callback) {
+        service = APIClient.getClient().create(ISistemaService.class);
+        usuarioService = APIClient.getClient().create(IUsuarioService.class);
+
+        Call<Versao> call = service.getMinVersao();
+        call.enqueue(new Callback<Versao>() {
+            @Override
+            public void onResponse(Call<Versao> call, Response<Versao> response) {
+                if (response.isSuccessful()) {
+                    minVersao = response.body().getMinVersao();
+                    callback.onSuccess();
+                }
+                else {
+                    callback.onError(response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Versao> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
     public static void inicializarSistema(Context context, final ICallback callback) {
 
         try {
             new Facebook();
-
-            service = APIClient.getClient().create(ISistemaService.class);
-            usuarioService = APIClient.getClient().create(IUsuarioService.class);
 
             /* Carregar linguagem do celular */
             appLinguagem = context.getResources().getConfiguration().locale.getLanguage();
