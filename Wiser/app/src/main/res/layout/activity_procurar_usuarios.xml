@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="br.com.wiser.features.procurarusuarios.ProcurarUsuariosActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/toolbar"
+        app:title="@string/title_activity_procurar_usuarios"
+        android:background="@color/colorPrimary"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
+        android:id="@+id/lytFiltros"
+        android:animateLayoutChanges="true" >
+
+        <include
+            layout="@layout/frame_filtros_encontrar_usuarios_expandido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lytFiltroExpandido" />
+
+        <include
+            layout="@layout/frame_filtros_encontrar_usuarios"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lytFiltro"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/lytFiltros">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rcvUsuarios"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+
+        <TextView
+            android:id="@+id/lblUsuariosNaoEncontrados"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:text="@string/usuarios_nao_encontrados"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="normal"
+            android:gravity="center_horizontal"
+            android:textColor="@color/colorPrimaryInverseText"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"/>
+
+        <Button
+            android:id="@+id/btnMostrarFiltros"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/lblUsuariosNaoEncontrados"
+            android:background="@color/colorAlpha"
+            android:text="@string/mostrar_filtros"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:textColor="@color/colorPrimary"/>
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/pgbLoading"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:progressDrawable="@drawable/circular_loading"
+            android:visibility="gone"
+            android:progressTint="@color/colorAccent"
+            android:indeterminateTint="@color/colorAccent"
+            android:indeterminateTintMode="src_in" />
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

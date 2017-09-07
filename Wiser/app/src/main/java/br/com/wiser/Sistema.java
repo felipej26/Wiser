@@ -38,7 +38,6 @@ public class Sistema {
     public static final String LOGOUT = "logout";
     public static final String CONVERSA = "conversa";
     public static final String CONTATO = "contato";
-    public static final String LISTAUSUARIOS = "listausuarios";
     public static final String DISCUSSAO = "discussao";
 
     private static AccessToken accessToken;
@@ -46,8 +45,8 @@ public class Sistema {
 
     private static Usuario usuario;
     private static Set assuntos;
-    private static List listaIdiomas;
-    private static List listaFluencias;
+    private static List<ComboBoxItem> listaIdiomas;
+    private static List<ComboBoxItem> listaFluencias;
 
     private static ISistemaService service;
     private static IUsuarioService usuarioService;
@@ -73,9 +72,6 @@ public class Sistema {
                             carregarListaFluencias(new ICallback() {
                                 @Override
                                 public void onSuccess() {
-                                    callback.onSuccess();
-
-                                    /*
                                     carregarListaAssuntos(new ICallback() {
                                         @Override
                                         public void onSuccess() {
@@ -87,7 +83,6 @@ public class Sistema {
 
                                         }
                                     });
-                                    */
                                 }
 
                                 @Override
@@ -297,13 +292,16 @@ public class Sistema {
         return 0;
     }
 
+    public static List<ComboBoxItem> getListaIdiomas() {
+        return listaIdiomas;
+    }
+
+    public static List<ComboBoxItem> getListaFluencias() {
+        return listaFluencias;
+    }
+
     public static String getDescricaoFluencia(int id) {
-        List<ComboBoxItem> listaAux;
-
-        listaAux = new LinkedList<>(listaFluencias);
-        listaAux.remove(0);
-
-        for (ComboBoxItem item : listaAux) {
+        for (ComboBoxItem item : listaFluencias) {
             if (item.getId() == id) {
                 return item.getDescricao();
             }
@@ -313,12 +311,7 @@ public class Sistema {
     }
 
     public static String getDescricaoIdioma(int id) {
-        List<ComboBoxItem> listaAux;
-
-        listaAux = new LinkedList<>(listaIdiomas);
-        listaAux.remove(0);
-
-        for (ComboBoxItem item : listaAux) {
+        for (ComboBoxItem item : listaIdiomas) {
             if (item.getId() == id) {
                 return item.getDescricao();
             }
@@ -327,30 +320,12 @@ public class Sistema {
         return "";
     }
 
-    public static void carregarComboFluencia(Spinner cmbFluencia, Context context, boolean itemTodos) {
-        List<ComboBoxItem> listaAux;
-
-        if (!itemTodos) {
-            listaAux = new LinkedList<>(listaFluencias);
-            listaAux.remove(0);
-            carregarCombo(listaAux, cmbFluencia, context);
-        }
-        else {
-            carregarCombo(listaFluencias, cmbFluencia, context);
-        }
+    public static void carregarComboIdiomas(Spinner cmbIdioma, Context context) {
+        carregarCombo(listaIdiomas, cmbIdioma, context);
     }
 
-    public static void carregarComboIdiomas(Spinner cmbIdioma, Context context, boolean itemTodos) {
-        List<ComboBoxItem> listaAux;
-
-        if (!itemTodos) {
-            listaAux = new LinkedList<>(listaIdiomas);
-            listaAux.remove(0);
-            carregarCombo(listaAux, cmbIdioma, context);
-        }
-        else {
-            carregarCombo(listaIdiomas, cmbIdioma, context);
-        }
+    public static void carregarComboFluencia(Spinner cmbFluencia, Context context) {
+        carregarCombo(listaFluencias, cmbFluencia, context);
     }
 
     private static void carregarCombo(List<ComboBoxItem> itens, Spinner cmb, Context context) {

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="16dp">
+
+    <TextView
+        android:id="@+id/lblIdioma"
+        android:text="@string/idioma"
+        style="@style/AppCompatTema.TextViewTitulo" />
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lytIdiomas"
+        android:layout_below="@id/lblIdioma"
+        android:layout_marginTop="6dp"
+        app:flexWrap="wrap">
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <TextView
+        android:id="@+id/lblFluencia"
+        android:layout_below="@+id/lytIdiomas"
+        android:text="@string/fluencia"
+        android:layout_marginTop="18dp"
+        style="@style/AppCompatTema.TextViewTitulo"/>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lytFluencias"
+        android:layout_below="@id/lblFluencia"
+        android:layout_marginTop="6dp"
+        app:flexWrap="wrap">
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <Button
+        android:id="@+id/btnLimpar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:textSize="14sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:textColor="@color/colorPrimaryText"
+        android:layout_marginRight="12dp"
+        android:layout_below="@id/lytFluencias"
+        android:layout_marginTop="12dp"
+        android:layout_toLeftOf="@+id/btnProcurar"
+        android:text="@string/limpar" />
+
+    <Button
+        android:id="@+id/btnProcurar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:textSize="14sp"
+        android:fontFamily="sans-serif-medium"
+        android:textStyle="normal"
+        android:background="@color/colorAlpha"
+        android:textColor="@color/colorPrimaryText"
+        android:layout_below="@id/lytFluencias"
+        android:layout_marginTop="12dp"
+        android:text="@string/procurar" />
+
+</RelativeLayout>

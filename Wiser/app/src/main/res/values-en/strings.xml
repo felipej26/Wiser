@@ -83,4 +83,9 @@
     <string name="adicionar_amigo">Add As a Contact</string>
     <string name="digite_status">Type your status here...</string>
     <string name="app_servidor_manutencao">Server in Maintenance</string>
+    <string name="todos">All</string>
+    <string name="limpar">Clear</string>
+    <string name="title_activity_procurar_usuarios">Find Wisers</string>
+    <string name="filtrar">Filter</string>
+    <string name="mostrar_filtros">Show Filters</string>
 </resources>

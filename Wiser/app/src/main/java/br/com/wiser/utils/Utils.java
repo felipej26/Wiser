@@ -25,8 +25,9 @@ public class Utils {
     public static void loadImageInBackground(Context context, String url, final ImageView imageView, final ProgressBar prgBarra) {
 
         if (!TextUtils.isEmpty(url)) {
-            imageView.setVisibility(View.INVISIBLE);
+            imageView.setVisibility(View.GONE);
             prgBarra.setVisibility(View.VISIBLE);
+            prgBarra.bringToFront();
 
             Picasso.with(context)
                     .load(url)
@@ -34,13 +35,13 @@ public class Utils {
                         @Override
                         public void onSuccess() {
                             imageView.setVisibility(View.VISIBLE);
-                            prgBarra.setVisibility(View.INVISIBLE);
+                            prgBarra.setVisibility(View.GONE);
                         }
 
                         @Override
                         public void onError() {
                             imageView.setVisibility(View.VISIBLE);
-                            prgBarra.setVisibility(View.INVISIBLE);
+                            prgBarra.setVisibility(View.GONE);
                         }
                     });
         }

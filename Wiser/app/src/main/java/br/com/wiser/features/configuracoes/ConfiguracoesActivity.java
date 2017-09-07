@@ -55,8 +55,8 @@ public class ConfiguracoesActivity extends AbstractActivity {
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Sistema.carregarComboIdiomas(cmbIdioma, ConfiguracoesActivity.this, false);
-        Sistema.carregarComboFluencia(cmbFluencia, ConfiguracoesActivity.this, false);
+        Sistema.carregarComboIdiomas(cmbIdioma, ConfiguracoesActivity.this);
+        Sistema.carregarComboFluencia(cmbFluencia, ConfiguracoesActivity.this);
 
         cmbIdioma.setSelection(Sistema.getPosicaoItemComboBox(cmbIdioma, Sistema.getUsuario().getIdioma()));
         cmbFluencia.setSelection(Sistema.getPosicaoItemComboBox(cmbFluencia, Sistema.getUsuario().getFluencia()));

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="16dp">
+
+    <TextView
+        android:id="@+id/lblIdioma"
+        android:layout_width="65dp"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:fontFamily="sans-serif-medium"
+        android:textStyle="normal"
+        android:text="@string/idioma"
+        android:textColor="@color/colorPrimaryText"/>
+
+    <TextView
+        android:id="@+id/lblIdiomasEscolhidos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/lblIdioma"
+        android:textColor="@color/colorPrimaryText"
+        android:text="Idiomas Escolhidos"
+        android:textSize="12sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:inputType="textMultiLine"/>
+
+    <TextView
+        android:id="@+id/lblFluencia"
+        android:layout_width="65dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lblIdioma"
+        android:textColor="@color/colorPrimaryText"
+        android:layout_marginTop="10dp"
+        android:text="@string/fluencia"
+        android:textSize="12sp"
+        android:fontFamily="sans-serif-medium"
+        android:textStyle="normal"/>
+
+    <TextView
+        android:id="@+id/lblFluenciasEscolhidas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lblIdioma"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/colorPrimaryText"
+        android:text="Fluências Escolhidas"
+        android:textSize="12sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:layout_toEndOf="@+id/lblFluencia"
+        android:inputType="textMultiLine"/>
+
+    <Button
+        android:id="@+id/btnFiltrar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/filtrar"
+        android:layout_alignParentEnd="true"
+        android:background="@android:color/transparent"
+        android:textColor="@color/colorPrimaryText"
+        android:layout_alignBottom="@+id/lblFluenciasEscolhidas"
+        android:drawableRight="@drawable/ic_arrow"/>
+
+</RelativeLayout>

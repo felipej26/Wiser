@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <android.support.v7.widget.CardView
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:id="@+id/cardviewimg"
+        android:layout_centerVertical="true"
+        app:cardCornerRadius="30dp"
+        app:cardBackgroundColor="@android:color/transparent"
+        android:shape="ring">
+
+        <ImageView
+            android:id="@+id/imgPerfil"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v7.widget.CardView>
+
+    <ProgressBar
+        android:id="@+id/prgBarra"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:visibility="visible"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:indeterminate="true" />
+
+</FrameLayout>

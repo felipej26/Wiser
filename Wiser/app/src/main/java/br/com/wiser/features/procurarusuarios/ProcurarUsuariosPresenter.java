@@ -9,6 +9,7 @@ import java.util.Map;
 
 import br.com.wiser.APIClient;
 import br.com.wiser.Sistema;
+import br.com.wiser.features.contato.IContatosService;
 import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.interfaces.ICallback;
 import retrofit2.Call;
@@ -38,12 +39,9 @@ public class ProcurarUsuariosPresenter {
         map.put("usuario", String.valueOf(Sistema.getUsuario().getId()));
         map.put("latitude", String.valueOf(Sistema.getUsuario().getLatitude()));
         map.put("longitude", String.valueOf(Sistema.getUsuario().getLongitude()));
-        map.put("distancia", String.valueOf(pesquisa.getDistancia()));
+        map.put("idioma", pesquisa.getIdioma());
 
-        if (pesquisa.getIdioma() > 0)
-            map.put("idioma", String.valueOf(pesquisa.getIdioma()));
-
-        if (pesquisa.getFluencia() > 0)
+        if (pesquisa.getFluencia().length() > 0)
             map.put("fluencia", String.valueOf(pesquisa.getFluencia()));
 
         Call<ArrayList<Usuario>> call = service.procurarUsuarios(map);
@@ -68,5 +66,24 @@ public class ProcurarUsuariosPresenter {
         });
     }
 
+    public void adicionarContato(Usuario usuario, final ICallback callback) {
+        IContatosService contatosService = APIClient.getClient().create(IContatosService.class);
+        Call<Object> call = contatosService.adicionarContato(Sistema.getUsuario().getId(), usuario.getId());
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess();
+                }
+                else {
+                    callback.onError("");
+                }
+            }
 
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
 }

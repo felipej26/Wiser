@@ -2,43 +2,66 @@ package br.com.wiser.features.procurarusuarios;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ProgressBar;
-import android.widget.SeekBar;
-import android.widget.Spinner;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.google.android.flexbox.FlexboxLayout;
 
 import java.util.ArrayList;
 
-import br.com.wiser.AbstractActivity;
+import br.com.wiser.AbstractAppCompatActivity;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.features.usuariosencontrados.UsuariosEncontradosActivity;
+import br.com.wiser.dialogs.DialogPerfilUsuario;
+import br.com.wiser.features.conversa.Conversa;
+import br.com.wiser.features.conversa.ConversaPresenter;
+import br.com.wiser.features.mensagem.MensagemActivity;
+import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.interfaces.ICallback;
+import br.com.wiser.interfaces.IClickListener;
+import br.com.wiser.utils.ComboBoxItem;
+import br.com.wiser.utils.FiltrosManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-/**
- * Created by Jefferson on 31/03/2016.
- */
-public class ProcurarUsuariosActivity extends AbstractActivity {
+public class ProcurarUsuariosActivity extends AbstractAppCompatActivity {
 
     private ProcurarUsuariosPresenter procurarContatosPresenter;
+    private UsuariosEncontradosAdapter adapter;
 
-    @BindView(R.id.cmbIdiomaProcurar) Spinner cmbIdioma;
-    @BindView(R.id.cmbFluenciaProcurar) Spinner cmbFluencia;
-    @BindView(R.id.skrDistancia) SeekBar skrDistancia;
+    private FiltrosManager idiomasManager;
+    private FiltrosManager fluenciasManager;
+
+    @BindView(R.id.toolbar) Toolbar toolbar;
+
+    @BindView(R.id.lytFiltroExpandido) RelativeLayout lytFiltroExpandido;
+    @BindView(R.id.lytIdiomas) FlexboxLayout lytIdiomas;
+    @BindView(R.id.lytFluencias) FlexboxLayout lytFluencias;
     @BindView(R.id.btnProcurar) Button btnProcurar;
+
+    @BindView(R.id.lytFiltro) RelativeLayout lytFiltro;
+    @BindView(R.id.lblIdiomasEscolhidos) TextView lblIdiomasEscolhidos;
+    @BindView(R.id.lblFluenciasEscolhidas) TextView lblFluenciasEscolhidas;
+    @BindView(R.id.btnFiltrar) Button btnFiltrar;
+
+    @BindView(R.id.lblUsuariosNaoEncontrados) TextView lblUsuariosNaoEncontrados;
+    @BindView(R.id.btnMostrarFiltros) Button btnMostrarFiltros;
     @BindView(R.id.pgbLoading) ProgressBar pgbLoading;
-    @BindView(R.id.lblDistanciaSelecionada) TextView lblDistanciaSelecionada;
+    @BindView(R.id.rcvUsuarios) RecyclerView rcvUsuarios;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.contatos_encontrar_pessoas);
+        setContentView(R.layout.activity_procurar_usuarios);
 
         procurarContatosPresenter = new ProcurarUsuariosPresenter();
 
@@ -52,25 +75,85 @@ public class ProcurarUsuariosActivity extends AbstractActivity {
     }
 
     public void onLoad() {
+        boolean defaultIdioma;
+
         ButterKnife.bind(this);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        skrDistancia.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        rcvUsuarios.setHasFixedSize(true);
+        rcvUsuarios.setLayoutManager(new LinearLayoutManager(this));
+
+        adapter = new UsuariosEncontradosAdapter(this, new ArrayList<Usuario>());
+        adapter.setOnViewClick(new IClickListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
-                lblDistanciaSelecionada.setText(progressValue + " Km");
+            public void itemClicked(View view, int posicao) {
+                DialogPerfilUsuario perfil = new DialogPerfilUsuario();
+                perfil.show(getContext(), procurarContatosPresenter.getUsuarios().get(posicao));
             }
-
+        });
+        adapter.setOnChatClick(new IClickListener() {
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void itemClicked(View view, final int posicao) {
+                final Usuario usuario = procurarContatosPresenter.getUsuarios().get(posicao);
 
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+                if (!usuario.isContato()) {
+                    procurarContatosPresenter.adicionarContato(usuario, new ICallback() {
+                        @Override
+                        public void onSuccess() {
+                            usuario.setContato(true);
+                            adapter.updateItem(posicao);
+                        }
+
+                        @Override
+                        public void onError(String mensagemErro) {
+
+                        }
+                    });
+                }
+                else {
+                    ConversaPresenter conversaPresenter = new ConversaPresenter();
+                    conversaPresenter.getConversa(usuario, new ConversaPresenter.ICallbackConversa() {
+                        @Override
+                        public void onSuccess(Conversa conversa) {
+                            Intent i = new Intent(getContext(), MensagemActivity.class);
+                            i.putExtra(Sistema.CONVERSA, conversa);
+                            startActivity(i);
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
+                    });
+                }
+            }
         });
 
-        Sistema.carregarComboIdiomas(cmbIdioma, this, true);
-        Sistema.carregarComboFluencia(cmbFluencia, this, true);
+        rcvUsuarios.setAdapter(adapter);
+
+        idiomasManager = new FiltrosManager();
+        for (ComboBoxItem item : Sistema.getListaIdiomas()) {
+            defaultIdioma = item.getId() == Sistema.getUsuario().getIdioma();
+            idiomasManager.addFiltro(item.getId(), item.getDescricao(), defaultIdioma, defaultIdioma);
+        }
+
+        for (CheckBox check : idiomasManager.getFiltrosAsCheckBox(this, lytIdiomas)) {
+            lytIdiomas.addView(check);
+        }
+
+        fluenciasManager = new FiltrosManager();
+        for (ComboBoxItem item : Sistema.getListaFluencias()) {
+            fluenciasManager.addFiltro(item.getId(), item.getDescricao());
+        }
+
+        for (CheckBox check : fluenciasManager.getFiltrosAsCheckBox(this, lytFluencias)) {
+            lytFluencias.addView(check);
+        }
+
+        lblUsuariosNaoEncontrados.setVisibility(View.GONE);
+        btnMostrarFiltros.setVisibility(View.GONE);
     }
 
     @OnClick(R.id.btnProcurar)
@@ -79,21 +162,23 @@ public class ProcurarUsuariosActivity extends AbstractActivity {
 
         onPrgLoadingChanged(View.VISIBLE);
 
-        pesquisa.setIdioma(Sistema.getIDComboBox(cmbIdioma));
-        pesquisa.setFluencia(Sistema.getIDComboBox(cmbFluencia));
-        pesquisa.setDistancia(skrDistancia.getProgress());
+        pesquisa.setIdioma(idiomasManager.getSelecionados().toString().replace("[", "").replace("]", ""));
+        pesquisa.setFluencia(fluenciasManager.getSelecionados().toString().replace("[", "").replace("]", ""));
 
         procurarContatosPresenter.procurarUsuarios(pesquisa, new ICallback() {
             @Override
             public void onSuccess() {
+                adapter.limparDados();
 
                 if (procurarContatosPresenter.getUsuarios().size() <= 0) {
-                    showToast(getString(R.string.usuarios_nao_encontrados));
+                    showUsersNotFound(true);
                 }
                 else {
-                    startUsuariosEncontradosActivity();
+                    showUsersNotFound(false);
+                    adapter.addItems(procurarContatosPresenter.getUsuarios());
                 }
 
+                trocarLayoutFiltros(false);
                 onPrgLoadingChanged(View.INVISIBLE);
             }
 
@@ -105,17 +190,43 @@ public class ProcurarUsuariosActivity extends AbstractActivity {
         });
     }
 
-    public void onPrgLoadingChanged(int visibility) {
+    @OnClick(R.id.btnLimpar)
+    public void onLimparClicked() {
+        idiomasManager.limparSelecionados();
+        fluenciasManager.limparSelecionados();
+    }
+
+    @OnClick({R.id.btnFiltrar, R.id.btnMostrarFiltros})
+    public void onFiltrarClicked() {
+        trocarLayoutFiltros(true);
+    }
+
+    private void onPrgLoadingChanged(int visibility) {
         pgbLoading.bringToFront();
         pgbLoading.setVisibility(visibility);
     }
 
-    private void startUsuariosEncontradosActivity() {
-        Bundle bundle = new Bundle();
-        Intent i = new Intent(this, UsuariosEncontradosActivity.class);
+    private void trocarLayoutFiltros(boolean expandido) {
+        String fluencias;
 
-        bundle.putSerializable(Sistema.LISTAUSUARIOS, (ArrayList) procurarContatosPresenter.getUsuarios());
-        i.putExtra(Sistema.LISTAUSUARIOS, bundle);
-        startActivity(i);
+        lytFiltroExpandido.setVisibility(expandido ? View.VISIBLE : View.GONE);
+        lytFiltro.setVisibility(expandido ? View.GONE : View.VISIBLE);
+
+        if (!expandido) {
+            lblIdiomasEscolhidos.setText(idiomasManager.getDescricoesSelecionadas().toString().replace("[", "").replace("]", ""));
+
+            fluencias = fluenciasManager.getDescricoesSelecionadas().toString().replace("[", "").replace("]", "");
+
+            if (fluencias.trim().length() == 0) {
+                fluencias = getString(R.string.todos);
+            }
+
+            lblFluenciasEscolhidas.setText(fluencias);
+        }
+    }
+
+    private void showUsersNotFound(boolean show) {
+        lblUsuariosNaoEncontrados.setVisibility(show ? View.VISIBLE : View.GONE);
+        btnMostrarFiltros.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 }
