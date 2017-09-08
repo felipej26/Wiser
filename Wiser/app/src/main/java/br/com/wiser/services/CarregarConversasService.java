@@ -14,10 +14,8 @@ import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import br.com.wiser.APIClient;
 import br.com.wiser.R;
@@ -38,7 +36,7 @@ import retrofit2.Response;
 public class CarregarConversasService extends Service {
 
     private IConversaService service;
-    private Map<Long, List<String>> listaMensagensNaoEnviadas;
+    private List<Conversa> listaConversas;
 
     private long idUltimaMensagem;
     private boolean lock;
@@ -48,7 +46,7 @@ public class CarregarConversasService extends Service {
         super.onCreate();
 
         service = APIClient.getClient().create(IConversaService.class);
-        listaMensagensNaoEnviadas = new HashMap<>();
+        listaConversas = new LinkedList<>();
 
         EventBus.builder().logNoSubscriberMessages(false).build();
     }
@@ -101,10 +99,28 @@ public class CarregarConversasService extends Service {
             call.enqueue(new Callback<LinkedList<Conversa>>() {
                 @Override
                 public void onResponse(Call<LinkedList<Conversa>> call, Response<LinkedList<Conversa>> response) {
+                    boolean encontrou;
+
                     if (response.isSuccessful()) {
                         List<Conversa> listaConversas = response.body();
 
-                        EventBus.getDefault().postSticky(listaConversas);
+                        for (Conversa c : listaConversas) {
+                            encontrou = false;
+                            for (Conversa conversa : CarregarConversasService.this.listaConversas) {
+                                if (conversa.getId() == c.getId()) {
+                                    conversa.getMensagens().addAll(c.getMensagens());
+                                    encontrou = true;
+                                }
+                            }
+
+                            if (!encontrou) {
+                                CarregarConversasService.this.listaConversas.add(c);
+                            }
+                        }
+                        if (EventBus.getDefault().hasSubscriberForEvent(listaConversas.getClass())) {
+                            EventBus.getDefault().postSticky(CarregarConversasService.this.listaConversas);
+                            CarregarConversasService.this.listaConversas.clear();
+                        }
 
                         for (Conversa conversa : listaConversas) {
                             for (Mensagem mensagem : conversa.getMensagens()) {

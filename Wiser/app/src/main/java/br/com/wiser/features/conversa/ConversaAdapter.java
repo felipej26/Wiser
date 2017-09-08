@@ -125,8 +125,10 @@ public class ConversaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             Utils.loadImageInBackground(context, conversa.getDestinatario().getUrlFotoPerfil(), imgPerfil, prgBarra);
             lblNome.setText(conversa.getDestinatario().getNome());
-            lblDataHora.setText(UtilsDate.formatDate(conversa.getMensagens().getLast().getData(), UtilsDate.HHMM));
-            lblMensagens.setText(Utils.decode(conversa.getMensagens().getLast().getMensagem()));
+            if (conversa.getMensagens().size() > 0) {
+                lblDataHora.setText(UtilsDate.formatDate(conversa.getMensagens().getLast().getData(), UtilsDate.HHMM));
+                lblMensagens.setText(Utils.decode(conversa.getMensagens().getLast().getMensagem()));
+            }
             lblContMensagens.setText(conversa.getContMsgNaoLidas() + " " + context.getString(conversa.getContMsgNaoLidas() <= 1 ? R.string.nao_lida : R.string.nao_lidas));
         }
 

@@ -75,7 +75,7 @@ public class DialogPerfilUsuario {
         lblStatus.setText(Utils.decode(contato.getStatus()));
 
         if (Sistema.getUsuario().getId() == contato.getId()) {
-            btnAbrirChat.setVisibility(View.INVISIBLE);
+            btnAbrirChat.setVisibility(View.GONE);
         }
         else if (!contato.isContato()) {
             btnAbrirChat.setText(R.string.adicionar_amigo);

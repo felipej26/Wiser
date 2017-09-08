@@ -18,7 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
         android:id="@+id/lytFiltros"
-        android:animateLayoutChanges="true" >
+        android:animateLayoutChanges="true"
+        android:elevation="6dp">
 
         <include
             layout="@layout/frame_filtros_encontrar_usuarios_expandido"

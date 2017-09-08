@@ -213,9 +213,11 @@ public class ProcurarUsuariosActivity extends AbstractAppCompatActivity {
         lytFiltro.setVisibility(expandido ? View.GONE : View.VISIBLE);
 
         if (!expandido) {
-            lblIdiomasEscolhidos.setText(idiomasManager.getDescricoesSelecionadas().toString().replace("[", "").replace("]", ""));
+            lblIdiomasEscolhidos.setText(idiomasManager.getDescricoesSelecionadas().toString()
+                    .replace("[", "").replace("]", "").replace(", ", " · "));
 
-            fluencias = fluenciasManager.getDescricoesSelecionadas().toString().replace("[", "").replace("]", "");
+            fluencias = fluenciasManager.getDescricoesSelecionadas().toString()
+                    .replace("[", "").replace("]", "").replace(", ", " · ");
 
             if (fluencias.trim().length() == 0) {
                 fluencias = getString(R.string.todos);
