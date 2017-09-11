@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import br.com.wiser.AbstractFragment;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.features.conversa.Conversa;
 import br.com.wiser.features.conversa.ConversaPresenter;
 import br.com.wiser.features.mensagem.MensagemActivity;
 import br.com.wiser.features.procurarusuarios.ProcurarUsuariosActivity;
@@ -85,17 +84,10 @@ public class ContatosFragment extends AbstractFragment {
 
     private void startChat(final int posicao) {
         ConversaPresenter conversaPresenter = new ConversaPresenter();
-        conversaPresenter.getConversa(contatosPresenter.getContato(posicao), new ConversaPresenter.ICallbackConversa() {
-            @Override
-            public void onSuccess(Conversa conversa) {
-                Intent i = new Intent(getContext(), MensagemActivity.class);
-                i.putExtra(Sistema.CONVERSA, conversa);
-                startActivity(i);
-            }
 
-            @Override
-            public void onError() {
-            }
-        });
+        Intent i = new Intent(getContext(), MensagemActivity.class);
+        i.putExtra(Sistema.CONVERSA, conversaPresenter.getIdConversa(contatosPresenter.getContato(posicao).getId()));
+        i.putExtra(Sistema.CONTATO, contatosPresenter.getContato(posicao));
+        startActivity(i);
     }
 }

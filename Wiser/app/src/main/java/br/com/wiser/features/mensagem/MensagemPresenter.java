@@ -9,8 +9,11 @@ import java.util.Map;
 import br.com.wiser.APIClient;
 import br.com.wiser.Sistema;
 import br.com.wiser.features.conversa.Conversa;
+import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.utils.Utils;
+import io.realm.Realm;
+import io.realm.RealmList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -21,16 +24,31 @@ import retrofit2.Response;
 public class MensagemPresenter {
 
     private IMensagemService service;
-
+    private Realm realm;
     private Conversa conversa;
+    private Usuario usuario;
 
-    public MensagemPresenter(Conversa conversa) {
-        this.conversa = conversa;
-        service = APIClient.getClient().create(IMensagemService.class);
+    public MensagemPresenter() {
+        this(0, null);
+    }
+
+    public MensagemPresenter(long idConversa, Usuario usuario) {
+        this.service = APIClient.getClient().create(IMensagemService.class);
+        this.realm = Realm.getDefaultInstance();
+        this.conversa = realm.where(Conversa.class).equalTo("id", idConversa).findFirst();
+        this.usuario = usuario;
     }
 
     public Conversa getConversa() {
         return conversa;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public RealmList<Mensagem> getMensagens() {
+        return conversa.getMensagens();
     }
 
     public void enviarMensagem(String textoMensagem, final ICallback callback) {
@@ -39,7 +57,7 @@ public class MensagemPresenter {
         if (!textoMensagem.trim().isEmpty()) {
             map.put("conversa", String.valueOf(conversa.getId()));
             map.put("usuario", String.valueOf(Sistema.getUsuario().getId()));
-            map.put("destinatario", String.valueOf(conversa.getDestinatario().getId()));
+            map.put("destinatario", String.valueOf(conversa.getDestinatario()));
             map.put("data", new Date().toString());
             map.put("mensagem", Utils.encode(textoMensagem));
 
@@ -65,16 +83,18 @@ public class MensagemPresenter {
 
         map.put("conversa", conversa.getId());
         map.put("usuario", Sistema.getUsuario().getId());
-        map.put("mensagem", conversa.getMensagens().getLast().getId());
+        map.put("mensagem", conversa.getLastMsg().getId());
 
         Call<Object> call = service.atualizarMensagensLidas(map);
         call.enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call call, Response response) {
                 if (response.isSuccessful()) {
-                    for (Mensagem mensagem : conversa.getMensagens()) {
+                    realm.beginTransaction();
+                    for (Mensagem mensagem : conversa.getMensagens().where().equalTo("lida", false).findAll()) {
                         mensagem.setLida(true);
                     }
+                    realm.commitTransaction();
                     callback.onSuccess();
                 }
                 else {

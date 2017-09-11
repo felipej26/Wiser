@@ -19,8 +19,33 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 import br.com.wiser.R;
+import br.com.wiser.WiserApplication;
 
 public class Utils {
+
+    public static void loadImageInBackground(String url, final ImageView imageView, final ProgressBar prgBarra) {
+        if (!TextUtils.isEmpty(url)) {
+            imageView.setVisibility(View.GONE);
+            prgBarra.setVisibility(View.VISIBLE);
+            prgBarra.bringToFront();
+
+            Picasso.with(WiserApplication.getAppContext())
+                    .load(url)
+                    .into(imageView, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
+                            imageView.setVisibility(View.VISIBLE);
+                            prgBarra.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            imageView.setVisibility(View.VISIBLE);
+                            prgBarra.setVisibility(View.GONE);
+                        }
+                    });
+        }
+    }
 
     public static void loadImageInBackground(Context context, String url, final ImageView imageView, final ProgressBar prgBarra) {
 

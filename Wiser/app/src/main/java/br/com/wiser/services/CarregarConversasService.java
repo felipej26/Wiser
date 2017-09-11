@@ -12,8 +12,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,10 +20,8 @@ import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.features.conversa.Conversa;
 import br.com.wiser.features.conversa.IConversaService;
-import br.com.wiser.features.mensagem.Mensagem;
 import br.com.wiser.features.splashscreen.SplashScreenActivity;
 import br.com.wiser.interfaces.ICallbackFinish;
-import br.com.wiser.utils.Utils;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,9 +32,8 @@ import retrofit2.Response;
 public class CarregarConversasService extends Service {
 
     private IConversaService service;
-    private List<Conversa> listaConversas;
+    private CarregarConversasPresenter carregarConversasPresenter;
 
-    private long idUltimaMensagem;
     private boolean lock;
 
     @Override
@@ -46,9 +41,7 @@ public class CarregarConversasService extends Service {
         super.onCreate();
 
         service = APIClient.getClient().create(IConversaService.class);
-        listaConversas = new LinkedList<>();
-
-        EventBus.builder().logNoSubscriberMessages(false).build();
+        carregarConversasPresenter = new CarregarConversasPresenter();
     }
 
     @Override
@@ -56,7 +49,6 @@ public class CarregarConversasService extends Service {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                idUltimaMensagem = 0;
 
                 while (true) {
                     if (Sistema.getUsuario() == null) {
@@ -95,53 +87,10 @@ public class CarregarConversasService extends Service {
 
     private void processar(final ICallbackFinish callback) {
         try {
-            Call<LinkedList<Conversa>> call = service.carregarConversas(Sistema.getUsuario().getId(), idUltimaMensagem);
-            call.enqueue(new Callback<LinkedList<Conversa>>() {
+            carregarConversasPresenter.getIdUltimaMensagem(new CarregarConversasPresenter.ICallbackIdUltimaMensagem() {
                 @Override
-                public void onResponse(Call<LinkedList<Conversa>> call, Response<LinkedList<Conversa>> response) {
-                    boolean encontrou;
-
-                    if (response.isSuccessful()) {
-                        List<Conversa> listaConversas = response.body();
-
-                        for (Conversa c : listaConversas) {
-                            encontrou = false;
-                            for (Conversa conversa : CarregarConversasService.this.listaConversas) {
-                                if (conversa.getId() == c.getId()) {
-                                    conversa.getMensagens().addAll(c.getMensagens());
-                                    encontrou = true;
-                                }
-                            }
-
-                            if (!encontrou) {
-                                CarregarConversasService.this.listaConversas.add(c);
-                            }
-                        }
-                        if (EventBus.getDefault().hasSubscriberForEvent(listaConversas.getClass())) {
-                            EventBus.getDefault().postSticky(CarregarConversasService.this.listaConversas);
-                            CarregarConversasService.this.listaConversas.clear();
-                        }
-
-                        for (Conversa conversa : listaConversas) {
-                            for (Mensagem mensagem : conversa.getMensagens()) {
-                                if (mensagem.getId() > idUltimaMensagem) {
-                                    if (mensagem.isDestinatario() && !mensagem.isLida()) {
-                                        Utils.vibrar(CarregarConversasService.this, 150);
-                                        notificar(mensagem.getMensagem());
-                                    }
-                                    idUltimaMensagem = mensagem.getId();
-                                }
-                            }
-                        }
-                    }
-
-                    callback.onFinish();
-                }
-
-                @Override
-                public void onFailure(Call<LinkedList<Conversa>> call, Throwable t) {
-                    Log.e("Serviço", "Erro ao Carregar Conversa", t);
-                    callback.onFinish();
+                public void onSuccess(long idUltimaMensagem) {
+                    carregarMensagens(idUltimaMensagem, callback);
                 }
             });
         }
@@ -149,6 +98,32 @@ public class CarregarConversasService extends Service {
             Log.e("Serviço", "Erro", e);
             callback.onFinish();
         }
+    }
+
+    private void carregarMensagens(long idUltimaMensagem, final ICallbackFinish callback) {
+        Call<LinkedList<Conversa>> call = service.carregarConversas(Sistema.getUsuario().getId(), idUltimaMensagem);
+        call.enqueue(new Callback<LinkedList<Conversa>>() {
+            @Override
+            public void onResponse(Call<LinkedList<Conversa>> call, Response<LinkedList<Conversa>> response) {
+                if (response.isSuccessful()) {
+                    List<Conversa> listaConversas = response.body();
+
+                    for (Conversa conversa : listaConversas) {
+                        if (conversa.getMensagens().size() > 0) {
+                            carregarConversasPresenter.adicionarConversa(conversa);
+                        }
+                    }
+                }
+
+                callback.onFinish();
+            }
+
+            @Override
+            public void onFailure(Call<LinkedList<Conversa>> call, Throwable t) {
+                Log.e("Serviço", "Erro ao Carregar Conversa", t);
+                callback.onFinish();
+            }
+        });
     }
 
     private void notificar(String mensagemNova) {

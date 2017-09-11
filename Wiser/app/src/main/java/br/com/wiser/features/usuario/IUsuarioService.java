@@ -15,6 +15,9 @@ import retrofit2.http.Query;
  * Created by Jefferson on 22/01/2017.
  */
 public interface IUsuarioService {
+    @GET("usuario/carregarUsuario")
+    Call<Usuario> carregarUsuario(@Query("id") long userID, @Query("usuario") long usuario);
+
     @GET("usuario/carregarUsuarios")
     Call<List<Usuario>> carregarUsuarios(@Query("id") long userID, @Query("usuario") Object[] usuario);
 

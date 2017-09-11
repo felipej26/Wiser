@@ -14,7 +14,6 @@ import br.com.wiser.APIClient;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.features.contato.IContatosService;
-import br.com.wiser.features.conversa.Conversa;
 import br.com.wiser.features.conversa.ConversaPresenter;
 import br.com.wiser.features.mensagem.MensagemActivity;
 import br.com.wiser.features.perfilcompleto.PerfilCompletoActivity;
@@ -90,20 +89,12 @@ public class DialogPerfilUsuario {
             @Override
             public void onClick(final View v) {
                 ConversaPresenter conversaPresenter = new ConversaPresenter();
-                conversaPresenter.getConversa(contato, new ConversaPresenter.ICallbackConversa() {
-                    @Override
-                    public void onSuccess(Conversa conversa) {
-                        Intent i = new Intent(v.getContext(), MensagemActivity.class);
-                        i.putExtra(Sistema.CONVERSA, conversa);
-                        v.getContext().startActivity(i);
-                        alert.dismiss();
-                    }
 
-                    @Override
-                    public void onError() {
-
-                    }
-                });
+                Intent i = new Intent(v.getContext(), MensagemActivity.class);
+                i.putExtra(Sistema.CONVERSA, conversaPresenter.getIdConversa(contato.getId()));
+                i.putExtra(Sistema.CONTATO, contato);
+                v.getContext().startActivity(i);
+                alert.dismiss();
             }
         });
     }

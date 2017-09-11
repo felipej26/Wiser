@@ -1,11 +1,18 @@
 package br.com.wiser.features.conversa;
 
-import java.util.LinkedList;
+import android.util.Log;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import br.com.wiser.APIClient;
 import br.com.wiser.Sistema;
-import br.com.wiser.features.mensagem.Mensagem;
+import br.com.wiser.features.usuario.IUsuarioService;
 import br.com.wiser.features.usuario.Usuario;
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -15,40 +22,74 @@ import retrofit2.Response;
  */
 public class ConversaPresenter {
 
-    public interface ICallbackConversa {
-        void onSuccess(Conversa conversa);
-        void onError();
+    public interface  ICallbackUsuarios {
+        void onSuccess(List<Usuario> listaUsuarios);
     }
 
-    private IConversaService conversaService;
+    private IUsuarioService usuarioService;
+    private Realm realm;
+    private RealmResults<Conversa> listaConversas;
+
+    private ICallbackUsuarios callbackUsuarios;
 
     public ConversaPresenter() {
-        conversaService = APIClient.getClient().create(IConversaService.class);
+        usuarioService = APIClient.getClient().create(IUsuarioService.class);
+        realm = Realm.getDefaultInstance();
+        listaConversas = realm.where(Conversa.class).findAll();
+        listaConversas.addChangeListener(new RealmChangeListener<RealmResults<Conversa>>() {
+            @Override
+            public void onChange(RealmResults<Conversa> conversas) {
+                carregarUsuarios(conversas, new ICallbackUsuarios() {
+                    @Override
+                    public void onSuccess(List<Usuario> listaUsuarios) {
+                        callbackUsuarios.onSuccess(listaUsuarios);
+                    }
+                });
+            }
+        });
     }
 
-    public void getConversa(final Usuario destinatario, final ICallbackConversa callback) {
-        Call<Conversa> call = conversaService.carregarConversa(Sistema.getUsuario().getId(), destinatario.getId());
-        call.enqueue(new Callback<Conversa>() {
-            @Override
-            public void onResponse(Call<Conversa> call, Response<Conversa> response) {
-                if (response.isSuccessful()) {
-                    response.body().setDestinatario(destinatario);
-                    callback.onSuccess(response.body());
-                }
-                else {
-                    Conversa conversa = new Conversa();
-                    conversa.setDestinatario(destinatario);
-                    conversa.setMensagens(new LinkedList<Mensagem>());
-                    callback.onSuccess(conversa);
-                }
-            }
+    public RealmResults<Conversa> getConversas() {
+        return listaConversas;
+    }
 
+    public long getIdConversa(long destinatario) {
+        return listaConversas.where().equalTo("destinatario", destinatario).findFirst().getId();
+    }
+
+    private void carregarUsuarios(RealmResults<Conversa> listaConversas, final ICallbackUsuarios callback) {
+        Set<Long> usuarios = new HashSet<>();
+
+        for (Conversa conversa : listaConversas) {
+            usuarios.add(conversa.getDestinatario());
+        }
+
+        if (usuarios.size() > 0) {
+            Call<List<Usuario>> call = usuarioService.carregarUsuarios(Sistema.getUsuario().getId(), usuarios.toArray());
+            call.enqueue(new Callback<List<Usuario>>() {
+                @Override
+                public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
+                    if (response.isSuccessful()) {
+                        callback.onSuccess(response.body());
+                    } else {
+                        Log.e("ConversaPresenter", "Erro ao carregar Usuarios. " + response.errorBody().toString());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Usuario>> call, Throwable t) {
+                    Log.e("ConversaPresenter", "Erro ao carregar Usuarios", t);
+                }
+            });
+        }
+    }
+
+    public void addUsuariosListener(final ICallbackUsuarios callbackUsuarios) {
+        this.callbackUsuarios = callbackUsuarios;
+        carregarUsuarios(listaConversas, new ICallbackUsuarios() {
             @Override
-            public void onFailure(Call<Conversa> call, Throwable t) {
-                Conversa conversa = new Conversa();
-                conversa.setDestinatario(destinatario);
-                conversa.setMensagens(new LinkedList<Mensagem>());
-                callback.onSuccess(conversa);
+            public void onSuccess(List<Usuario> listaUsuarios) {
+                callbackUsuarios.onSuccess(listaUsuarios);
             }
         });
     }

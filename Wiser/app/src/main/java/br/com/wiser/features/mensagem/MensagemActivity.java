@@ -10,17 +10,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.List;
-
 import br.com.wiser.AbstractActivity;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.dialogs.DialogSugestoes;
-import br.com.wiser.features.conversa.Conversa;
+import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.interfaces.ICallback;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,7 +27,6 @@ import butterknife.OnTextChanged;
 public class MensagemActivity extends AbstractActivity implements DialogSugestoes.CallbackSugestao {
 
     private MensagemPresenter mensagensPresenter;
-    private MensagemAdapter adapter;
 
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
     @BindView(R.id.lblContResposta) TextView lblContResposta;
@@ -46,10 +39,11 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_mensagens);
 
-        mensagensPresenter = new MensagemPresenter((Conversa) getIntent().getSerializableExtra(Sistema.CONVERSA));
+        mensagensPresenter = new MensagemPresenter(
+                getIntent().getLongExtra(Sistema.CONVERSA, 0),
+                (Usuario) getIntent().getSerializableExtra(Sistema.CONTATO));
 
         onLoad();
-        onLoadMessages();
 
         if (mensagensPresenter.getConversa().getId() > 0) {
             mensagensPresenter.atualizarMensagensLidas(new ICallback() {
@@ -67,44 +61,18 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    protected void onStop() {
-        EventBus.getDefault().unregister(this);
-        super.onStop();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(List<Conversa> listaConversas) {
-        for (Conversa conversa : listaConversas) {
-            if (conversa.getId() == mensagensPresenter.getConversa().getId()) {
-                mensagensPresenter.getConversa().getMensagens().addAll(conversa.getMensagens());
-                adapter.addAll(conversa.getMensagens());
-                break;
-            }
-        }
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         onBackPressed();
         return true;
     }
 
     private void onLoad() {
+        MensagemAdapter adapter;
+
         ButterKnife.bind(this);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setTitle(mensagensPresenter.getConversa().getDestinatario().getNome());
+        getActionBar().setTitle(mensagensPresenter.getUsuario().getNome());
 
         lblSugestao.setText("");
         lblSugestao.setVisibility(View.INVISIBLE);
@@ -112,7 +80,7 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new MensagemAdapter(this);
+        adapter = new MensagemAdapter(this, mensagensPresenter.getMensagens(), true);
         adapter.onSetSugestao(new MensagemAdapter.Callback() {
             @Override
             public void onSugestaoClick() {
@@ -121,11 +89,6 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
             }
         });
         recyclerView.setAdapter(adapter);
-    }
-
-    private void onLoadMessages() {
-        adapter.addAll(mensagensPresenter.getConversa().getMensagens());
-        recyclerView.getLayoutManager().scrollToPosition(adapter.getItemCount());
     }
 
     @OnClick(R.id.btnEnviarResposta)
@@ -158,6 +121,6 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
     public void setSugestao(String sugestao) {
         lblSugestao.setVisibility(View.VISIBLE);
         lblSugestao.setText(sugestao);
-        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+        //recyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
 }

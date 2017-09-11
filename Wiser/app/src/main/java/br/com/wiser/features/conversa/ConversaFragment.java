@@ -8,17 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.LinkedList;
 import java.util.List;
 
 import br.com.wiser.AbstractFragment;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.features.mensagem.MensagemActivity;
+import br.com.wiser.features.usuario.Usuario;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -27,8 +23,7 @@ import butterknife.ButterKnife;
  */
 public class ConversaFragment extends AbstractFragment {
 
-    private List<Conversa> listaConversas = new LinkedList<>();
-    private ConversaAdapter adapter;
+    private ConversaPresenter conversaPresenter;
 
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
 
@@ -40,62 +35,36 @@ public class ConversaFragment extends AbstractFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.chat_principal, container, false);
 
-        onLoad(view);
+        conversaPresenter = new ConversaPresenter();
 
+        onLoad(view);
         return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onStop() {
-        EventBus.getDefault().unregister(this);
-        super.onStop();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onEvent(LinkedList<Conversa> listaConversas) {
-        boolean encontrada;
-
-        List<Conversa> novasConversas = new LinkedList<>();
-
-        for (Conversa conversa : listaConversas) {
-            encontrada = false;
-            for (Conversa c : this.listaConversas) {
-                if (c.getId() == conversa.getId()) {
-                    c.getMensagens().addAll(conversa.getMensagens());
-                    adapter.addMensagens(c, conversa.getMensagens());
-                    encontrada = true;
-                }
-            }
-
-            if (!encontrada) {
-                novasConversas.add(conversa);
-            }
-        }
-
-        this.listaConversas.addAll(novasConversas);
-        adapter.addConversas(novasConversas);
-    }
-
     private void onLoad(View view) {
+        final ConversaAdapter adapter;
         ButterKnife.bind(this, view);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-        adapter = new ConversaAdapter(getContext(), new ConversaAdapter.ICallback() {
+        adapter = new ConversaAdapter(getContext(), conversaPresenter.getConversas(), true, new ConversaAdapter.ICallback() {
             @Override
-            public void onClick(int posicao) {
+            public void onClick(long idConversa, Usuario usuario) {
                 Intent i = new Intent(getContext(), MensagemActivity.class);
-                i.putExtra(Sistema.CONVERSA, listaConversas.get(posicao));
+                i.putExtra(Sistema.CONVERSA, idConversa);
+                i.putExtra(Sistema.CONTATO, usuario);
                 startActivity(i);
             }
         });
+
+        conversaPresenter.addUsuariosListener(new ConversaPresenter.ICallbackUsuarios() {
+            @Override
+            public void onSuccess(List<Usuario> listaUsuarios) {
+                adapter.updateUsuarios(listaUsuarios);
+            }
+        });
+
         recyclerView.setAdapter(adapter);
     }
 }

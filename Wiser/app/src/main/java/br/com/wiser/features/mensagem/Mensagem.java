@@ -4,12 +4,15 @@ import java.io.Serializable;
 import java.util.Date;
 
 import br.com.wiser.Sistema;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Jefferson on 10/08/2016.
  */
-public class Mensagem implements Serializable {
+public class Mensagem extends RealmObject implements Serializable {
 
+    /*
     public enum Estado {
         ENVIADO (0),
         ENVIANDO (1),
@@ -25,11 +28,13 @@ public class Mensagem implements Serializable {
             return estado;
         }
     }
+    */
 
+    @PrimaryKey
     private long id;
     private long conversa;
     private long usuario;
-    private Estado estado = Estado.ENVIADO;
+    //private Estado estado = Estado.ENVIADO;
     private Date data;
     private String mensagem;
     private boolean lida;
@@ -58,6 +63,7 @@ public class Mensagem implements Serializable {
         this.usuario = usuario;
     }
 
+    /*
     public Estado getEstado() {
         return estado;
     }
@@ -69,6 +75,7 @@ public class Mensagem implements Serializable {
     public void setEstado(Estado estado) {
         this.estado = estado;
     }
+    */
 
     public Date getData() {
         return data;

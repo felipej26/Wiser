@@ -9,44 +9,56 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import br.com.wiser.R;
-import br.com.wiser.features.mensagem.Mensagem;
+import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.utils.Utils;
 import br.com.wiser.utils.UtilsDate;
+import io.realm.RealmRecyclerViewAdapter;
+import io.realm.RealmResults;
 
 /**
  * Created by Jefferson on 23/05/2016.
  */
-public class ConversaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ConversaAdapter extends RealmRecyclerViewAdapter<Conversa, RecyclerView.ViewHolder> {
 
     public interface ICallback {
-        void onClick(int posicao);
+        void onClick(long idConversa, Usuario usuario);
     }
 
     private Context context;
-    private LinkedList<Conversa> listaConversas = new LinkedList<>();
+    private RealmResults<Conversa> listaConversas;
+    private Map<Long, Usuario> mapUsuarios;
     private ICallback callback;
 
-    public ConversaAdapter(Context context, ICallback callback) {
+    public ConversaAdapter(Context context, RealmResults<Conversa> listaConversas, boolean autoUpdate, ICallback callback) {
+        super(listaConversas, autoUpdate);
         this.context = context;
+        this.listaConversas = listaConversas;
         this.callback = callback;
+        this.mapUsuarios = new HashMap<>();
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemLayoutView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.chat_mensagens_item, parent, false);
 
-        RecyclerView.ViewHolder viewHolder = new ViewHolder(itemLayoutView, callback);
-        return viewHolder;
+        return new ViewHolder(itemLayoutView, callback);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((ViewHolder)holder).bind(context, listaConversas.get(position), position);
+        Conversa conversa = listaConversas.get(position);
+
+        ((ViewHolder) holder).bind(context, conversa, position);
+
+        if (mapUsuarios.containsKey(conversa.getDestinatario())) {
+            ((ViewHolder) holder).bindUsuario(mapUsuarios.get(conversa.getDestinatario()));
+        }
     }
 
     @Override
@@ -54,41 +66,19 @@ public class ConversaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return listaConversas.size();
     }
 
-    public void addConversa(Conversa conversa) {
-        this.listaConversas.add(conversa);
-        notifyItemInserted(listaConversas.size());
-    }
-
-    public void addConversas(List<Conversa> listaConversas) {
-        this.listaConversas.addAll(listaConversas);
+    public void updateUsuarios(List<Usuario> listaUsuarios) {
+        for (Usuario usuario : listaUsuarios) {
+            if (!mapUsuarios.containsKey(usuario.getId())) {
+                mapUsuarios.put(usuario.getId(), usuario);
+            }
+        }
         notifyDataSetChanged();
     }
 
-    public void addMensagem(Conversa conversa, Mensagem mensagem) {
-        for (Conversa c : this.listaConversas) {
-            if (c.getId() == conversa.getId()) {
-                c.getMensagens().add(mensagem);
-                notifyItemInserted(this.listaConversas.indexOf(c));
-                break;
-            }
-        }
-    }
-
-    public void addMensagens(Conversa conversa, List<Mensagem> listaMensagens) {
-        for (Conversa c : this.listaConversas) {
-            if (c.getId() == conversa.getId()) {
-                c.getMensagens().addAll(listaMensagens);
-                notifyItemChanged(this.listaConversas.indexOf(c));
-                break;
-            }
-        }
-    }
-
-    public void updateItem(Conversa conversa) {
-        notifyItemChanged(listaConversas.indexOf(conversa));
-    }
-
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        public long idConversa;
+        public Usuario usuario;
 
         public View viewSeparator;
 
@@ -121,20 +111,28 @@ public class ConversaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         public void bind(Context context, Conversa conversa, int posicao) {
             this.posicao = posicao;
+            this.idConversa = conversa.getId();
+
             viewSeparator.setVisibility(posicao == 0 ? View.INVISIBLE : View.VISIBLE);
 
-            Utils.loadImageInBackground(context, conversa.getDestinatario().getUrlFotoPerfil(), imgPerfil, prgBarra);
-            lblNome.setText(conversa.getDestinatario().getNome());
-            if (conversa.getMensagens().size() > 0) {
-                lblDataHora.setText(UtilsDate.formatDate(conversa.getMensagens().getLast().getData(), UtilsDate.HHMM));
-                lblMensagens.setText(Utils.decode(conversa.getMensagens().getLast().getMensagem()));
+            if (conversa.getContMsg() > 0) {
+                lblDataHora.setText(UtilsDate.formatDate(conversa.getLastMsg().getData(), UtilsDate.HHMM));
+                lblMensagens.setText(Utils.decode(conversa.getLastMsg().getMensagem()));
             }
             lblContMensagens.setText(conversa.getContMsgNaoLidas() + " " + context.getString(conversa.getContMsgNaoLidas() <= 1 ? R.string.nao_lida : R.string.nao_lidas));
         }
 
+        public void bindUsuario(Usuario usuario) {
+            this.usuario = usuario;
+            Utils.loadImageInBackground(usuario.getUrlFotoPerfil(), imgPerfil, prgBarra);
+            lblNome.setText(usuario.getNome());
+        }
+
         @Override
         public void onClick(View view) {
-            callback.onClick(posicao);
+            if (usuario != null) {
+                callback.onClick(idConversa, usuario);
+            }
         }
     }
 }

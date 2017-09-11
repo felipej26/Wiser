@@ -7,6 +7,7 @@ import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
 
 import io.fabric.sdk.android.Fabric;
+import io.realm.Realm;
 
 /**
  * Created by Jefferson on 08/07/2017.
@@ -18,9 +19,12 @@ public class WiserApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        application = this;
+
         Fabric.with(this, new Crashlytics());
         Fabric.with(this, new Answers());
-        application = this;
+
+        Realm.init(this);
     }
 
 

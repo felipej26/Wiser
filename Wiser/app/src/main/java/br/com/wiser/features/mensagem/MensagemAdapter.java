@@ -8,26 +8,25 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import br.com.wiser.R;
 import br.com.wiser.utils.Utils;
 import br.com.wiser.utils.UtilsDate;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.RealmList;
+import io.realm.RealmRecyclerViewAdapter;
 
 /**
  * Created by Jefferson on 30/05/2016.
  */
-public class MensagemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, RecyclerView.ViewHolder> {
 
     public interface Callback {
         void onSugestaoClick();
     }
 
     private Context context;
-    private List<Mensagem> listaMensagens = new LinkedList<>();
+    private RealmList<Mensagem> listaMensagens;
 
     private final int VIEW_MENSAGEM_USUARIO = 0;
     private final int VIEW_MENSAGEM_CONTATO = 1;
@@ -36,8 +35,10 @@ public class MensagemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private boolean hasSugestao;
     private Callback callback;
 
-    public MensagemAdapter(Context context) {
+    public MensagemAdapter(Context context, RealmList<Mensagem> listaMensagens, boolean autoUpdate) {
+        super(listaMensagens, autoUpdate);
         this.context = context;
+        this.listaMensagens = listaMensagens;
     }
 
     @Override
@@ -89,16 +90,6 @@ public class MensagemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return listaMensagens.size() + (hasSugestao ? 1 : 0);
     }
 
-    public void addItem(Mensagem mensagem) {
-        listaMensagens.add(mensagem);
-        notifyItemInserted(listaMensagens.size());
-    }
-
-    public void addAll(List<Mensagem> listaMensagens) {
-        this.listaMensagens.addAll(listaMensagens);
-        notifyDataSetChanged();
-    }
-
     public void onSetSugestao(Callback callback) {
         this.callback = callback;
         hasSugestao = true;
@@ -120,6 +111,7 @@ public class MensagemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             lblDataHora.setText(UtilsDate.formatDate(mensagem.getData(), UtilsDate.HHMM));
             lblMensagem.setText(Utils.decode(mensagem.getMensagem().trim()));
 
+            /*
             switch (mensagem.getEstado()) {
                 case ENVIADO:
                     viewState.setBackground(context.getDrawable(R.drawable.ic_message_state_send));
@@ -131,6 +123,7 @@ public class MensagemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     viewState.setBackground(context.getDrawable(R.drawable.ic_message_state_error));
                     break;
             }
+            */
         }
     }
 

@@ -1,20 +1,28 @@
 package br.com.wiser.features.conversa;
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.LinkedList;
 
+import br.com.wiser.Sistema;
 import br.com.wiser.features.mensagem.Mensagem;
-import br.com.wiser.features.usuario.Usuario;
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Jefferson on 23/05/2016.
  */
-public class Conversa implements Serializable {
+public class Conversa extends RealmObject implements Serializable {
 
+    @PrimaryKey
     private long id;
-    private Usuario destinatario;
-    private LinkedList<Mensagem> mensagens = new LinkedList<>();
+    private long destinatario;
+    private RealmList<Mensagem> mensagens;
+
+    @Ignore
     private HashSet<String> sugestoes = new HashSet<>();
 
     public long getId() {
@@ -25,19 +33,19 @@ public class Conversa implements Serializable {
         this.id = id;
     }
 
-    public Usuario getDestinatario() {
+    public long getDestinatario() {
         return destinatario;
     }
 
-    public void setDestinatario(Usuario destinatario) {
+    public void setDestinatario(long destinatario) {
         this.destinatario = destinatario;
     }
 
-    public LinkedList<Mensagem> getMensagens() {
+    public RealmList<Mensagem> getMensagens() {
         return mensagens;
     }
 
-    public void setMensagens(LinkedList<Mensagem> mensagens) {
+    public void setMensagens(RealmList<Mensagem> mensagens) {
         this.mensagens = mensagens;
     }
 
@@ -50,16 +58,19 @@ public class Conversa implements Serializable {
     }
 
     public int getContMsgNaoLidas() {
-        int naoLidos = 0;
-
-        if (mensagens != null) {
-            for (Mensagem m : this.mensagens) {
-                if (m.isDestinatario() && !m.isLida()) {
-                    naoLidos++;
-                }
-            }
         }
 
-        return naoLidos;
+        return mensagens.where()
+                .notEqualTo("usuario", Sistema.getUsuario().getId())
+                .equalTo("lida", false)
+                .findAll().size();
+    }
+
+    public int getContMsg() {
+        return mensagens.size();
+    }
+
+    public Mensagem getLastMsg() {
+        return mensagens.last();
     }
 }

@@ -21,7 +21,6 @@ import br.com.wiser.AbstractAppCompatActivity;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.dialogs.DialogPerfilUsuario;
-import br.com.wiser.features.conversa.Conversa;
 import br.com.wiser.features.conversa.ConversaPresenter;
 import br.com.wiser.features.mensagem.MensagemActivity;
 import br.com.wiser.features.usuario.Usuario;
@@ -114,19 +113,11 @@ public class ProcurarUsuariosActivity extends AbstractAppCompatActivity {
                 }
                 else {
                     ConversaPresenter conversaPresenter = new ConversaPresenter();
-                    conversaPresenter.getConversa(usuario, new ConversaPresenter.ICallbackConversa() {
-                        @Override
-                        public void onSuccess(Conversa conversa) {
-                            Intent i = new Intent(getContext(), MensagemActivity.class);
-                            i.putExtra(Sistema.CONVERSA, conversa);
-                            startActivity(i);
-                        }
 
-                        @Override
-                        public void onError() {
-
-                        }
-                    });
+                    Intent i = new Intent(getContext(), MensagemActivity.class);
+                    i.putExtra(Sistema.CONVERSA, conversaPresenter.getIdConversa(usuario.getId()));
+                    i.putExtra(Sistema.CONTATO, usuario);
+                    startActivity(i);
                 }
             }
         });

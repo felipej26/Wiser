@@ -14,7 +14,6 @@ import android.widget.TextView;
 import br.com.wiser.AbstractActivity;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.features.conversa.Conversa;
 import br.com.wiser.features.conversa.ConversaPresenter;
 import br.com.wiser.features.discussao.DiscussaoAdapter;
 import br.com.wiser.features.discussao.DiscussaoPartial;
@@ -162,19 +161,11 @@ public class PerfilCompletoActivity extends AbstractActivity implements IDiscuss
 
     private void startChat() {
         ConversaPresenter conversaPresenter = new ConversaPresenter();
-        conversaPresenter.getConversa(perfilCompletoPresenter.getUsuario(), new ConversaPresenter.ICallbackConversa() {
-            @Override
-            public void onSuccess(Conversa conversa) {
-                Intent i = new Intent(getContext(), MensagemActivity.class);
-                i.putExtra(Sistema.CONVERSA, conversa);
-                startActivity(i);
-            }
 
-            @Override
-            public void onError() {
-
-            }
-        });
+        Intent i = new Intent(getContext(), MensagemActivity.class);
+        i.putExtra(Sistema.CONVERSA, conversaPresenter.getIdConversa(perfilCompletoPresenter.getUsuario().getId()));
+        i.putExtra(Sistema.CONTATO, perfilCompletoPresenter.getUsuario());
+        startActivity(i);
     }
 
     public void onSetVisibilityProgressBar(int visibility) {
