@@ -28,10 +28,6 @@ public class MensagemPresenter {
     private Conversa conversa;
     private Usuario usuario;
 
-    public MensagemPresenter() {
-        this(0, null);
-    }
-
     public MensagemPresenter(long idConversa, Usuario usuario) {
         this.service = APIClient.getClient().create(IMensagemService.class);
         this.realm = Realm.getDefaultInstance();
@@ -83,7 +79,7 @@ public class MensagemPresenter {
 
         map.put("conversa", conversa.getId());
         map.put("usuario", Sistema.getUsuario().getId());
-        map.put("mensagem", conversa.getLastMsg().getId());
+        map.put("mensagem", conversa.getMensagens().last().getId());
 
         Call<Object> call = service.atualizarMensagensLidas(map);
         call.enqueue(new Callback<Object>() {

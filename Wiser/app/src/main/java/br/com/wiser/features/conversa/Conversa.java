@@ -61,12 +61,4 @@ public class Conversa extends RealmObject implements Serializable {
                 .equalTo("lida", false)
                 .findAll().size();
     }
-
-    public int getContMsg() {
-        return mensagens.size();
-    }
-
-    public Mensagem getLastMsg() {
-        return mensagens.last();
-    }
 }

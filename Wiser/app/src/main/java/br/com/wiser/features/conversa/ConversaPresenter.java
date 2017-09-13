@@ -22,7 +22,7 @@ import retrofit2.Response;
  */
 public class ConversaPresenter {
 
-    public interface  ICallbackUsuarios {
+    public interface ICallbackUsuarios {
         void onSuccess(List<Usuario> listaUsuarios);
     }
 
@@ -39,12 +39,9 @@ public class ConversaPresenter {
         listaConversas.addChangeListener(new RealmChangeListener<RealmResults<Conversa>>() {
             @Override
             public void onChange(RealmResults<Conversa> conversas) {
-                carregarUsuarios(conversas, new ICallbackUsuarios() {
-                    @Override
-                    public void onSuccess(List<Usuario> listaUsuarios) {
-                        callbackUsuarios.onSuccess(listaUsuarios);
-                    }
-                });
+                if (callbackUsuarios != null) {
+                    carregarUsuarios(conversas, callbackUsuarios);
+                }
             }
         });
     }
@@ -86,11 +83,6 @@ public class ConversaPresenter {
 
     public void addUsuariosListener(final ICallbackUsuarios callbackUsuarios) {
         this.callbackUsuarios = callbackUsuarios;
-        carregarUsuarios(listaConversas, new ICallbackUsuarios() {
-            @Override
-            public void onSuccess(List<Usuario> listaUsuarios) {
-                callbackUsuarios.onSuccess(listaUsuarios);
-            }
-        });
+        carregarUsuarios(listaConversas, callbackUsuarios);
     }
 }

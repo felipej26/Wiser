@@ -89,6 +89,7 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
             }
         });
         recyclerView.setAdapter(adapter);
+        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
 
     @OnClick(R.id.btnEnviarResposta)

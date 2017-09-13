@@ -115,9 +115,9 @@ public class ConversaAdapter extends RealmRecyclerViewAdapter<Conversa, Recycler
 
             viewSeparator.setVisibility(posicao == 0 ? View.INVISIBLE : View.VISIBLE);
 
-            if (conversa.getContMsg() > 0) {
-                lblDataHora.setText(UtilsDate.formatDate(conversa.getLastMsg().getData(), UtilsDate.HHMM));
-                lblMensagens.setText(Utils.decode(conversa.getLastMsg().getMensagem()));
+            if (conversa.getMensagens().size() > 0) {
+                lblDataHora.setText(UtilsDate.formatDate(conversa.getMensagens().last().getData(), UtilsDate.HHMM));
+                lblMensagens.setText(Utils.decode(conversa.getMensagens().last().getMensagem()));
             }
             lblContMensagens.setText(conversa.getContMsgNaoLidas() + " " + context.getString(conversa.getContMsgNaoLidas() <= 1 ? R.string.nao_lida : R.string.nao_lidas));
         }
