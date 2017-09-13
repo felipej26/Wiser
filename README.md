@@ -9,12 +9,13 @@ Até o momento, ele possui a comunicação com o WS, bate papo entre usuários, 
 ### Dependências
 Como forma de agilizar o desenvolvimento e utlizar algumas das bibliotecas mais usadas no mercado, o Wiser possui depêndencias com as seguintes libs:
 - Facebook SDK
-- EventBus
+- ~~EventBus~~
 - Picasso
 - Retrofit
 - Butterknife
 - Google Play Services: Location
 - Fabric
+- Realm
 
 ### Futuras implementações
 A aplicação não está totalmente finalizada, falta consertar alguns bugs e desenvolver e finalizar algumas features, assim as futuras implementações são:

@@ -34,11 +34,11 @@
         android:layout_below="@id/relMensagem"
         android:textSize="10dp" />
 
-    <View
-        android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:layout_below="@id/relMensagem"
-        android:id="@+id/viewState"
-        android:background="@drawable/ic_message_state_send"/>
+    <!--<View-->
+        <!--android:layout_width="10dp"-->
+        <!--android:layout_height="10dp"-->
+        <!--android:layout_below="@id/relMensagem"-->
+        <!--android:id="@+id/viewState"-->
+        <!--android:background="@drawable/ic_message_state_send"/>-->
 
 </RelativeLayout>

@@ -1,7 +1,5 @@
 package br.com.wiser.features.conversa;
 
-import android.util.Log;
-
 import java.io.Serializable;
 import java.util.HashSet;
 
@@ -58,8 +56,6 @@ public class Conversa extends RealmObject implements Serializable {
     }
 
     public int getContMsgNaoLidas() {
-        }
-
         return mensagens.where()
                 .notEqualTo("usuario", Sistema.getUsuario().getId())
                 .equalTo("lida", false)

@@ -21,9 +21,19 @@ public class CarregarConversasPresenter {
     }
 
     public void adicionarConversa(Conversa conversa) {
-        realm.beginTransaction();
-        realm.copyToRealmOrUpdate(conversa);
-        realm.commitTransaction();
+        Conversa checkConversa = realm.where(Conversa.class).equalTo("id", conversa.getId()).findFirst();
+
+        if (checkConversa == null) {
+            realm.beginTransaction();
+            realm.insert(conversa);
+            realm.commitTransaction();
+        } else {
+            if (conversa.getMensagens().size() > 0) {
+                realm.beginTransaction();
+                checkConversa.getMensagens().addAll(conversa.getMensagens());
+                realm.commitTransaction();
+            }
+        }
     }
 
     public void getIdUltimaMensagem(final ICallbackIdUltimaMensagem callback) {

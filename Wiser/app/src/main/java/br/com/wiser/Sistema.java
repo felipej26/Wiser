@@ -31,7 +31,7 @@ import retrofit2.Response;
 
 public class Sistema {
 
-    public static final String SERVIDOR_WS = "http://wiser-server.herokuapp.com/";
+    public static String SERVIDOR_WS;
     public static final int PERMISSION_ALL = 0;
     public static final boolean PERMITIR_PAGINAS_NAO_VERIFICADAS = false;
 
@@ -51,6 +51,15 @@ public class Sistema {
 
     private static ISistemaService service;
     private static IUsuarioService usuarioService;
+
+    static {
+        if (BuildConfig.FLAVOR.equals("production")) {
+            SERVIDOR_WS = "http://wiser-server.herokuapp.com/";
+        }
+        else {
+            SERVIDOR_WS = "http://192.168.0.10:1337/";
+        }
+    }
 
     public static void getMinVersao(final ICallback callback) {
         service = APIClient.getClient().create(ISistemaService.class);

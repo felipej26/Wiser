@@ -1,6 +1,5 @@
 package br.com.wiser.features.mensagem;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +24,6 @@ public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, Recycler
         void onSugestaoClick();
     }
 
-    private Context context;
     private RealmList<Mensagem> listaMensagens;
 
     private final int VIEW_MENSAGEM_USUARIO = 0;
@@ -35,9 +33,8 @@ public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, Recycler
     private boolean hasSugestao;
     private Callback callback;
 
-    public MensagemAdapter(Context context, RealmList<Mensagem> listaMensagens, boolean autoUpdate) {
+    public MensagemAdapter(RealmList<Mensagem> listaMensagens, boolean autoUpdate) {
         super(listaMensagens, autoUpdate);
-        this.context = context;
         this.listaMensagens = listaMensagens;
     }
 
@@ -76,7 +73,7 @@ public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, Recycler
         switch (holder.getItemViewType()) {
             case VIEW_MENSAGEM_USUARIO:
             case VIEW_MENSAGEM_CONTATO:
-                ((MensagensViewHolder)holder).bind(context, listaMensagens.get(position));
+                ((MensagensViewHolder)holder).bind(listaMensagens.get(position));
                 break;
             case VIEW_BOTAO_SUGESTAO:
                 ((SugestaoViewHolder)holder).bind(callback);
@@ -100,14 +97,13 @@ public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, Recycler
 
         @BindView(R.id.lblDataHora) TextView lblDataHora;
         @BindView(R.id.lblMensagem) TextView lblMensagem;
-        @BindView(R.id.viewState) View viewState;
 
         public MensagensViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
         }
 
-        public void bind(Context context, Mensagem mensagem) {
+        public void bind(Mensagem mensagem) {
             lblDataHora.setText(UtilsDate.formatDate(mensagem.getData(), UtilsDate.HHMM));
             lblMensagem.setText(Utils.decode(mensagem.getMensagem().trim()));
 

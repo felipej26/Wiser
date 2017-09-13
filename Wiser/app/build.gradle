@@ -10,8 +10,8 @@ android {
         applicationId "br.com.wiser"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 7
-        versionName "0.4.0"
+        versionCode 10
+        versionName "0.7.0"
     }
     buildTypes {
         release {
@@ -29,6 +29,7 @@ android {
         homolog {
             dimension "environment"
             applicationIdSuffix ".homolog"
+            resValue "string", "com.crashlytics.android.build_id", "RANDOM_UUID"
         }
 
         production {

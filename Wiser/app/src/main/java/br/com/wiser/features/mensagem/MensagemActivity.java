@@ -80,7 +80,7 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new MensagemAdapter(this, mensagensPresenter.getMensagens(), true);
+        adapter = new MensagemAdapter(mensagensPresenter.getMensagens(), true);
         adapter.onSetSugestao(new MensagemAdapter.Callback() {
             @Override
             public void onSugestaoClick() {
