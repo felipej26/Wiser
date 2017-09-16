@@ -44,7 +44,12 @@ public class MensagemPresenter {
     }
 
     public RealmList<Mensagem> getMensagens() {
-        return conversa.getMensagens();
+        try {
+            return conversa.getMensagens();
+        }
+        catch (Exception e) {
+            return new RealmList<Mensagem>();
+        }
     }
 
     public void enviarMensagem(String textoMensagem, final ICallback callback) {
@@ -62,6 +67,11 @@ public class MensagemPresenter {
                 @Override
                 public void onResponse(Call<Mensagem> call, Response<Mensagem> response) {
                     if (response.isSuccessful()) {
+
+                        if (conversa.getId() == 0) {
+                            checkAndUpdateConversa(response.body().getConversa());
+                        }
+
                         callback.onSuccess();
                     }
                 }
@@ -71,6 +81,22 @@ public class MensagemPresenter {
                     callback.onError(t.getMessage());
                 }
             });
+        }
+    }
+
+    private void checkAndUpdateConversa(long idConversa) {
+        Conversa checkConversa = realm.where(Conversa.class).equalTo("id", conversa.getId()).findFirst();
+
+        if (checkConversa == null) {
+            Conversa conversa = new Conversa();
+            conversa.setId(idConversa);
+            conversa.setDestinatario(this.conversa.getDestinatario());
+
+            realm.beginTransaction();
+            realm.copyToRealm(conversa);
+            realm.commitTransaction();
+
+            this.conversa = realm.where(Conversa.class).equalTo("id", conversa.getId()).findFirst();
         }
     }
 

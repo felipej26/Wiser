@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import br.com.wiser.AbstractActivity;
@@ -47,6 +48,7 @@ public class DiscussaoActivity extends AbstractActivity {
     @BindView(R.id.lblContResposta) TextView lblContResposta;
     @BindView(R.id.btnEnviarResposta) Button btnEnviarResposta;
     @BindView(R.id.lblSugestao) View lblSugestao;
+    @BindView(R.id.lytEnviarResposta) RelativeLayout lytEnviarResposta;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +115,7 @@ public class DiscussaoActivity extends AbstractActivity {
         );
 
         if (!discussao.isAtiva()) {
-            findViewById(R.id.include).setVisibility(View.INVISIBLE);
+            lytEnviarResposta.setVisibility(View.GONE);
         }
 
         adapter.addItems(discussao.getListaRespostas());

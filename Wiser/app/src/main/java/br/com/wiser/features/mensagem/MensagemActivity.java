@@ -45,7 +45,7 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
 
         onLoad();
 
-        if (mensagensPresenter.getConversa().getId() > 0) {
+        if (mensagensPresenter.getConversa().getId() > 0 && mensagensPresenter.getConversa().getMensagens().size() > 0) {
             mensagensPresenter.atualizarMensagensLidas(new ICallback() {
                 @Override
                 public void onSuccess() {
@@ -80,7 +80,7 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new MensagemAdapter(mensagensPresenter.getMensagens(), true);
+        adapter = new MensagemAdapter(mensagensPresenter.getMensagens());
         adapter.onSetSugestao(new MensagemAdapter.Callback() {
             @Override
             public void onSugestaoClick() {

@@ -162,10 +162,15 @@ public class PerfilCompletoActivity extends AbstractActivity implements IDiscuss
     private void startChat() {
         ConversaPresenter conversaPresenter = new ConversaPresenter();
 
-        Intent i = new Intent(getContext(), MensagemActivity.class);
-        i.putExtra(Sistema.CONVERSA, conversaPresenter.getIdConversa(perfilCompletoPresenter.getUsuario().getId()));
-        i.putExtra(Sistema.CONTATO, perfilCompletoPresenter.getUsuario());
-        startActivity(i);
+        conversaPresenter.getIdConversa(perfilCompletoPresenter.getUsuario().getId(), new ConversaPresenter.ICallbackIdConversa() {
+            @Override
+            public void onSuccess(long idConversa) {
+                Intent i = new Intent(getContext(), MensagemActivity.class);
+                i.putExtra(Sistema.CONVERSA, idConversa);
+                i.putExtra(Sistema.CONTATO, perfilCompletoPresenter.getUsuario());
+                startActivity(i);
+            }
+        });
     }
 
     public void onSetVisibilityProgressBar(int visibility) {

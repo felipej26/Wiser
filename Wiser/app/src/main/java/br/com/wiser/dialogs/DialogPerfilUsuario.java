@@ -88,13 +88,7 @@ public class DialogPerfilUsuario {
         btnAbrirChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                ConversaPresenter conversaPresenter = new ConversaPresenter();
-
-                Intent i = new Intent(v.getContext(), MensagemActivity.class);
-                i.putExtra(Sistema.CONVERSA, conversaPresenter.getIdConversa(contato.getId()));
-                i.putExtra(Sistema.CONTATO, contato);
-                v.getContext().startActivity(i);
-                alert.dismiss();
+                startChat(v.getContext());
             }
         });
     }
@@ -126,5 +120,20 @@ public class DialogPerfilUsuario {
         intent.putExtra(Sistema.CONTATO, contato);
         v.getContext().startActivity(intent);
         alert.dismiss();
+    }
+
+    private void startChat(final Context context) {
+        ConversaPresenter conversaPresenter = new ConversaPresenter();
+
+        conversaPresenter.getIdConversa(contato.getId(), new ConversaPresenter.ICallbackIdConversa() {
+            @Override
+            public void onSuccess(long idConversa) {
+                Intent i = new Intent(context, MensagemActivity.class);
+                i.putExtra(Sistema.CONVERSA, idConversa);
+                i.putExtra(Sistema.CONTATO, contato);
+                context.startActivity(i);
+                alert.dismiss();
+            }
+        });
     }
 }

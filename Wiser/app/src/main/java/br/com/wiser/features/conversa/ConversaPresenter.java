@@ -26,6 +26,11 @@ public class ConversaPresenter {
         void onSuccess(List<Usuario> listaUsuarios);
     }
 
+    public interface ICallbackIdConversa {
+        void onSuccess(long idConversa);
+    }
+
+    private IConversaService conversaService;
     private IUsuarioService usuarioService;
     private Realm realm;
     private RealmResults<Conversa> listaConversas;
@@ -33,6 +38,7 @@ public class ConversaPresenter {
     private ICallbackUsuarios callbackUsuarios;
 
     public ConversaPresenter() {
+        conversaService = APIClient.getClient().create(IConversaService.class);
         usuarioService = APIClient.getClient().create(IUsuarioService.class);
         realm = Realm.getDefaultInstance();
         listaConversas = realm.where(Conversa.class).findAll();
@@ -47,11 +53,39 @@ public class ConversaPresenter {
     }
 
     public RealmResults<Conversa> getConversas() {
-        return listaConversas;
+        return listaConversas.where().isNotEmpty("mensagens").findAll();
     }
 
-    public long getIdConversa(long destinatario) {
-        return listaConversas.where().equalTo("destinatario", destinatario).findFirst().getId();
+    public void getIdConversa(long destinatario, ICallbackIdConversa callback) {
+        try {
+            callback.onSuccess(listaConversas.where().equalTo("destinatario", destinatario).findFirst().getId());
+        }
+        catch (Exception e) {
+            getIdConversaServer(destinatario, callback);
+        }
+    }
+
+    private void getIdConversaServer(long destinatario, final ICallbackIdConversa callback) {
+
+        Call<Conversa> call = conversaService.carregarConversa(Sistema.getUsuario().getId(), destinatario);
+        call.enqueue(new Callback<Conversa>() {
+            @Override
+            public void onResponse(Call<Conversa> call, Response<Conversa> response) {
+                if (response.isSuccessful()) {
+                    realm.beginTransaction();
+                    realm.insert(response.body());
+                    realm.commitTransaction();
+
+                    callback.onSuccess(response.body().getId());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Conversa> call, Throwable t) {
+
+            }
+        });
+
     }
 
     private void carregarUsuarios(RealmResults<Conversa> listaConversas, final ICallbackUsuarios callback) {

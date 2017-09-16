@@ -18,7 +18,7 @@ public class Conversa extends RealmObject implements Serializable {
     @PrimaryKey
     private long id;
     private long destinatario;
-    private RealmList<Mensagem> mensagens;
+    private RealmList<Mensagem> mensagens = new RealmList<>();
 
     @Ignore
     private HashSet<String> sugestoes = new HashSet<>();

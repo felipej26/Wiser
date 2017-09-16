@@ -7,11 +7,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 import br.com.wiser.R;
 import br.com.wiser.utils.Utils;
 import br.com.wiser.utils.UtilsDate;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.OrderedCollectionChangeSet;
+import io.realm.OrderedRealmCollectionChangeListener;
 import io.realm.RealmList;
 import io.realm.RealmRecyclerViewAdapter;
 
@@ -24,24 +32,55 @@ public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, Recycler
         void onSugestaoClick();
     }
 
+    private List<MensagemAbstract> listaMensagensAbstratas;
     private RealmList<Mensagem> listaMensagens;
 
     private final int VIEW_MENSAGEM_USUARIO = 0;
     private final int VIEW_MENSAGEM_CONTATO = 1;
     private final int VIEW_BOTAO_SUGESTAO = 2;
+    private final int VIEW_DATA = 3;
 
     private boolean hasSugestao;
     private Callback callback;
 
-    public MensagemAdapter(RealmList<Mensagem> listaMensagens, boolean autoUpdate) {
-        super(listaMensagens, autoUpdate);
+    public MensagemAdapter(RealmList<Mensagem> listaMensagens) {
+        super(listaMensagens, false);
+        listaMensagens.addChangeListener(new OrderedRealmCollectionChangeListener<RealmList<Mensagem>>() {
+            @Override
+            public void onChange(RealmList<Mensagem> mensagens, OrderedCollectionChangeSet changeSet) {
+                if (changeSet == null) {
+                    notifyDataSetChanged();
+                    return;
+                }
+
+                OrderedCollectionChangeSet.Range[] deletions = changeSet.getDeletionRanges();
+                for (int i = deletions.length - 1; i >= 0; i--) {
+                    OrderedCollectionChangeSet.Range range = deletions[i];
+                    notifyItemRangeRemoved(range.startIndex, range.length);
+                }
+
+                OrderedCollectionChangeSet.Range[] insertions = changeSet.getInsertionRanges();
+                for (OrderedCollectionChangeSet.Range range : insertions) {
+                    notifyItemRangeChanged(listaMensagensAbstratas.size(), range.length);
+                }
+
+                OrderedCollectionChangeSet.Range[] modifications = changeSet.getChangeRanges();
+                for (OrderedCollectionChangeSet.Range range : modifications) {
+                    notifyItemRangeChanged(range.startIndex, range.length);
+                }
+            }
+        });
         this.listaMensagens = listaMensagens;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position != listaMensagens.size()) {
-            return (listaMensagens.get(position).isDestinatario() ? VIEW_MENSAGEM_CONTATO : VIEW_MENSAGEM_USUARIO);
+
+        if (position != listaMensagensAbstratas.size()) {
+                    return VIEW_DATA;
+                    return VIEW_MENSAGEM_CONTATO;
+                    return VIEW_MENSAGEM_USUARIO;
+            }
         }
         return VIEW_BOTAO_SUGESTAO;
     }
@@ -62,6 +101,10 @@ public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, Recycler
                 return new SugestaoViewHolder(
                         LayoutInflater.from(parent.getContext()).inflate(
                                 R.layout.chat_mensagens_sugestao, parent, false));
+            case VIEW_DATA:
+                return new DataViewHolder(
+                        LayoutInflater.from(parent.getContext()).inflate(
+                                R.layout.chat_mensagens_data, parent, false));
         }
 
         return null;
@@ -73,18 +116,56 @@ public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, Recycler
         switch (holder.getItemViewType()) {
             case VIEW_MENSAGEM_USUARIO:
             case VIEW_MENSAGEM_CONTATO:
-                ((MensagensViewHolder)holder).bind(listaMensagens.get(position));
+                ((MensagensViewHolder)holder).bind(((MensagemObject)listaMensagensAbstratas.get(position)).getMensagem());
                 break;
             case VIEW_BOTAO_SUGESTAO:
                 ((SugestaoViewHolder)holder).bind(callback);
+                break;
+            case VIEW_DATA:
+                ((DataViewHolder)holder).bind(((MensagemData)listaMensagensAbstratas.get(position)).getData());
                 break;
         }
     }
 
     @Override
     public int getItemCount() {
+        super.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+            }
+        });
+
+        LinkedHashMap<String, Set<Mensagem>> mapMensagens = new LinkedHashMap<>();
+        listaMensagensAbstratas = new LinkedList<>();
+
+        for (Mensagem mensagem : listaMensagens) {
+            String data = UtilsDate.formatDate(mensagem.getData(), UtilsDate.DDMMYYYY);
+
+            if (mapMensagens.containsKey(data)) {
+                mapMensagens.get(data).add(mensagem);
+            }
+            else {
+                Set<Mensagem> mensagens = new LinkedHashSet<>();
+                mensagens.add(mensagem);
+                mapMensagens.put(data, mensagens);
+            }
+        }
+
+        for (String data : mapMensagens.keySet()) {
+            MensagemData dataItem = new MensagemData();
+            dataItem.setData(data);
+            listaMensagensAbstratas.add(dataItem);
+
+            for (Mensagem mensagem : mapMensagens.get(data)) {
+                MensagemObject mensagemItem = new MensagemObject();
+                mensagemItem.setMensagem(mensagem);
+                listaMensagensAbstratas.add(mensagemItem);
+            }
+        }
+
         /* Soma um item para poder incluir o botão, se tiver uma sugestão */
-        return listaMensagens.size() + (hasSugestao ? 1 : 0);
+        return listaMensagensAbstratas.size() + (hasSugestao ? 1 : 0);
     }
 
     public void onSetSugestao(Callback callback) {
@@ -138,6 +219,19 @@ public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, Recycler
                     callback.onSugestaoClick();
                 }
             });
+        }
+    }
+
+    static class DataViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.lblData) TextView lblData;
+
+        public DataViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
+        }
+
+        public void bind(String data) {
+            lblData.setText(data);
         }
     }
 }

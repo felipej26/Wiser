@@ -85,9 +85,14 @@ public class ContatosFragment extends AbstractFragment {
     private void startChat(final int posicao) {
         ConversaPresenter conversaPresenter = new ConversaPresenter();
 
-        Intent i = new Intent(getContext(), MensagemActivity.class);
-        i.putExtra(Sistema.CONVERSA, conversaPresenter.getIdConversa(contatosPresenter.getContato(posicao).getId()));
-        i.putExtra(Sistema.CONTATO, contatosPresenter.getContato(posicao));
-        startActivity(i);
+        conversaPresenter.getIdConversa(contatosPresenter.getContato(posicao).getId(), new ConversaPresenter.ICallbackIdConversa() {
+            @Override
+            public void onSuccess(long idConversa) {
+                Intent i = new Intent(getContext(), MensagemActivity.class);
+                i.putExtra(Sistema.CONVERSA, idConversa);
+                i.putExtra(Sistema.CONTATO, contatosPresenter.getContato(posicao));
+                startActivity(i);
+            }
+        });
     }
 }
