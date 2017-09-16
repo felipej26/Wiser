@@ -17,5 +17,7 @@ public class MensagemData extends MensagemAbstract {
     }
 
     @Override
+    public MensagemTipo getTipo() {
+        return MensagemTipo.MENSAGEM_DATA;
     }
 }

@@ -77,8 +77,12 @@ public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, Recycler
     public int getItemViewType(int position) {
 
         if (position != listaMensagensAbstratas.size()) {
+            switch (listaMensagensAbstratas.get(position).getTipo()) {
+                case MENSAGEM_DATA:
                     return VIEW_DATA;
+                case MENSAGEM_CONTATO:
                     return VIEW_MENSAGEM_CONTATO;
+                case MENSAGEM_USUARIO:
                     return VIEW_MENSAGEM_USUARIO;
             }
         }

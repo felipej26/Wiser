@@ -16,5 +16,7 @@ public class MensagemObject extends MensagemAbstract {
     }
 
     @Override
+    public MensagemTipo getTipo() {
+        return mensagem.isDestinatario() ? MensagemTipo.MENSAGEM_CONTATO : MensagemTipo.MENSAGEM_USUARIO;
     }
 }
