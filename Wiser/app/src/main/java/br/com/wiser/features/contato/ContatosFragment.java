@@ -67,7 +67,7 @@ public class ContatosFragment extends AbstractFragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter = new ContatosAdapter(getContext(), new ArrayList<Usuario>());
+        adapter = new ContatosAdapter(new ArrayList<Usuario>());
         adapter.setClickListener(new IClickListener() {
             @Override
             public void itemClicked(View view, int position) {

@@ -1,6 +1,8 @@
 package br.com.wiser.features.discussao;
 
+import android.Manifest;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -19,6 +21,7 @@ import br.com.wiser.AbstractActivity;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.interfaces.ICallback;
+import br.com.wiser.utils.CheckPermissao;
 import br.com.wiser.utils.Utils;
 import br.com.wiser.utils.UtilsDate;
 import butterknife.BindView;
@@ -50,12 +53,15 @@ public class DiscussaoActivity extends AbstractActivity {
     @BindView(R.id.lblSugestao) View lblSugestao;
     @BindView(R.id.lytEnviarResposta) RelativeLayout lytEnviarResposta;
 
+    private CheckPermissao checkPermissaoArmazenamento;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.forum_discussao);
 
         discussaoPresenter = new DiscussaoPresenter((Discussao) getIntent().getBundleExtra(Sistema.DISCUSSAO).get(Sistema.DISCUSSAO));
+        checkPermissaoArmazenamento = new CheckPermissao(Manifest.permission.WRITE_EXTERNAL_STORAGE, getString(R.string.solicitar_permissao_armazenamento));
 
         onLoad();
         onLoadData();
@@ -76,7 +82,7 @@ public class DiscussaoActivity extends AbstractActivity {
 
         switch (item.getItemId()) {
             case R.id.itmCompartilhar:
-                Utils.compartilharComoImagem(findViewById(R.id.frmDiscussao));
+                compartilharDiscussao();
                 break;
             default:
                 onBackPressed();
@@ -97,20 +103,21 @@ public class DiscussaoActivity extends AbstractActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setFocusable(false);
 
-        adapter = new DiscussaoRespostaAdapter(this);
+        adapter = new DiscussaoRespostaAdapter();
         recyclerView.setAdapter(adapter);
+        recyclerView.setNestedScrollingEnabled(false);
     }
 
     private void onLoadData() {
         Discussao discussao = discussaoPresenter.getDiscussao();
 
-        Utils.loadImageInBackground(this, discussao.getUsuario().getUrlFotoPerfil(), imgPerfil, prgBarra);
+        Utils.loadImageInBackground(discussao.getUsuario().getUrlFotoPerfil(), imgPerfil, prgBarra);
         lblIDDiscussao.setText("#" + discussao.getId());
         lblTituloDiscussao.setText(Utils.decode(discussao.getTitulo()));
         lblDescricaoDiscussao.setText(Utils.decode(discussao.getDescricao()));
         lblAutor.setText(discussao.getUsuario().getPrimeiroNome());
         lblDataHora.setText(UtilsDate.formatDate(discussao.getData(), UtilsDate.DDMMYYYY_HHMMSS));
-        lblContResposta.setText(getString(discussao.getListaRespostas().size() == 1 ?
+        lblRespostas.setText(getString(discussao.getListaRespostas().size() == 1 ?
                 R.string.resposta : R.string.respostas, discussao.getListaRespostas().size())
         );
 
@@ -121,6 +128,13 @@ public class DiscussaoActivity extends AbstractActivity {
         adapter.addItems(discussao.getListaRespostas());
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (checkPermissaoArmazenamento.onRequestPermissionsResult(this, requestCode, permissions, grantResults)) {
+            compartilharDiscussao();
+        }
+    }
+
     @OnClick(R.id.btnEnviarResposta)
     public void onEnviarClicked() {
         onPrgLoadingChanged(View.VISIBLE);
@@ -129,6 +143,7 @@ public class DiscussaoActivity extends AbstractActivity {
             public void onSuccess() {
                 txtResposta.setText("");
                 adapter.addItem(discussaoPresenter.getDiscussao().getListaRespostas().getLast());
+                ajustarLista();
                 onPrgLoadingChanged(View.INVISIBLE);
             }
 
@@ -147,5 +162,18 @@ public class DiscussaoActivity extends AbstractActivity {
     private void onPrgLoadingChanged(int visibility) {
         pgbLoading.bringToFront();
         pgbLoading.setVisibility(visibility);
+    }
+
+    private void compartilharDiscussao() {
+        if (!checkPermissaoArmazenamento.checkPermissions(this)) {
+            checkPermissaoArmazenamento.requestPermissions(this);
+        }
+        else {
+            Utils.compartilharComoImagem(findViewById(R.id.frmDiscussao));
+        }
+    }
+
+    private void ajustarLista() {
+        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
     }
 }

@@ -1,6 +1,5 @@
 package br.com.wiser.features.discussao;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,11 +22,9 @@ import butterknife.ButterKnife;
  */
 public class DiscussaoRespostaAdapter extends RecyclerView.Adapter<DiscussaoRespostaAdapter.ViewHolder> {
 
-    private Context context;
     private LinkedList<Resposta> listaRespostas;
 
-    public DiscussaoRespostaAdapter(Context context) {
-        this.context = context;
+    public DiscussaoRespostaAdapter() {
         listaRespostas = new LinkedList<>();
     }
 
@@ -46,7 +43,7 @@ public class DiscussaoRespostaAdapter extends RecyclerView.Adapter<DiscussaoResp
 
         holder.viewSeparator.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
 
-        Utils.loadImageInBackground(context, r.getUsuario().getUrlFotoPerfil(), holder.imgPerfil, holder.prgBarra);
+        Utils.loadImageInBackground(r.getUsuario().getUrlFotoPerfil(), holder.imgPerfil, holder.prgBarra);
         holder.lblIDResposta.setText("#" + (position + 1));
         holder.lblAutor.setText(r.getUsuario().getPrimeiroNome());
         holder.lblDataHora.setText(UtilsDate.formatDate(r.getData(), UtilsDate.DDMMYYYY_HHMMSS));

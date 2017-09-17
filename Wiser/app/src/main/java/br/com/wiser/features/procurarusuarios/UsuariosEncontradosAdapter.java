@@ -1,6 +1,5 @@
 package br.com.wiser.features.procurarusuarios;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +14,7 @@ import java.util.List;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
+import br.com.wiser.WiserApplication;
 import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.interfaces.IClickListener;
 import br.com.wiser.utils.Utils;
@@ -26,14 +26,12 @@ import butterknife.ButterKnife;
  */
 public class UsuariosEncontradosAdapter extends RecyclerView.Adapter<UsuariosEncontradosAdapter.ViewHolder> {
 
-    private Context context;
     private ArrayList<Usuario> listaUsuarios = null;
 
     private IClickListener onViewClick;
     private IClickListener onChatClick;
 
-    public UsuariosEncontradosAdapter(Context context, ArrayList<Usuario> listaUsuarios) {
-        this.context = context;
+    public UsuariosEncontradosAdapter(ArrayList<Usuario> listaUsuarios) {
         this.listaUsuarios = listaUsuarios;
     }
 
@@ -53,8 +51,8 @@ public class UsuariosEncontradosAdapter extends RecyclerView.Adapter<UsuariosEnc
         holder.viewSeparator.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
 
         holder.txtNome.setText(usuario.getPrimeiroNome());
-        Utils.loadImageInBackground(context, usuario.getUrlFotoPerfil(), holder.imgPerfil, holder.prgBarra);
-        holder.lblIdiomaNivel.setText(context.getString(R.string.fluencia_idioma,
+        Utils.loadImageInBackground(usuario.getUrlFotoPerfil(), holder.imgPerfil, holder.prgBarra);
+        holder.lblIdiomaNivel.setText(WiserApplication.getAppContext().getString(R.string.fluencia_idioma,
                 Sistema.getDescricaoFluencia(usuario.getFluencia()), Sistema.getDescricaoIdioma(usuario.getIdioma())));
 
         if (!usuario.isContato()) {

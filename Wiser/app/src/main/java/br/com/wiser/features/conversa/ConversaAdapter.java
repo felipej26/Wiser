@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.wiser.R;
+import br.com.wiser.WiserApplication;
 import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.utils.Utils;
 import br.com.wiser.utils.UtilsDate;
@@ -29,14 +30,12 @@ public class ConversaAdapter extends RealmRecyclerViewAdapter<Conversa, Recycler
         void onClick(long idConversa, Usuario usuario);
     }
 
-    private Context context;
     private RealmResults<Conversa> listaConversas;
     private Map<Long, Usuario> mapUsuarios;
     private ICallback callback;
 
-    public ConversaAdapter(Context context, RealmResults<Conversa> listaConversas, boolean autoUpdate, ICallback callback) {
+    public ConversaAdapter(RealmResults<Conversa> listaConversas, boolean autoUpdate, ICallback callback) {
         super(listaConversas, autoUpdate);
-        this.context = context;
         this.listaConversas = listaConversas;
         this.callback = callback;
         this.mapUsuarios = new HashMap<>();
@@ -54,7 +53,7 @@ public class ConversaAdapter extends RealmRecyclerViewAdapter<Conversa, Recycler
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Conversa conversa = listaConversas.get(position);
 
-        ((ViewHolder) holder).bind(context, conversa, position);
+        ((ViewHolder) holder).bind(conversa, position);
 
         if (mapUsuarios.containsKey(conversa.getDestinatario())) {
             ((ViewHolder) holder).bindUsuario(mapUsuarios.get(conversa.getDestinatario()));
@@ -109,9 +108,11 @@ public class ConversaAdapter extends RealmRecyclerViewAdapter<Conversa, Recycler
             lblContMensagens = (TextView) itemLayoutView.findViewById(R.id.lblContMensagens);
         }
 
-        public void bind(Context context, Conversa conversa, int posicao) {
+        public void bind(Conversa conversa, int posicao) {
             this.posicao = posicao;
             this.idConversa = conversa.getId();
+
+            Context context = WiserApplication.getAppContext();
 
             viewSeparator.setVisibility(posicao == 0 ? View.INVISIBLE : View.VISIBLE);
 

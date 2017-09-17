@@ -84,7 +84,7 @@ public class ProcurarUsuariosActivity extends AbstractAppCompatActivity {
         rcvUsuarios.setHasFixedSize(true);
         rcvUsuarios.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new UsuariosEncontradosAdapter(this, new ArrayList<Usuario>());
+        adapter = new UsuariosEncontradosAdapter(new ArrayList<Usuario>());
         adapter.setOnViewClick(new IClickListener() {
             @Override
             public void itemClicked(View view, int posicao) {

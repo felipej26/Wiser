@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso;
 import java.io.ByteArrayOutputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Date;
 
 import br.com.wiser.R;
 import br.com.wiser.WiserApplication;
@@ -47,31 +48,6 @@ public class Utils {
         }
     }
 
-    public static void loadImageInBackground(Context context, String url, final ImageView imageView, final ProgressBar prgBarra) {
-
-        if (!TextUtils.isEmpty(url)) {
-            imageView.setVisibility(View.GONE);
-            prgBarra.setVisibility(View.VISIBLE);
-            prgBarra.bringToFront();
-
-            Picasso.with(context)
-                    .load(url)
-                    .into(imageView, new com.squareup.picasso.Callback() {
-                        @Override
-                        public void onSuccess() {
-                            imageView.setVisibility(View.VISIBLE);
-                            prgBarra.setVisibility(View.GONE);
-                        }
-
-                        @Override
-                        public void onError() {
-                            imageView.setVisibility(View.VISIBLE);
-                            prgBarra.setVisibility(View.GONE);
-                        }
-                    });
-        }
-    }
-
     public static void compartilharComoImagem(View view){
 
         view.setDrawingCacheEnabled(true);
@@ -82,7 +58,7 @@ public class Utils {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         img.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(view.getContext().getContentResolver(),
-                img, view.getContext().getString(R.string.compartilhar_titulo), null);
+                img, view.getContext().getString(R.string.compartilhar_titulo) + "_" + new Date().toString(), null);
 
         Intent iCompartilhar = new Intent(Intent.ACTION_SEND);
         Uri imgDiscussao = Uri.parse(path);
@@ -112,7 +88,7 @@ public class Utils {
             return URLEncoder.encode(texto, "UTF-8");
         }
         catch(Exception e) {
-            Log.e("DECODE", "Erro ao fazer o encode no texto: " + texto);
+            Log.e("ENCODE", "Erro ao fazer o encode no texto: " + texto);
             return texto;
         }
     }

@@ -24,9 +24,9 @@
         android:textSize="15sp"
         android:maxLength="250"
         android:maxLines="5"
-        android:hint="Digite sua mensagem aqui..."
+        android:hint="@string/digite_mensagem"
         android:textColor="#414040"
-        android:inputType="textCapSentences" />
+        android:inputType="textCapSentences|textAutoCorrect|textAutoComplete" />
 
     <Button
         android:layout_width="50dp"

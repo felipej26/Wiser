@@ -89,7 +89,7 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
             }
         });
         recyclerView.setAdapter(adapter);
-        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+        ajustarLista();
     }
 
     @OnClick(R.id.btnEnviarResposta)
@@ -98,6 +98,7 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
             @Override
             public void onSuccess() {
                 limparCampos();
+                ajustarLista();
             }
 
             @Override
@@ -123,5 +124,9 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
         lblSugestao.setVisibility(View.VISIBLE);
         lblSugestao.setText(sugestao);
         //recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+    }
+
+    private void ajustarLista() {
+        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
     }
 }

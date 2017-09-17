@@ -1,6 +1,5 @@
 package br.com.wiser.features.contato;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,13 +22,10 @@ import butterknife.ButterKnife;
  */
 public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.ViewHolder> {
 
-    private Context context;
     private List<Usuario> listaContatos;
-
     private IClickListener clickListener;
 
-    public ContatosAdapter(Context context, List<Usuario> listaContatos) {
-        this.context = context;
+    public ContatosAdapter(List<Usuario> listaContatos) {
         this.listaContatos = listaContatos;
     }
 
@@ -47,7 +43,7 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.ViewHo
         Usuario contato = listaContatos.get(position);
 
         holder.viewSeparator.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
-        Utils.loadImageInBackground(context, contato.getUrlFotoPerfil(), holder.imgPerfil, holder.prgBarra);
+        Utils.loadImageInBackground(contato.getUrlFotoPerfil(), holder.imgPerfil, holder.prgBarra);
         holder.lblNome.setText(contato.getNome());
     }
 

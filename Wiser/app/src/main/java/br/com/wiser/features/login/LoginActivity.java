@@ -2,15 +2,9 @@ package br.com.wiser.features.login;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,13 +16,13 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import br.com.wiser.BuildConfig;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.facebook.Facebook;
 import br.com.wiser.features.principal.PrincipalActivity;
 import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.services.CarregarConversasService;
+import br.com.wiser.utils.CheckPermissao;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -40,8 +34,7 @@ public class LoginActivity extends Activity {
     private FusedLocationProviderClient fusedLocationProviderClient;
 
     private Facebook facebook;
-
-    private final int REQUEST_LOCATION_PERMISSION = 1; // Valor deve ser maior ou igual a 0
+    private CheckPermissao checkPermissaoLocalizacao;
 
     @BindView(R.id.btnLogin) Button btnLogin;
     @BindView(R.id.snackbar_view) View snackbar;
@@ -55,6 +48,8 @@ public class LoginActivity extends Activity {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         facebook = new Facebook(getFacebookCallback());
+        checkPermissaoLocalizacao = new CheckPermissao(Manifest.permission.ACCESS_COARSE_LOCATION,
+                getString(R.string.solicitar_permissao_localizacao));
 
         if (getIntent().getBooleanExtra(Sistema.LOGOUT, false)) {
             getIntent().removeExtra(Sistema.LOGOUT);
@@ -74,8 +69,8 @@ public class LoginActivity extends Activity {
     }
 
     private void checkPermissionAndLogin() {
-        if (!checkPermissions()) {
-            requestPermissions();
+        if (!checkPermissaoLocalizacao.checkPermissions(this)) {
+            checkPermissaoLocalizacao.requestPermissions(this);
         } else {
             onLoginSuccess();
         }
@@ -88,29 +83,8 @@ public class LoginActivity extends Activity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-
-        if (requestCode == REQUEST_LOCATION_PERMISSION) {
-            if (grantResults.length <= 0) {
-                Log.i(this.getClass().getSimpleName(), "User interaction was cancelled.");
-            }
-            else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                onLoginSuccess();
-            }
-            else {
-                showSnackBar(R.string.necessario_permitir, R.string.app_configuracoes_title,
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent();
-                                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-
-                                Uri uri = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null);
-                                intent.setData(uri);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                            }
-                        });
-            }
+        if (checkPermissaoLocalizacao.onRequestPermissionsResult(this, requestCode, permissions, grantResults)) {
+            onLoginSuccess();
         }
     }
 
@@ -134,23 +108,6 @@ public class LoginActivity extends Activity {
         };
     }
 
-    private void showSnackBar(final int mainTextStringId, final int actionStringId, final View.OnClickListener listener) {
-        /*Snackbar snack = Snackbar.make(snackbar, getString(mainTextStringId), Snackbar.LENGTH_INDEFINITE);
-        snack.setAction(actionStringId, listener);
-        snack.show();
-        */
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert);
-        builder.setTitle(getString(mainTextStringId));
-        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                listener.onClick(null);
-            }
-        });
-        builder.show();
-    }
-
     @SuppressWarnings("MissingPermission")
     private void updateLocation(final ICallback callback) {
         fusedLocationProviderClient.getLastLocation()
@@ -162,37 +119,6 @@ public class LoginActivity extends Activity {
                         }
                     }
                 });
-    }
-
-    private boolean checkPermissions() {
-        int permissionState = ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION);
-        return permissionState == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestPermissions() {
-        boolean shouldProvideRationale =
-                ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        Manifest.permission.ACCESS_FINE_LOCATION);
-
-        if (shouldProvideRationale) {
-            showSnackBar(R.string.necessario_permitir, android.R.string.ok,
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            startLocationPermissionRequest();
-                        }
-                    });
-        }
-        else {
-            startLocationPermissionRequest();
-        }
-    }
-
-    private void startLocationPermissionRequest() {
-        ActivityCompat.requestPermissions(this,
-                new String[] {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
-                REQUEST_LOCATION_PERMISSION);
     }
 
     private void onLoginSuccess() {
@@ -235,6 +161,11 @@ public class LoginActivity extends Activity {
 
     @OnClick(R.id.btnLogin)
     public void onLoginClicked() {
-        facebook.login(this);
+        if (!checkPermissaoLocalizacao.checkPermissions(this)) {
+            checkPermissaoLocalizacao.requestPermissions(this);
+        }
+        else {
+            facebook.login(this);
+        }
     }
 }

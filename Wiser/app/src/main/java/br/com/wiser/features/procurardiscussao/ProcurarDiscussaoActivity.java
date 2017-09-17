@@ -1,6 +1,7 @@
 package br.com.wiser.features.procurardiscussao;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -65,8 +66,13 @@ public class ProcurarDiscussaoActivity extends AbstractActivity implements IDisc
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new DiscussaoAdapter(getContext(), this);
+        adapter = new DiscussaoAdapter(this);
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        discussaoPartial.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
     @OnClick(R.id.btnProcurarDiscussao)
@@ -126,7 +132,7 @@ public class ProcurarDiscussaoActivity extends AbstractActivity implements IDisc
 
     @Override
     public void onCompartilharClicked(View view) {
-        discussaoPartial.onCompartilharClicked(view);
+        discussaoPartial.onCompartilharClicked(this, view);
     }
 
     public void onPrgLoadingChanged(int visibility) {

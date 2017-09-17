@@ -2,6 +2,7 @@ package br.com.wiser.features.perfilcompleto;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -84,8 +85,13 @@ public class PerfilCompletoActivity extends AbstractActivity implements IDiscuss
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
 
-        adapter = new DiscussaoAdapter(getContext(), this);
+        adapter = new DiscussaoAdapter(this);
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        discussaoPartial.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
     private void onLoadData() {
@@ -101,7 +107,7 @@ public class PerfilCompletoActivity extends AbstractActivity implements IDiscuss
             btnAbrirChat.setText(R.string.adicionar_amigo);
         }
 
-        Utils.loadImageInBackground(this, usuario.getUrlFotoPerfil(), imgPerfil, prgBarra);
+        Utils.loadImageInBackground(usuario.getUrlFotoPerfil(), imgPerfil, prgBarra);
         lblNomeDetalhe.setText(usuario.getNome());
         lblIdade.setText(", " + 18);
         lblIdiomaNivel.setText(getString(R.string.fluencia_idioma,
@@ -156,7 +162,7 @@ public class PerfilCompletoActivity extends AbstractActivity implements IDiscuss
 
     @Override
     public void onCompartilharClicked(View view) {
-        discussaoPartial.onCompartilharClicked(view);
+        discussaoPartial.onCompartilharClicked(this, view);
     }
 
     private void startChat() {

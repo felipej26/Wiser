@@ -2,6 +2,7 @@ package br.com.wiser.features.forum;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -72,6 +73,11 @@ public class ForumFragment extends AbstractFragment implements IDiscussao {
         return view;
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        discussaoPartial.onRequestPermissionsResult(getActivity(), requestCode, permissions, grantResults);
+    }
+
     public void onLoad(View view) {
         ButterKnife.bind(this, view);
 
@@ -80,7 +86,7 @@ public class ForumFragment extends AbstractFragment implements IDiscussao {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter = new DiscussaoAdapter(getContext(), this);
+        adapter = new DiscussaoAdapter(this);
         recyclerView.setAdapter(adapter);
     }
 
@@ -111,7 +117,7 @@ public class ForumFragment extends AbstractFragment implements IDiscussao {
 
     @Override
     public void onCompartilharClicked(View view) {
-        discussaoPartial.onCompartilharClicked(view);
+        discussaoPartial.onCompartilharClicked(getActivity(), view);
     }
 
     @OnClick(R.id.btnNovaDiscussao)

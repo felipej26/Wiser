@@ -67,7 +67,7 @@ public class DialogPerfilUsuario {
     private void onLoad(View view, Usuario contato) {
         ButterKnife.bind(this, view);
 
-        Utils.loadImageInBackground(view.getContext(), contato.getUrlFotoPerfil(), imgPerfil, prgBarra);
+        Utils.loadImageInBackground(contato.getUrlFotoPerfil(), imgPerfil, prgBarra);
         lblNome.setText(contato.getNome());
         lblIdiomaNivel.setText(view.getContext().getString(R.string.fluencia_idioma,
                 Sistema.getDescricaoFluencia(contato.getFluencia()), Sistema.getDescricaoIdioma(contato.getIdioma())));

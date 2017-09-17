@@ -73,7 +73,8 @@
     <string name="sucesso_conta_desativada">A conta foi desativada com sucesso.</string>
     <string name="sucesso_salvar_configuracao">A configuração foi salva com sucesso.</string>
     <string name="usuarios_nao_encontrados">Não foram encontrados usuários para os filtros selecionados.</string>
-    <string name="necessario_permitir">Wiser requer permissão de localização!</string>
+    <string name="solicitar_permissao_localizacao">Wiser requer a permissão de Localização para mostrar usuários que estejam por perto!</string>
+    <string name="solicitar_permissao_armazenamento">Wiser requer a permissão de armazenamento para compartilhar!</string>
     <string name="configuracoes_nao_personalizadas">Você ainda não personalizou suas configurações!</string>
     <string name="fazer_agora">Deseja fazer isto agora?</string>
     <string name="desativar_conta">Desativar Conta</string>
@@ -102,5 +103,6 @@
     <string name="app_servidor_manutencao">Servidor em Manutenção</string>
     <string name="title_activity_procurar_usuarios">Encontrar Wisers</string>
     <string name="todos">Todos</string>
+    <string name="digite_mensagem">Digite a sua mensagem</string>
 
 </resources>

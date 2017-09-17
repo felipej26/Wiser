@@ -15,6 +15,7 @@ import java.util.List;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
+import br.com.wiser.WiserApplication;
 import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.utils.Utils;
 import br.com.wiser.utils.UtilsDate;
@@ -27,12 +28,10 @@ import butterknife.OnClick;
  */
 public class DiscussaoAdapter extends RecyclerView.Adapter<DiscussaoAdapter.ViewHolder> {
 
-    private Context context;
     private IDiscussao iDiscussao;
     private List<Discussao> listaDiscussoes;
 
-    public DiscussaoAdapter(Context context, IDiscussao discussao) {
-        this.context = context;
+    public DiscussaoAdapter(IDiscussao discussao) {
         this.iDiscussao = discussao;
         listaDiscussoes = new LinkedList<>();
     }
@@ -51,7 +50,9 @@ public class DiscussaoAdapter extends RecyclerView.Adapter<DiscussaoAdapter.View
         Discussao discussao = listaDiscussoes.get(position);
         Usuario usuario = discussao.getUsuario();
 
-        Utils.loadImageInBackground(context, usuario.getUrlFotoPerfil(), viewHolder.imgPerfil, viewHolder.prgBarra);
+        Context context = WiserApplication.getAppContext();
+
+        Utils.loadImageInBackground(usuario.getUrlFotoPerfil(), viewHolder.imgPerfil, viewHolder.prgBarra);
         viewHolder.lblIDDiscussao.setText("#" + discussao.getId());
         viewHolder.lblAutorDiscussao.setText(usuario.getPrimeiroNome());
         viewHolder.lblTituloDiscussao.setText(Utils.decode(discussao.getTitulo()));

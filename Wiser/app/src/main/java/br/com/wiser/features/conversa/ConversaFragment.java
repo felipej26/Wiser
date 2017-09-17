@@ -48,7 +48,7 @@ public class ConversaFragment extends AbstractFragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-        adapter = new ConversaAdapter(getContext(), conversaPresenter.getConversas(), true, new ConversaAdapter.ICallback() {
+        adapter = new ConversaAdapter(conversaPresenter.getConversas(), true, new ConversaAdapter.ICallback() {
             @Override
             public void onClick(long idConversa, Usuario usuario) {
                 Intent i = new Intent(getContext(), MensagemActivity.class);
