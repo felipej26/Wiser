@@ -42,7 +42,6 @@ public class LoginActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.app_login);
 
         loginPresenter = new LoginPresenter();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -51,21 +50,19 @@ public class LoginActivity extends Activity {
         checkPermissaoLocalizacao = new CheckPermissao(Manifest.permission.ACCESS_COARSE_LOCATION,
                 getString(R.string.solicitar_permissao_localizacao));
 
-        if (getIntent().getBooleanExtra(Sistema.LOGOUT, false)) {
+        if (!getIntent().getBooleanExtra(Sistema.LOGOUT, false)) {
+            if (facebook.isLogado() && checkPermissaoLocalizacao.checkPermissions(this)) {
+                onLoginSuccess();
+                return;
+            }
+        }
+        else {
             getIntent().removeExtra(Sistema.LOGOUT);
             logout();
         }
 
+        setContentView(R.layout.app_login);
         ButterKnife.bind(this);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if (facebook.isLogado()) {
-            checkPermissionAndLogin();
-        }
     }
 
     private void checkPermissionAndLogin() {

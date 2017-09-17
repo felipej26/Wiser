@@ -14,30 +14,26 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.GraphRequest;
-import com.facebook.GraphRequestBatch;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
 import java.security.MessageDigest;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
-import java.util.List;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.WiserApplication;
 import br.com.wiser.features.assunto.Pagina;
 import br.com.wiser.features.usuario.Usuario;
-import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.utils.UtilsDate;
 
 /**
@@ -47,11 +43,6 @@ public class Facebook {
 
     public interface ICallbackProfileInfo {
         void onCompleted(String nome, String primeiroNome, Date dataNascimento);
-    }
-
-    private interface ICallbackContextID {
-        void onSuccess(String userContextID);
-        void onError(String mensagemErro);
     }
 
     private Context context;
@@ -146,18 +137,6 @@ public class Facebook {
         }.start();
     }
 
-    private void requestBatch(Collection<GraphRequest> graphRequests, final ICallback callback) {
-
-        GraphRequestBatch batch = new GraphRequestBatch(graphRequests);
-        batch.addCallback(new GraphRequestBatch.Callback() {
-            @Override
-            public void onBatchCompleted(GraphRequestBatch batch) {
-                callback.onSuccess();
-            }
-        });
-        batch.executeAsync();
-    }
-
     public AccessToken getAccessToken() {
         try {
             return AccessToken.getCurrentAccessToken();
@@ -174,14 +153,28 @@ public class Facebook {
                     @Override
                     public void onCompleted(JSONObject json, GraphResponse response) {
                         try {
-                            // TODO Arrumar data
+                            int anosParaRemover = 18;
+                            Date dataNascimento;
+                            if (json.has("birthday") && json.optString("birthday").length() == 10) {
+                                dataNascimento = UtilsDate.parseDate(json.getString("birthday"), UtilsDate.MMDDYYYY);
+                            } else {
+                                if (json.has("age_range")) {
+                                    anosParaRemover = json.getJSONObject("age_range").getInt("min");
+                                }
+
+                                GregorianCalendar gc = new GregorianCalendar();
+                                gc.setTime(new Date());
+                                gc.set(Calendar.YEAR, gc.get(Calendar.YEAR) - anosParaRemover);
+                                dataNascimento = gc.getTime();
+                            }
+
                             callbackProfileInfo.onCompleted(
                                     json.getString("name"),
                                     json.getString("first_name"),
-                                    new Date()
+                                    dataNascimento
                             );
                         }
-                        catch (JSONException e) {
+                        catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -191,52 +184,6 @@ public class Facebook {
         parameters.putString("fields", "name,first_name,birthday,age_range");
         request.setParameters(parameters);
         request.executeAsync();
-    }
-
-    public void carregarPerfil(final Usuario usuario, final ICallback callback) {
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                GraphRequest graphRequest = getGraphRequestCarregarPerfil(usuario, new ICallback() {
-                    @Override
-                    public void onSuccess() {
-                        if (callback != null) {
-                            callback.onSuccess();
-                        }
-                    }
-
-                    @Override
-                    public void onError(String mensagemErro) {
-                        if (callback != null) {
-                            callback.onError(mensagemErro);
-                        }
-                    }
-                });
-                graphRequest.executeAndWait();
-            }
-        }).start();
-    }
-
-    public void carregarUsuarios(Collection<Usuario> listaUsuarios, ICallback callback) {
-
-        List<GraphRequest> listaRequest = new ArrayList<>();
-
-        if (listaUsuarios.size() == 0) {
-            callback.onSuccess();
-            return;
-        }
-
-        for (Usuario usuario : listaUsuarios) {
-            listaRequest.add(getGraphRequestCarregarPerfil(usuario, null));
-        }
-
-        if (listaRequest.size() == 0) {
-            callback.onSuccess();
-        }
-        else {
-            requestBatch(listaRequest, callback);
-        }
     }
 
     private void carregarPaginasEmComum(final String userContextID, final ICallbackPaginas callbackPaginas) {
@@ -302,122 +249,6 @@ public class Facebook {
                         graphCallback).executeAndWait();
             }
         }).start();
-    }
-
-    private void carregarContextID(Usuario destinatario, final ICallbackContextID callback) {
-        GraphRequest request = GraphRequest.newGraphPathRequest(
-                createAccessToken(Sistema.getUsuario()),
-                "/" + destinatario.getFacebookID(),
-                new GraphRequest.Callback() {
-                    @Override
-                    public void onCompleted(GraphResponse response) {
-                        if (response.getError() == null) {
-                            try {
-                                callback.onSuccess(response.getJSONObject()
-                                        .getJSONObject("context")
-                                        .getString("id"));
-                            }
-                            catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        else {
-                            callback.onError(response.getError().getErrorMessage());
-                        }
-                    }
-                });
-
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "context.fields(id)");
-        request.setParameters(parameters);
-        request.executeAsync();
-    }
-
-    private GraphRequest getGraphRequestCarregarPerfil(final Usuario usuario, final ICallback callback) {
-        Bundle parametros = new Bundle();
-        AccessToken accessToken;
-        String node;
-
-        parametros.putString("fields", "first_name,name,birthday,age_range");
-
-        if (usuario.getAccessToken() == null) {
-            parametros.putString("ids", usuario.getFacebookID());
-
-            accessToken = Sistema.getAccessToken();
-            node = "/";
-        }
-        else {
-            accessToken = createAccessToken(usuario);
-            node = "/" + usuario.getFacebookID();
-        }
-
-        return new GraphRequest(
-                accessToken, node, parametros, HttpMethod.GET,
-                new GraphRequest.Callback() {
-
-                    @Override
-                    public void onCompleted(GraphResponse graphResponse) {
-                        usuario.setNome(nomeIndisponivel);
-                        usuario.setPrimeiroNome(nomeIndisponivel);
-
-                        if (graphResponse != null) {
-                            if (graphResponse.getError() != null) {
-
-                                /* Significa que o erro pode ter sido a data de expiração do Access Token */
-                                if (usuario.getAccessToken() != null) {
-                                    refazerCarregarPerfil(usuario, callback);
-                                    return;
-                                }
-                            }
-
-                            try {
-                                JSONObject json = graphResponse.getJSONObject();
-
-                                if (json != null) {
-                                    if (usuario.getAccessToken() == null) {
-                                        json = json.getJSONObject(usuario.getFacebookID());
-                                    }
-
-                                    if (json.has("first_name"))
-                                        usuario.setPrimeiroNome(json.getString("first_name"));
-
-                                    if (json.has("name"))
-                                        usuario.setNome(json.getString("name"));
-
-                                    if (json.has("birthday") && json.optString("birthday").length() == 10) {
-                                        /* TODO Idade
-                                        long diferenca = new Date().getTime() - UtilsDate.parseDate(json.getString("birthday"), UtilsDate.MMDDYYYY).getTime();
-                                        usuario.set((int) Math.floor(diferenca / 86400000 / 365));
-                                        */
-                                        usuario.setDataNascimento(UtilsDate.parseDate(json.getString("birthday"), UtilsDate.MMDDYYYY));
-                                    } else {
-                                        if (json.has("age_range")) {
-                                            usuario.setDataNascimento(new Date());
-                                            /* TODO Arrumar
-                                            perfil.setIdade(json.getJSONObject("age_range").getInt("min"));
-                                            */
-                                        }
-                                        else {
-                                            usuario.setDataNascimento(new Date());
-                                        }
-                                    }
-                                }
-                            }
-                            catch (Exception e) {
-                                Log.e("Facebook", "Erro ao carregar o Perfil do Usuario: " + usuario.getId(), e);
-                            }
-
-                            if (callback != null) {
-                                callback.onSuccess();
-                            }
-                        }
-                    }
-                });
-    }
-
-    private void refazerCarregarPerfil(Usuario usuario, ICallback callback) {
-        usuario.setAccessToken(null);
-        carregarPerfil(usuario, callback);
     }
 
     private static AccessToken createAccessToken(Usuario usuario) {

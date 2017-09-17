@@ -3,6 +3,7 @@ package br.com.wiser.features.usuario;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -169,5 +170,15 @@ public class Usuario implements Serializable {
 
     public String getUrlFotoPerfil() {
         return "https://graph.facebook.com/" + facebookID + "/picture?type=large&w‌idth=720&height=720";
+    }
+
+    public int getIdade() {
+        Calendar nascimento = Calendar.getInstance();
+        nascimento.setTime(dataNascimento);
+
+        Calendar anoAtual = Calendar.getInstance();
+        anoAtual.setTime(new Date());
+
+        return anoAtual.get(Calendar.YEAR) - nascimento.get(Calendar.YEAR);
     }
 }

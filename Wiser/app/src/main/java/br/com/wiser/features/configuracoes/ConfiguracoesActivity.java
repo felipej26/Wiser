@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import br.com.wiser.AbstractActivity;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.dialogs.DialogConfirmar;
@@ -17,7 +18,6 @@ import br.com.wiser.dialogs.IDialog;
 import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.utils.ComboBoxItem;
 import br.com.wiser.utils.Utils;
-import br.com.wiser.AbstractActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

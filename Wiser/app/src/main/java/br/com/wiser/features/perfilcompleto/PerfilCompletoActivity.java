@@ -87,6 +87,7 @@ public class PerfilCompletoActivity extends AbstractActivity implements IDiscuss
 
         adapter = new DiscussaoAdapter(this);
         recyclerView.setAdapter(adapter);
+        recyclerView.setNestedScrollingEnabled(false);
     }
 
     @Override
@@ -98,7 +99,7 @@ public class PerfilCompletoActivity extends AbstractActivity implements IDiscuss
         Usuario usuario = perfilCompletoPresenter.getUsuario();
 
         if (Sistema.getUsuario().getId() == usuario.getId()) {
-            btnAbrirChat.setVisibility(View.INVISIBLE);
+            btnAbrirChat.setVisibility(View.GONE);
         }
         else if (usuario.isContato()) {
             btnAbrirChat.setText(R.string.enviar_mensagem);
@@ -109,7 +110,7 @@ public class PerfilCompletoActivity extends AbstractActivity implements IDiscuss
 
         Utils.loadImageInBackground(usuario.getUrlFotoPerfil(), imgPerfil, prgBarra);
         lblNomeDetalhe.setText(usuario.getNome());
-        lblIdade.setText(", " + 18);
+        lblIdade.setText(", " + usuario.getIdade());
         lblIdiomaNivel.setText(getString(R.string.fluencia_idioma,
                 Sistema.getDescricaoFluencia(usuario.getFluencia()), Sistema.getDescricaoIdioma(usuario.getIdioma())));
         lblStatus.setText(Utils.decode(usuario.getStatus()));

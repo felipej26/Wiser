@@ -14,9 +14,9 @@ import android.view.View;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import br.com.wiser.AbstractAppCompatActivity;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
-import br.com.wiser.AbstractAppCompatActivity;
 import br.com.wiser.features.configuracoes.ConfiguracoesActivity;
 import br.com.wiser.features.minhasdiscussoes.MinhasDiscussoesActivity;
 import br.com.wiser.features.sobre.SobreActivity;
