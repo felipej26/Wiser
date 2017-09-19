@@ -133,7 +133,7 @@ public class CarregarConversasService extends Service {
         NotificationCompat.Builder builder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.logo_wiser_notificacao)
                 .setContentTitle(getString(R.string.app_name))
-                .setContentText("Chegaram novas mensagens!");
+                .setContentText(getString(R.string.novas_mensagem));
 
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
         inboxStyle.setBigContentTitle(getString(R.string.app_name));

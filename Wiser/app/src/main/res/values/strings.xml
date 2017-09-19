@@ -104,5 +104,14 @@
     <string name="title_activity_procurar_usuarios">Encontrar Wisers</string>
     <string name="todos">Todos</string>
     <string name="digite_mensagem">Digite a sua mensagem</string>
+    <string name="precisa_atualizar">Uma nova versão do app está disponível!</string>
+    <string name="novas_mensagem">Chegaram novas mensagens!</string>
+
+    <string name="preferences_file_key" translatable="false">valores</string>
+    <string name="preferences_usuario_key" translatable="false">usuario</string>
+    <string name="preferences_accesstoken_key" translatable="false">accesstoken</string>
+    <string name="preferences_idiomas_key" translatable="false">idiomas</string>
+    <string name="preferences_fluencias_key" translatable="false">fluencias</string>
+    <string name="preferences_assuntos_key" translatable="false">assuntos</string>
 
 </resources>

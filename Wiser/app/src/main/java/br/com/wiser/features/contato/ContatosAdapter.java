@@ -16,6 +16,7 @@ import br.com.wiser.interfaces.IClickListener;
 import br.com.wiser.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Jefferson on 23/09/2016.
@@ -24,6 +25,7 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.ViewHo
 
     private List<Usuario> listaContatos;
     private IClickListener clickListener;
+    private IClickListener onPerfilClickListener;
 
     public ContatosAdapter(List<Usuario> listaContatos) {
         this.listaContatos = listaContatos;
@@ -42,6 +44,7 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         Usuario contato = listaContatos.get(position);
 
+        holder.setPosicao(position);
         holder.viewSeparator.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
         Utils.loadImageInBackground(contato.getUrlFotoPerfil(), holder.imgPerfil, holder.prgBarra);
         holder.lblNome.setText(contato.getNome());
@@ -50,6 +53,10 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.ViewHo
     @Override
     public int getItemCount() {
         return listaContatos.size();
+    }
+
+    public void setOnPerfilClickListener(IClickListener onPerfilClickListener) {
+        this.onPerfilClickListener = onPerfilClickListener;
     }
 
     public void setItems(List<Usuario> listaContatos) {
@@ -68,6 +75,8 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.ViewHo
         @BindView(R.id.prgBarra) ProgressBar prgBarra;
         @BindView(R.id.lblNome) TextView lblNome;
 
+        private int posicao;
+
         public ViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
@@ -75,10 +84,21 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.ViewHo
             ButterKnife.bind(this, itemView);
         }
 
+        public void setPosicao(int posicao) {
+            this.posicao = posicao;
+        }
+
         @Override
         public void onClick(View view) {
             if (clickListener != null) {
                 clickListener.itemClicked(view, getAdapterPosition());
+            }
+        }
+
+        @OnClick(R.id.imgPerfil)
+        public void onImgPerfilClicked() {
+            if (onPerfilClickListener != null) {
+                onPerfilClickListener.itemClicked(imgPerfil, posicao);
             }
         }
     }

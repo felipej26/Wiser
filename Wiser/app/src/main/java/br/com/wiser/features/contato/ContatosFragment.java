@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import br.com.wiser.AbstractFragment;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
+import br.com.wiser.dialogs.DialogPerfilUsuario;
 import br.com.wiser.features.conversa.ConversaPresenter;
 import br.com.wiser.features.mensagem.MensagemActivity;
 import br.com.wiser.features.procurarusuarios.ProcurarUsuariosActivity;
@@ -72,6 +73,13 @@ public class ContatosFragment extends AbstractFragment {
             @Override
             public void itemClicked(View view, int position) {
                 startChat(position);
+            }
+        });
+        adapter.setOnPerfilClickListener(new IClickListener() {
+            @Override
+            public void itemClicked(View view, int posicao) {
+                DialogPerfilUsuario perfil = new DialogPerfilUsuario();
+                perfil.show(getContext(), contatosPresenter.getContato(posicao));
             }
         });
         recyclerView.setAdapter(adapter);

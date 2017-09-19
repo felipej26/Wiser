@@ -24,7 +24,7 @@ public class APIClient {
                     .create();
 
             retrofit = new Retrofit.Builder()
-                    .baseUrl(Sistema.SERVIDOR_WS)
+                    .baseUrl(WiserApplication.getAppContext().getString(R.string.link_servidor))
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
         }

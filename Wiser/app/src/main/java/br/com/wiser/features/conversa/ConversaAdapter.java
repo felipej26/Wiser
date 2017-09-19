@@ -16,8 +16,12 @@ import java.util.Map;
 import br.com.wiser.R;
 import br.com.wiser.WiserApplication;
 import br.com.wiser.features.usuario.Usuario;
+import br.com.wiser.interfaces.IClickListener;
 import br.com.wiser.utils.Utils;
 import br.com.wiser.utils.UtilsDate;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 
@@ -33,6 +37,7 @@ public class ConversaAdapter extends RealmRecyclerViewAdapter<Conversa, Recycler
     private RealmResults<Conversa> listaConversas;
     private Map<Long, Usuario> mapUsuarios;
     private ICallback callback;
+    private IClickListener onPerfilClickListener;
 
     public ConversaAdapter(RealmResults<Conversa> listaConversas, boolean autoUpdate, ICallback callback) {
         super(listaConversas, autoUpdate);
@@ -74,38 +79,37 @@ public class ConversaAdapter extends RealmRecyclerViewAdapter<Conversa, Recycler
         notifyDataSetChanged();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public Usuario getUsuario(long userID) {
+        return mapUsuarios.get(userID);
+    }
+
+    public void setOnPerfilClickListener(IClickListener onPerfilClickListener) {
+        this.onPerfilClickListener = onPerfilClickListener;
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public long idConversa;
         public Usuario usuario;
 
-        public View viewSeparator;
+        @BindView(R.id.viewSeparator) View viewSeparator;
 
-        public ImageView imgPerfil;
-        public ProgressBar prgBarra;
+        @BindView(R.id.imgPerfil) ImageView imgPerfil;
+        @BindView(R.id.prgBarra) ProgressBar prgBarra;
 
-        public TextView lblNome;
-        public TextView lblDataHora;
-        public TextView lblMensagens;
-        public TextView lblContMensagens;
+        @BindView(R.id.lblNome) TextView lblNome;
+        @BindView(R.id.lblDataHora) TextView lblDataHora;
+        @BindView(R.id.lblMensagens) TextView lblMensagens;
+        @BindView(R.id.lblContMensagens) TextView lblContMensagens;
 
         private ICallback callback;
         private int posicao;
 
-        public ViewHolder(View itemLayoutView, ICallback callback) {
-            super(itemLayoutView);
+        public ViewHolder(View view, ICallback callback) {
+            super(view);
             this.callback = callback;
-            itemLayoutView.setOnClickListener(this);
-
-            viewSeparator = itemLayoutView.findViewById(R.id.viewSeparator);
-
-            imgPerfil = (ImageView) itemLayoutView.findViewById(R.id.imgPerfil);
-            prgBarra = (ProgressBar) itemLayoutView.findViewById(R.id.prgBarra);
-
-            lblNome = (TextView) itemLayoutView.findViewById(R.id.lblNome);
-            lblDataHora = (TextView) itemLayoutView.findViewById(R.id.lblDataHora);
-            lblMensagens = (TextView) itemLayoutView.findViewById(R.id.lblMensagens);
-            lblContMensagens = (TextView) itemLayoutView.findViewById(R.id.lblContMensagens);
+            ButterKnife.bind(this, view);
+            view.setOnClickListener(this);
         }
 
         public void bind(Conversa conversa, int posicao) {
@@ -114,7 +118,7 @@ public class ConversaAdapter extends RealmRecyclerViewAdapter<Conversa, Recycler
 
             Context context = WiserApplication.getAppContext();
 
-            viewSeparator.setVisibility(posicao == 0 ? View.INVISIBLE : View.VISIBLE);
+            viewSeparator.setVisibility(posicao == 0 ? View.GONE : View.VISIBLE);
 
             if (conversa.getMensagens().size() > 0) {
                 lblDataHora.setText(UtilsDate.formatDate(conversa.getMensagens().last().getData(), UtilsDate.HHMM));
@@ -133,6 +137,13 @@ public class ConversaAdapter extends RealmRecyclerViewAdapter<Conversa, Recycler
         public void onClick(View view) {
             if (usuario != null) {
                 callback.onClick(idConversa, usuario);
+            }
+        }
+
+        @OnClick(R.id.imgPerfil)
+        public void onImgPerfilClicked() {
+            if (onPerfilClickListener != null) {
+                onPerfilClickListener.itemClicked(imgPerfil, posicao);
             }
         }
     }

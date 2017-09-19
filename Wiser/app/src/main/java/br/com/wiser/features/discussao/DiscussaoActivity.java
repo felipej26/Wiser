@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,10 +21,11 @@ import android.widget.TextView;
 import br.com.wiser.AbstractActivity;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
+import br.com.wiser.dialogs.DialogPerfilUsuario;
 import br.com.wiser.interfaces.ICallback;
+import br.com.wiser.interfaces.IClickListener;
 import br.com.wiser.utils.CheckPermissao;
 import br.com.wiser.utils.Utils;
-import br.com.wiser.utils.UtilsDate;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -104,8 +106,23 @@ public class DiscussaoActivity extends AbstractActivity {
         recyclerView.setFocusable(false);
 
         adapter = new DiscussaoRespostaAdapter();
+        adapter.setOnPerfilClickListener(new IClickListener() {
+            @Override
+            public void itemClicked(View view, int posicao) {
+                DialogPerfilUsuario perfil = new DialogPerfilUsuario();
+                perfil.show(getContext(), discussaoPresenter.getDiscussao().getListaRespostas().get(posicao).getUsuario());
+            }
+        });
         recyclerView.setAdapter(adapter);
         recyclerView.setNestedScrollingEnabled(false);
+
+        imgPerfil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogPerfilUsuario perfil = new DialogPerfilUsuario();
+                perfil.show(getContext(), discussaoPresenter.getDiscussao().getUsuario());
+            }
+        });
     }
 
     private void onLoadData() {
@@ -116,7 +133,10 @@ public class DiscussaoActivity extends AbstractActivity {
         lblTituloDiscussao.setText(Utils.decode(discussao.getTitulo()));
         lblDescricaoDiscussao.setText(Utils.decode(discussao.getDescricao()));
         lblAutor.setText(discussao.getUsuario().getPrimeiroNome());
-        lblDataHora.setText(UtilsDate.formatDate(discussao.getData(), UtilsDate.DDMMYYYY_HHMMSS));
+        lblDataHora.setText(DateUtils.getRelativeTimeSpanString(
+                discussao.getData().getTime(), System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS
+        ));
+
         lblRespostas.setText(getString(discussao.getListaRespostas().size() == 1 ?
                 R.string.resposta : R.string.respostas, discussao.getListaRespostas().size())
         );

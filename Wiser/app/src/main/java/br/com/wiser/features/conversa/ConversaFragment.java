@@ -13,8 +13,10 @@ import java.util.List;
 import br.com.wiser.AbstractFragment;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
+import br.com.wiser.dialogs.DialogPerfilUsuario;
 import br.com.wiser.features.mensagem.MensagemActivity;
 import br.com.wiser.features.usuario.Usuario;
+import br.com.wiser.interfaces.IClickListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -55,6 +57,13 @@ public class ConversaFragment extends AbstractFragment {
                 i.putExtra(Sistema.CONVERSA, idConversa);
                 i.putExtra(Sistema.CONTATO, usuario);
                 startActivity(i);
+            }
+        });
+        adapter.setOnPerfilClickListener(new IClickListener() {
+            @Override
+            public void itemClicked(View view, int posicao) {
+                DialogPerfilUsuario perfil = new DialogPerfilUsuario();
+                perfil.show(getContext(), adapter.getUsuario(conversaPresenter.getConversas().get(posicao).getDestinatario()));
             }
         });
 

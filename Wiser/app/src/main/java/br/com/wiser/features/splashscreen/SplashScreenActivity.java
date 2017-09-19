@@ -37,7 +37,7 @@ public class SplashScreenActivity extends AbstractActivity {
                     PackageInfo pInfo = getContext().getPackageManager().getPackageInfo(getPackageName(), 0);
                     if (!checkVersoes(pInfo.versionName, Sistema.minVersao)) {
                         DialogInformar informar = new DialogInformar(getActivity());
-                        informar.setMensagem("É necessário atualizar o app para continuar!");
+                        informar.setMensagem(getString(R.string.precisa_atualizar));
                         informar.setOkClick(new IDialog() {
                             @Override
                             public void onClick() {
@@ -74,7 +74,7 @@ public class SplashScreenActivity extends AbstractActivity {
     }
 
     private void inicializarSistema() {
-        Sistema.inicializarSistema(this, new ICallback() {
+        Sistema.inicializarSistema(new ICallback() {
 
             @Override
             public void onSuccess() {

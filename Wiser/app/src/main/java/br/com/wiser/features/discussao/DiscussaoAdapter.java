@@ -2,6 +2,7 @@ package br.com.wiser.features.discussao;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,6 @@ import br.com.wiser.Sistema;
 import br.com.wiser.WiserApplication;
 import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.utils.Utils;
-import br.com.wiser.utils.UtilsDate;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -60,7 +60,9 @@ public class DiscussaoAdapter extends RecyclerView.Adapter<DiscussaoAdapter.View
         viewHolder.lblContRespostas.setText(
                 context.getString(discussao.getListaRespostas().size() == 1 ? R.string.resposta : R.string.respostas,
                         discussao.getListaRespostas().size()));
-        viewHolder.lblDataHora.setText(UtilsDate.formatDate(discussao.getData(), UtilsDate.DDMMYYYY_HHMMSS));
+        viewHolder.lblDataHora.setText(DateUtils.getRelativeTimeSpanString(
+                discussao.getData().getTime(), System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS
+        ));
         viewHolder.btnDesativar.setText(discussao.isAtiva() ? context.getString(R.string.desativar) : context.getString(R.string.ativar));
 
         if (usuario.getId() != Sistema.getUsuario().getId()) {
