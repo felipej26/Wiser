@@ -30,12 +30,12 @@ public class SplashScreenActivity extends AbstractActivity {
     protected void onResume() {
         super.onResume();
 
-        Sistema.getMinVersao(new ICallback() {
+        Sistema.carregarVersoes(new ICallback() {
             @Override
             public void onSuccess() {
                 try {
                     PackageInfo pInfo = getContext().getPackageManager().getPackageInfo(getPackageName(), 0);
-                    if (!checkVersoes(pInfo.versionName, Sistema.minVersao)) {
+                    if (!checkVersoes(pInfo.versionName, Sistema.getVersao().getMinVersaoApp())) {
                         DialogInformar informar = new DialogInformar(getActivity());
                         informar.setMensagem(getString(R.string.precisa_atualizar));
                         informar.setOkClick(new IDialog() {
@@ -47,10 +47,15 @@ public class SplashScreenActivity extends AbstractActivity {
                             }
                         });
                         informar.show();
+                        return;
                     }
-                    else {
-                        inicializarSistema();
+
+                    if (Sistema.getMinVersaoCache() != Sistema.getVersao().getMinVersaoCache()) {
+                        carregarCache();
+                        return;
                     }
+
+                    waitAndStartLoginActivity();
                 }
                 catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
@@ -73,17 +78,12 @@ public class SplashScreenActivity extends AbstractActivity {
                 versaoApp[1].trim().equals(versaoMin[1].trim());
     }
 
-    private void inicializarSistema() {
-        Sistema.inicializarSistema(new ICallback() {
+    private void carregarCache() {
+        Sistema.carregarCache(new ICallback() {
 
             @Override
             public void onSuccess() {
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        startLoginActivity();
-                    }
-                }, SPLASH_TIMEOUT);
+                waitAndStartLoginActivity();
             }
 
             @Override
@@ -91,6 +91,15 @@ public class SplashScreenActivity extends AbstractActivity {
                 showToast(getString(R.string.app_servidor_manutencao));
             }
         });
+    }
+
+    private void waitAndStartLoginActivity() {
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                startLoginActivity();
+            }
+        }, SPLASH_TIMEOUT);
     }
 
     private void startLoginActivity() {

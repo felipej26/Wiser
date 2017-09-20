@@ -18,9 +18,7 @@ public class ArmazenarCache {
 
     private Type typeParameter;
 
-    public ArmazenarCache() {
-
-    }
+    public ArmazenarCache() { }
 
     public ArmazenarCache(Type typeParameter) {
         this.typeParameter = typeParameter;
@@ -37,6 +35,17 @@ public class ArmazenarCache {
         editor.commit();
     }
 
+    public void salvarInt(int valor, int preferencesKey) {
+        Context context = WiserApplication.getAppContext();
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                context.getString(R.string.preferences_file_key), Context.MODE_PRIVATE
+        );
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(context.getString(preferencesKey), valor);
+        editor.commit();
+    }
+
     public Object getObjeto(int preferencesKey) {
         Context context = WiserApplication.getAppContext();
 
@@ -45,5 +54,15 @@ public class ArmazenarCache {
         );
 
         return new Gson().fromJson(sharedPreferences.getString(context.getString(preferencesKey), null), typeParameter);
+    }
+
+    public int getInt(int preferencesKey) {
+        Context context = WiserApplication.getAppContext();
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                context.getString(R.string.preferences_file_key), Context.MODE_PRIVATE
+        );
+
+        return sharedPreferences.getInt(context.getString(preferencesKey), 0);
     }
 }

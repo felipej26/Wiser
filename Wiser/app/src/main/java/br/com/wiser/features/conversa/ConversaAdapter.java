@@ -118,7 +118,7 @@ public class ConversaAdapter extends RealmRecyclerViewAdapter<Conversa, Recycler
 
             Context context = WiserApplication.getAppContext();
 
-            viewSeparator.setVisibility(posicao == 0 ? View.GONE : View.VISIBLE);
+            viewSeparator.setVisibility(posicao == 0 ? View.INVISIBLE : View.VISIBLE);
 
             if (conversa.getMensagens().size() > 0) {
                 lblDataHora.setText(UtilsDate.formatDate(conversa.getMensagens().last().getData(), UtilsDate.HHMM));

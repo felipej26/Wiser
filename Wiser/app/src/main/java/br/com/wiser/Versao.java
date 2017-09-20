@@ -8,13 +8,24 @@ import com.google.gson.annotations.SerializedName;
 
 public class Versao {
     @SerializedName("min_versao")
-    private String minVersao;
+    private String minVersaoApp;
 
-    public String getMinVersao() {
-        return minVersao;
+    @SerializedName("min_versao_cache")
+    private int minVersaoCache;
+
+    public String getMinVersaoApp() {
+        return minVersaoApp;
     }
 
-    public void setMinVersao(String minVersao) {
-        this.minVersao = minVersao;
+    public void setMinVersaoApp(String minVersaoApp) {
+        this.minVersaoApp = minVersaoApp;
+    }
+
+    public int getMinVersaoCache() {
+        return minVersaoCache;
+    }
+
+    public void setMinVersaoCache(int minVersaoCache) {
+        this.minVersaoCache = minVersaoCache;
     }
 }

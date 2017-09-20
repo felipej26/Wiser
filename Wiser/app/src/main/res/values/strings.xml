@@ -113,5 +113,6 @@
     <string name="preferences_idiomas_key" translatable="false">idiomas</string>
     <string name="preferences_fluencias_key" translatable="false">fluencias</string>
     <string name="preferences_assuntos_key" translatable="false">assuntos</string>
+    <string name="preferences_min_version_cache_key" translatable="false">minversioncache</string>
 
 </resources>

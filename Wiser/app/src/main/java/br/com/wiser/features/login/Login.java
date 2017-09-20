@@ -25,9 +25,6 @@ public class Login{
     @SerializedName("data_ultimo_acesso")
     private Date dataUltimoAcesso;
 
-    private double latitude;
-    private double longitude;
-
     public String getNome() {
         return nome;
     }
@@ -74,21 +71,5 @@ public class Login{
 
     public void setDataUltimoAcesso(Date dataUltimoAcesso) {
         this.dataUltimoAcesso = dataUltimoAcesso;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
     }
 }

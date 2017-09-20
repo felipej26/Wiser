@@ -34,7 +34,7 @@ public class Sistema {
     public static final String CONTATO = "contato";
     public static final String DISCUSSAO = "discussao";
 
-    public static String minVersao;
+    private static Versao versao;
     private static String appLinguagem;
 
     private static Usuario usuario;
@@ -66,7 +66,7 @@ public class Sistema {
         return (AccessToken) get(accessToken, R.string.preferences_accesstoken_key, AccessToken.class);
     }
 
-    public static void setAccessToken(AccessToken accessToken) {
+    private static void setAccessToken(AccessToken accessToken) {
         Sistema.accessToken = accessToken;
         set(accessToken, R.string.preferences_accesstoken_key);
     }
@@ -76,7 +76,7 @@ public class Sistema {
         return (List<ComboBoxItem>) get(listaIdiomas, R.string.preferences_idiomas_key, listType);
     }
 
-    public static void setListaIdiomas(List<ComboBoxItem> listaIdiomas) {
+    private static void setListaIdiomas(List<ComboBoxItem> listaIdiomas) {
         Sistema.listaIdiomas = listaIdiomas;
         set(listaIdiomas, R.string.preferences_idiomas_key);
     }
@@ -86,7 +86,7 @@ public class Sistema {
         return (List<ComboBoxItem>) get(listaFluencias, R.string.preferences_fluencias_key, listType);
     }
 
-    public static void setListaFluencias(List<ComboBoxItem> listaFluencias) {
+    private static void setListaFluencias(List<ComboBoxItem> listaFluencias) {
         Sistema.listaFluencias = listaFluencias;
         set(listaFluencias, R.string.preferences_fluencias_key);
     }
@@ -96,9 +96,19 @@ public class Sistema {
         return (Set<Assunto>) get(assuntos, R.string.preferences_assuntos_key, setType);
     }
 
-    public static void setAssuntos(Set<Assunto> assuntos) {
+    private static void setAssuntos(Set<Assunto> assuntos) {
         Sistema.assuntos = assuntos;
         set(assuntos, R.string.preferences_assuntos_key);
+    }
+
+    public static int getMinVersaoCache() {
+        ArmazenarCache armazenarCache = new ArmazenarCache();
+        return armazenarCache.getInt(R.string.preferences_min_version_cache_key);
+    }
+
+    private static void setMinVersaoCache(int minVersaoCache) {
+        ArmazenarCache armazenarCache = new ArmazenarCache();
+        armazenarCache.salvarInt(minVersaoCache, R.string.preferences_min_version_cache_key);
     }
 
     private static Object get(Object object, int preferencesKey, Type typeClass) {
@@ -107,7 +117,8 @@ public class Sistema {
         }
         else {
             ArmazenarCache armazenarCache = new ArmazenarCache(typeClass);
-            return armazenarCache.getObjeto(preferencesKey);
+            object = armazenarCache.getObjeto(preferencesKey);
+            return object;
         }
     }
 
@@ -116,13 +127,13 @@ public class Sistema {
         armazenarCache.salvarObjeto(object, preferencesKey);
     }
 
-    public static void getMinVersao(final ICallback callback) {
-        Call<Versao> call = service.getMinVersao();
+    public static void carregarVersoes(final ICallback callback) {
+        Call<Versao> call = service.getVersoes();
         call.enqueue(new Callback<Versao>() {
             @Override
             public void onResponse(Call<Versao> call, Response<Versao> response) {
                 if (response.isSuccessful()) {
-                    minVersao = response.body().getMinVersao();
+                    versao = response.body();
                     callback.onSuccess();
                 }
                 else {
@@ -137,7 +148,11 @@ public class Sistema {
         });
     }
 
-    public static void inicializarSistema(final ICallback callback) {
+    public static Versao getVersao() {
+        return versao;
+    }
+
+    public static void carregarCache(final ICallback callback) {
 
         try {
             /* TODO Carregar de uma unica vez todos os parametros ao inves de um de cada vez */
@@ -174,6 +189,8 @@ public class Sistema {
                 @Override
                 public void onError(String mensagemErro) { }
             });
+
+            setMinVersaoCache(versao.getMinVersaoCache());
         }
         catch (Exception e) {
             Log.e("Inicializar Sistema", e.getMessage());
@@ -292,6 +309,7 @@ public class Sistema {
 
     public static void logout(Activity activity) {
         setUsuario(null);
+        setAccessToken(null);
 
         Intent i = new Intent(activity, LoginActivity.class);
 

@@ -24,7 +24,7 @@ public class LoginPresenter {
         facebook = new Facebook();
     }
 
-    public void gravarLogin(final double latitude, final double longitude, final ICallback callback) {
+    public void gravarLogin(final ICallback callback) {
 
         facebook.getProfile(new Facebook.ICallbackProfileInfo() {
             @Override
@@ -37,8 +37,6 @@ public class LoginPresenter {
                 login.setFacebookID(facebook.getAccessToken().getUserId());
                 login.setAccessToken(facebook.getAccessToken().getToken());
                 login.setDataUltimoAcesso(new Date());
-                login.setLatitude(latitude);
-                login.setLongitude(longitude);
 
                 Call<Usuario> call = service.salvar(login);
                 call.enqueue(new Callback<Usuario>() {

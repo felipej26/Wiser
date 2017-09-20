@@ -14,8 +14,8 @@ import retrofit2.http.Query;
  * Created by Jefferson on 26/01/2017.
  */
 public interface ISistemaService {
-    @GET("sistema/getMinVersao")
-    Call<Versao> getMinVersao();
+    @GET("sistema/getVersoes")
+    Call<Versao> getVersoes();
 
     @GET("idioma/getIdiomas")
     Call<LinkedList<ComboBoxItem>> carregarIdiomas(@Query("linguagem") String linguagem, @Query("todos") boolean todos);

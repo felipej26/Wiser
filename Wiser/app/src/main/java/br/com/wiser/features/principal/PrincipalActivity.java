@@ -1,8 +1,10 @@
 package br.com.wiser.features.principal;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -11,6 +13,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -20,6 +25,8 @@ import br.com.wiser.Sistema;
 import br.com.wiser.features.configuracoes.ConfiguracoesActivity;
 import br.com.wiser.features.minhasdiscussoes.MinhasDiscussoesActivity;
 import br.com.wiser.features.sobre.SobreActivity;
+import br.com.wiser.features.usuario.UsuarioPresenter;
+import br.com.wiser.utils.CheckPermissao;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -32,6 +39,10 @@ public class PrincipalActivity extends AbstractAppCompatActivity {
     @BindView(R.id.sliding_tabs) TabLayout tabLayout;
     @BindView(R.id.snackbar_view) View snackBar;
 
+    private UsuarioPresenter usuarioPresenter;
+    private CheckPermissao checkPermissaoLocalizacao;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,12 +51,46 @@ public class PrincipalActivity extends AbstractAppCompatActivity {
         ButterKnife.bind(this);
         onInitView();
 
+        usuarioPresenter = new UsuarioPresenter();
+        checkPermissaoLocalizacao = new CheckPermissao(Manifest.permission.ACCESS_COARSE_LOCATION,
+                getString(R.string.solicitar_permissao_localizacao));
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
         if (Sistema.getUsuario().isSetouConfiguracoes()) {
             showSnackBar();
+
+            if (!checkPermissaoLocalizacao.checkPermissions(this)) {
+                checkPermissaoLocalizacao.requestPermissions(this);
+            }
+            else {
+                updateLocation();
+            }
         }
         else {
             startConfiguracoesActivity();
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (checkPermissaoLocalizacao.onRequestPermissionsResult(this, requestCode, permissions, grantResults)) {
+            updateLocation();
+        }
+    }
+
+    @SuppressWarnings("MissingPermission")
+    private void updateLocation() {
+        fusedLocationProviderClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            usuarioPresenter.salvarLocalizacao(
+                                    location.getLatitude(), location.getLongitude()
+                            );
+                        }
+                    }
+                });
     }
 
     private void showSnackBar() {

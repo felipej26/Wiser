@@ -10,8 +10,8 @@ android {
         applicationId "br.com.wiser"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 17
-        versionName "0.10.1-beta"
+        versionCode 18
+        versionName "0.11.0-beta"
     }
     buildTypes {
         release {

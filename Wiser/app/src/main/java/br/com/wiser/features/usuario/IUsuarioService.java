@@ -9,6 +9,8 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -27,4 +29,7 @@ public interface IUsuarioService {
     @FormUrlEncoded
     @POST("usuario/desativarConta")
     Call<Object> desativarConta(@Field("id") long userID);
+
+    @PUT("usuario/{id}")
+    Call<Object> salvarLocalizacao(@Path("id") long userID, @Query("latitude") double latitude, @Query("longitude") double longitude);
 }

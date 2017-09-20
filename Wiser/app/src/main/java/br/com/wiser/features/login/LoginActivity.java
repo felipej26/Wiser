@@ -1,9 +1,7 @@
 package br.com.wiser.features.login;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,9 +10,6 @@ import android.widget.Toast;
 
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
@@ -22,7 +17,6 @@ import br.com.wiser.facebook.Facebook;
 import br.com.wiser.features.principal.PrincipalActivity;
 import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.services.CarregarConversasService;
-import br.com.wiser.utils.CheckPermissao;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -31,10 +25,8 @@ public class LoginActivity extends Activity {
 
     private LoginPresenter loginPresenter;
     private Intent carregarConversasServices;
-    private FusedLocationProviderClient fusedLocationProviderClient;
 
     private Facebook facebook;
-    private CheckPermissao checkPermissaoLocalizacao;
 
     @BindView(R.id.btnLogin) Button btnLogin;
     @BindView(R.id.snackbar_view) View snackbar;
@@ -44,14 +36,11 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         loginPresenter = new LoginPresenter();
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         facebook = new Facebook(getFacebookCallback());
-        checkPermissaoLocalizacao = new CheckPermissao(Manifest.permission.ACCESS_COARSE_LOCATION,
-                getString(R.string.solicitar_permissao_localizacao));
 
         if (!getIntent().getBooleanExtra(Sistema.LOGOUT, false)) {
-            if (facebook.isLogado() && checkPermissaoLocalizacao.checkPermissions(this)) {
+            if (facebook.isLogado()) {
                 onLoginSuccess();
                 return;
             }
@@ -65,31 +54,16 @@ public class LoginActivity extends Activity {
         ButterKnife.bind(this);
     }
 
-    private void checkPermissionAndLogin() {
-        if (!checkPermissaoLocalizacao.checkPermissions(this)) {
-            checkPermissaoLocalizacao.requestPermissions(this);
-        } else {
-            onLoginSuccess();
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         facebook.callbackManager(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (checkPermissaoLocalizacao.onRequestPermissionsResult(this, requestCode, permissions, grantResults)) {
-            onLoginSuccess();
-        }
     }
 
     private FacebookCallback getFacebookCallback() {
         return new FacebookCallback() {
             @Override
             public void onSuccess(Object o) {
-                checkPermissionAndLogin();
+                onLoginSuccess();
                 Log.i("Facebook", "onSuccess");
             }
 
@@ -105,21 +79,8 @@ public class LoginActivity extends Activity {
         };
     }
 
-    @SuppressWarnings("MissingPermission")
-    private void updateLocation(final ICallback callback) {
-        fusedLocationProviderClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            loginPresenter.gravarLogin(location.getLatitude(), location.getLongitude(), callback);
-                        }
-                    }
-                });
-    }
-
     private void onLoginSuccess() {
-        updateLocation(new ICallback() {
+        loginPresenter.gravarLogin(new ICallback() {
             @Override
             public void onSuccess() {
                 startService();
@@ -158,11 +119,6 @@ public class LoginActivity extends Activity {
 
     @OnClick(R.id.btnLogin)
     public void onLoginClicked() {
-        if (!checkPermissaoLocalizacao.checkPermissions(this)) {
-            checkPermissaoLocalizacao.requestPermissions(this);
-        }
-        else {
-            facebook.login(this);
-        }
+        facebook.login(this);
     }
 }

@@ -1,6 +1,8 @@
 package br.com.wiser.features.procurarusuarios;
 
+import android.Manifest;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +16,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 
@@ -24,8 +29,10 @@ import br.com.wiser.dialogs.DialogPerfilUsuario;
 import br.com.wiser.features.conversa.ConversaPresenter;
 import br.com.wiser.features.mensagem.MensagemActivity;
 import br.com.wiser.features.usuario.Usuario;
+import br.com.wiser.features.usuario.UsuarioPresenter;
 import br.com.wiser.interfaces.ICallback;
 import br.com.wiser.interfaces.IClickListener;
+import br.com.wiser.utils.CheckPermissao;
 import br.com.wiser.utils.ComboBoxItem;
 import br.com.wiser.utils.FiltrosManager;
 import butterknife.BindView;
@@ -57,14 +64,29 @@ public class ProcurarUsuariosActivity extends AbstractAppCompatActivity {
     @BindView(R.id.pgbLoading) ProgressBar pgbLoading;
     @BindView(R.id.rcvUsuarios) RecyclerView rcvUsuarios;
 
+    private UsuarioPresenter usuarioPresenter;
+    private CheckPermissao checkPermissaoLocalizacao;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_procurar_usuarios);
 
         procurarContatosPresenter = new ProcurarUsuariosPresenter();
+        usuarioPresenter = new UsuarioPresenter();
+        checkPermissaoLocalizacao = new CheckPermissao(Manifest.permission.ACCESS_COARSE_LOCATION,
+                getString(R.string.solicitar_permissao_localizacao));
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         onLoad();
+
+        if (!checkPermissaoLocalizacao.checkPermissions(this)) {
+            checkPermissaoLocalizacao.requestPermissions(this);
+        }
+        else {
+            updateLocation();
+        }
     }
 
     @Override
@@ -152,9 +174,36 @@ public class ProcurarUsuariosActivity extends AbstractAppCompatActivity {
         btnMostrarFiltros.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (checkPermissaoLocalizacao.onRequestPermissionsResult(this, requestCode, permissions, grantResults)) {
+            updateLocation();
+        }
+    }
+
+    @SuppressWarnings("MissingPermission")
+    private void updateLocation() {
+        fusedLocationProviderClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            usuarioPresenter.salvarLocalizacao(
+                                    location.getLatitude(), location.getLongitude()
+                            );
+                        }
+                    }
+                });
+    }
+
     @OnClick(R.id.btnProcurar)
     public void onProcurarClicked() {
         Pesquisa pesquisa = new Pesquisa();
+
+        if (!checkPermissaoLocalizacao.checkPermissions(this)) {
+            checkPermissaoLocalizacao.requestPermissions(this);
+            return;
+        }
 
         onPrgLoadingChanged(View.VISIBLE);
 
