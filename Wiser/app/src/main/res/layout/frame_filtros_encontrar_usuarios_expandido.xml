@@ -14,21 +14,36 @@
         android:text="@string/idioma"
         style="@style/AppCompatTema.TextViewTitulo" />
 
-    <com.google.android.flexbox.FlexboxLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/lytIdiomas"
-        android:layout_below="@id/lblIdioma"
-        android:layout_marginTop="6dp"
-        app:flexWrap="wrap">
+        android:id="@+id/lytI"
+        android:layout_below="@id/lblIdioma">
 
-    </com.google.android.flexbox.FlexboxLayout>
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/lytIdiomas"
+            android:layout_marginTop="6dp"
+            app:flexWrap="wrap">
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <Button
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:id="@+id/btnAddFiltro"
+            android:layout_marginTop="9dp"
+            android:layout_marginBottom="9dp"
+            android:layout_toEndOf="@id/lytIdiomas"
+            android:background="@drawable/ic_add_filter"/>
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/lblFluencia"
-        android:layout_below="@+id/lytIdiomas"
+        android:layout_below="@+id/lytI"
         android:text="@string/fluencia"
-        android:layout_marginTop="18dp"
         style="@style/AppCompatTema.TextViewTitulo"/>
 
     <com.google.android.flexbox.FlexboxLayout

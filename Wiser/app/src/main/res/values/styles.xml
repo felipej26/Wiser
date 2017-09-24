@@ -56,18 +56,14 @@
         <item name="android:textColorSecondary">@color/colorPrimaryText</item>
     </style>
 
-    <style name="AppCompatTema.CheckBokFilter">
+    <style name="AppCompatTema.BackFilter">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">12sp</item>
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:textColor">@color/colorBackground</item>
+        <item name="android:textColor">@color/colorPrimaryText</item>
         <item name="android:background">@drawable/back_filter</item>
-        <item name="android:button">@null</item>
-        <item name="android:padding">6dp</item>
-        <item name="android:drawableLeft">@drawable/back_check_filter</item>
-        <item name="android:drawablePadding">4dp</item>
         <item name="android:layout_marginRight">5dp</item>
         <item name="android:layout_marginTop">2dp</item>
     </style>

@@ -31,6 +31,7 @@ import br.com.wiser.features.mensagem.MensagemActivity;
 import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.features.usuario.UsuarioPresenter;
 import br.com.wiser.interfaces.ICallback;
+import br.com.wiser.interfaces.ICallbackFinish;
 import br.com.wiser.interfaces.IClickListener;
 import br.com.wiser.utils.CheckPermissao;
 import br.com.wiser.utils.ComboBoxItem;
@@ -52,6 +53,7 @@ public class ProcurarUsuariosActivity extends AbstractAppCompatActivity {
     @BindView(R.id.lytFiltroExpandido) RelativeLayout lytFiltroExpandido;
     @BindView(R.id.lytIdiomas) FlexboxLayout lytIdiomas;
     @BindView(R.id.lytFluencias) FlexboxLayout lytFluencias;
+    @BindView(R.id.btnAddFiltro) Button btnAddFiltro;
     @BindView(R.id.btnProcurar) Button btnProcurar;
 
     @BindView(R.id.lytFiltro) RelativeLayout lytFiltro;
@@ -157,8 +159,8 @@ public class ProcurarUsuariosActivity extends AbstractAppCompatActivity {
             idiomasManager.addFiltro(item.getId(), item.getDescricao(), defaultIdioma, defaultIdioma);
         }
 
-        for (CheckBox check : idiomasManager.getFiltrosAsCheckBox(this, lytIdiomas)) {
-            lytIdiomas.addView(check);
+        for (Button button : idiomasManager.getFiltrosAsButton(this, lytIdiomas)) {
+            lytIdiomas.addView(button);
         }
 
         fluenciasManager = new FiltrosManager();
@@ -237,13 +239,26 @@ public class ProcurarUsuariosActivity extends AbstractAppCompatActivity {
 
     @OnClick(R.id.btnLimpar)
     public void onLimparClicked() {
-        idiomasManager.limparSelecionados();
-        fluenciasManager.limparSelecionados();
+        idiomasManager.limparSelecionados(lytIdiomas);
+        fluenciasManager.limparSelecionados(lytFluencias);
     }
 
     @OnClick({R.id.btnFiltrar, R.id.btnMostrarFiltros})
     public void onFiltrarClicked() {
         trocarLayoutFiltros(true);
+    }
+
+    @OnClick(R.id.btnAddFiltro)
+    public void onAddFiltroClicked() {
+        idiomasManager.selecionarItens(this, new ICallbackFinish() {
+            @Override
+            public void onFinish() {
+                lytIdiomas.removeAllViews();
+                for (Button button : idiomasManager.getFiltrosAsButton(ProcurarUsuariosActivity.this, lytIdiomas)) {
+                    lytIdiomas.addView(button);
+                }
+            }
+        });
     }
 
     private void onPrgLoadingChanged(int visibility) {
