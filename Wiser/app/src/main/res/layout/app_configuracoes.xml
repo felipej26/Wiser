@@ -5,66 +5,84 @@
     android:layout_height="match_parent"
     tools:context=".features.configuracoes.ConfiguracoesActivity">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
     <TextView
         android:text="@string/idioma"
         android:id="@+id/lblIdioma"
-        style="@style/AppTema.AppTextTitulo" />
+        android:layout_below="@id/toolbar"
+        style="@style/Title"/>
 
     <ImageView
         android:layout_height="60dp"
         android:id="@+id/imageView2"
         android:layout_below="@+id/lblIdioma"
-        style="@style/AppTema.AppFrame" />
+        style="@style/BaseBox"/>
 
     <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:id="@+id/cmbIdiomaConfig"
         android:spinnerMode="dropdown"
         android:layout_below="@id/lblIdioma"
-        android:layout_marginTop="15dp"
-        style="@style/AppTema.AppItemFrame" />
+        android:layout_marginTop="15dp"/>
 
     <TextView
         android:text="@string/fluencia"
         android:id="@+id/lblFluencia"
         android:layout_below="@id/imageView2"
-        style="@style/AppTema.AppTextTitulo" />
+        style="@style/Title" />
 
     <ImageView
         android:layout_height="60dp"
         android:id="@+id/imageView3"
         android:layout_below="@+id/lblFluencia"
         android:layout_centerHorizontal="true"
-        style="@style/AppTema.AppFrame" />
+        style="@style/BaseBox" />
 
     <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:id="@+id/cmbFluenciaConfig"
         android:spinnerMode="dropdown"
         android:layout_below="@id/lblFluencia"
-        android:layout_marginTop="15dp"
-        style="@style/AppTema.AppItemFrame" />
+        android:layout_marginTop="15dp" />
 
     <TextView
         android:text="@string/app_configuracoes_item_status"
         android:id="@+id/lblStatus"
         android:layout_below="@id/imageView3"
-        style="@style/AppTema.AppTextTitulo"/>
+        style="@style/Title"/>
 
     <TextView
         android:id="@+id/lblContLetras"
         android:text="0 / 30"
         android:layout_below="@id/imageView3"
-        style="@style/AppTema.AppInfoTitulo" />
+        style="@style/Info" />
 
     <ImageView
         android:layout_height="60dp"
         android:id="@+id/imageView4"
         android:layout_below="@+id/lblStatus"
-        style="@style/AppTema.AppFrame" />
+        style="@style/BaseBox" />
 
     <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:id="@+id/txtStatus"
         android:layout_below="@+id/lblStatus"
-        android:textColor="@color/colorSecondaryText"
+        android:textColor="@android:color/secondary_text_dark"
         android:layout_marginTop="18dp"
         android:background="@null"
         android:maxLength="30"
@@ -72,15 +90,14 @@
         android:singleLine="true"
         android:textSize="18sp"
         android:inputType="textCapSentences"
-        android:hint="@string/digite_status"
-        style="@style/AppTema.AppItemFrame" />
+        android:hint="@string/digite_status"/>
 
     <Button
         android:text="@string/desativar_conta"
         android:id="@+id/btnDesativar"
         android:layout_below="@+id/imageView4"
         android:layout_marginTop="10dp"
-        style="@style/AppTema.AppBotao.Atencao" />
-
+        android:background="@drawable/btnwarningshape"
+        style="@style/MainButton" />
 
 </RelativeLayout>

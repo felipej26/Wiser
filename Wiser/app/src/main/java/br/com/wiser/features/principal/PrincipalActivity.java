@@ -8,10 +8,10 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toolbar;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -49,7 +49,7 @@ public class PrincipalActivity extends AbstractAppCompatActivity {
         setContentView(R.layout.app_principal);
 
         ButterKnife.bind(this);
-        onInitView();
+        onLoad();
 
         usuarioPresenter = new UsuarioPresenter();
         checkPermissaoLocalizacao = new CheckPermissao(Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -95,7 +95,7 @@ public class PrincipalActivity extends AbstractAppCompatActivity {
 
     private void showSnackBar() {
         try {
-            Picasso.with(getContext())
+            Picasso.with(this)
                     .load(Sistema.getUsuario().getUrlFotoPerfil())
                     .into(new Target() {
                         @Override
@@ -159,13 +159,13 @@ public class PrincipalActivity extends AbstractAppCompatActivity {
         startActivity(new Intent(this, SobreActivity.class));
     }
 
-    public void onInitView() {
-        setSupportActionBar(toolbar);
+    public void onLoad() {
 
+        setActionBar(toolbar);
         adapter = new PrincipalTabs(getSupportFragmentManager());
 
         viewPager.setAdapter(adapter);
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());

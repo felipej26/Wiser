@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="br.com.wiser.features.procurarusuarios.ProcurarUsuariosActivity">
+    tools:context="br.com.wiser.features.procurarusuarios.ProcurarUsuariosActivity"
+    android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <include
         android:id="@+id/toolbar"
-        app:title="@string/title_activity_procurar_usuarios"
-        android:background="@color/colorPrimary"/>
+        layout="@layout/toolbar" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar"
         android:id="@+id/lytFiltros"
+        android:elevation="@dimen/toolbar_elevation"
         android:animateLayoutChanges="true">
 
         <include
@@ -57,7 +54,7 @@
             android:fontFamily="sans-serif-medium"
             android:textStyle="normal"
             android:gravity="center_horizontal"
-            android:textColor="@color/colorPrimaryInverseText"
+            android:textColor="@android:color/primary_text_light"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"/>
 
@@ -87,7 +84,4 @@
             android:indeterminateTintMode="src_in" />
 
     </RelativeLayout>
-
-
-
-</RelativeLayout>
+</LinearLayout>

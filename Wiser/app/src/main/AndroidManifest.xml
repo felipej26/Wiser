@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="br.com.wiser">
 
-    <!-- Permissões -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -14,7 +13,8 @@
         android:icon="@mipmap/ic_wiser"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTema">
+        android:theme="@style/AppTheme">
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -24,88 +24,68 @@
 
         <service android:name=".services.CarregarConversasService" />
 
-        <!-- Activity do Splash Screen -->
-        <!-- Activity Main do App -->
         <activity
             android:name=".features.splashscreen.SplashScreenActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTema.NoActionBar">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!-- Activity para Logar com o Facebook -->
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
 
-        <!-- Activity da Tela Configurações do App -->
         <activity
             android:name=".features.configuracoes.ConfiguracoesActivity"
             android:label="@string/app_configuracoes_title"
             android:screenOrientation="portrait" />
 
-        <!-- Activity da Tela de Visualizar Perfil Completo -->
         <activity
             android:name=".features.perfilcompleto.PerfilCompletoActivity"
             android:label="@string/app_perfil_title"
             android:screenOrientation="portrait" />
 
-        <!-- Activity da Tela Login do App -->
         <activity
             android:name=".features.login.LoginActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTema.NoActionBar" />
+            android:screenOrientation="portrait"/>
 
-        <!-- Activity da Tela Principal do App -->
         <activity
             android:name=".features.principal.PrincipalActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppCompatTema" />
+            android:screenOrientation="portrait"/>
 
-        <!-- Activity da Tela Sobre do App -->
         <activity
             android:name=".features.sobre.SobreActivity"
             android:label="@string/app_sobre_title"
             android:screenOrientation="portrait" />
 
-        <!-- Activity da Tela Encontrar Usuarios do App -->
         <activity
             android:name=".features.procurarusuarios.ProcurarUsuariosActivity"
             android:label="@string/title_activity_procurar_usuarios"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppCompatTema" />
+            android:screenOrientation="portrait"/>
 
-        <!-- Activity da Tela de Conversa do Chat -->
         <activity
             android:name=".features.mensagem.MensagemActivity"
             android:label="@string/chat_resultados_title"
             android:screenOrientation="portrait" />
 
-        <!-- Activity da Tela de Discussões do Forum -->
         <activity
             android:name=".features.discussao.DiscussaoActivity"
             android:label="@string/forum_discussao_title"
             android:screenOrientation="portrait" />
 
-        <!-- Activity da Tela de Discussões do Usuário do Forum -->
         <activity
             android:name=".features.minhasdiscussoes.MinhasDiscussoesActivity"
             android:label="@string/forum_minhasdiscussoes_title"
             android:screenOrientation="portrait" />
 
-        <!-- Activity da Tela de Nova Discussão do Forum -->
         <activity
             android:name=".features.novadiscussao.NovaDiscussaoActivity"
             android:label="@string/forum_novadiscussao_title"
             android:screenOrientation="portrait" />
 
-        <!-- Activity da Tela de Pesquisa do Forum -->
         <activity
             android:name=".features.procurardiscussao.ProcurarDiscussaoActivity"
             android:label="@string/forum_pesquisa_title"

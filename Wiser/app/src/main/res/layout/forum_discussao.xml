@@ -6,9 +6,14 @@
     tools:context=".features.discussao.DiscussaoActivity"
     tools:menu="br.br.wiser.res.menu.menu_compartilhar" >
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
         android:layout_above="@+id/lytEnviarResposta"
         android:fillViewport="true">
 

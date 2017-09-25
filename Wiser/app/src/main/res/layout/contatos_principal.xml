@@ -9,7 +9,7 @@
         android:text="@string/app_pesquisa_title"
         android:id="@+id/btnEncontrarUsuarios"
         android:layout_marginTop="5dp"
-        style="@style/AppTema.AppBotao" />
+        style="@style/MainButton" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"

@@ -9,8 +9,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toolbar;
 
-import br.com.wiser.AbstractActivity;
+import br.com.wiser.AbstractAppCompatActivity;
 import br.com.wiser.R;
 import br.com.wiser.features.discussao.DiscussaoAdapter;
 import br.com.wiser.features.discussao.DiscussaoPartial;
@@ -24,12 +25,13 @@ import butterknife.OnClick;
 /**
  * Created by Jefferson on 19/05/2016.
  */
-public class MinhasDiscussoesActivity extends AbstractActivity implements IDiscussao {
+public class MinhasDiscussoesActivity extends AbstractAppCompatActivity implements IDiscussao {
 
     private MinhasDiscussoesPresenter minhasDiscussoesPresenter;
     private DiscussaoPartial discussaoPartial;
     private DiscussaoAdapter adapter;
 
+    @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.btnNovaDiscussao) Button btnNovaDiscussao;
     @BindView(R.id.pgbLoading) ProgressBar pgbLoading;
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
@@ -68,6 +70,7 @@ public class MinhasDiscussoesActivity extends AbstractActivity implements IDiscu
 
         onPrgLoadingChanged(View.VISIBLE);
 
+        setActionBar(toolbar);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         recyclerView.setHasFixedSize(true);

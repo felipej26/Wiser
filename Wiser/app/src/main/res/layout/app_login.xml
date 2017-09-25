@@ -23,10 +23,10 @@
     <Button
         android:id="@+id/btnLogin"
         android:text="@string/entrar_com_facebook"
-        android:textColor="#FFFFFF"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="50dp"
-        style="@style/AppTema.AppBotao.Login" />
+        android:background="@drawable/btnloginshape"
+        style="@style/MainButton"/>
 
     <View
         android:layout_width="match_parent"

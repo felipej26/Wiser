@@ -1,6 +1,5 @@
 package br.com.wiser.features.login;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +10,7 @@ import android.widget.Toast;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 
+import br.com.wiser.AbstractActivity;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.facebook.Facebook;
@@ -21,7 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends AbstractActivity {
 
     private LoginPresenter loginPresenter;
     private Intent carregarConversasServices;

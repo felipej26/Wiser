@@ -17,8 +17,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
-import br.com.wiser.AbstractActivity;
+import br.com.wiser.AbstractAppCompatActivity;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.dialogs.DialogPerfilUsuario;
@@ -34,11 +35,12 @@ import butterknife.OnTextChanged;
 /**
  * Created by Jefferson on 16/05/2016.
  */
-public class DiscussaoActivity extends AbstractActivity {
+public class DiscussaoActivity extends AbstractAppCompatActivity {
 
     private DiscussaoPresenter discussaoPresenter;
     private DiscussaoRespostaAdapter adapter;
 
+    @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
     @BindView(R.id.lblIDDiscussao) TextView lblIDDiscussao;
     @BindView(R.id.imgPerfil) ImageView imgPerfil;
@@ -98,6 +100,7 @@ public class DiscussaoActivity extends AbstractActivity {
 
         onPrgLoadingChanged(View.VISIBLE);
 
+        setActionBar(toolbar);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         ((ViewGroup) lblSugestao.getParent()).removeView(lblSugestao);
 

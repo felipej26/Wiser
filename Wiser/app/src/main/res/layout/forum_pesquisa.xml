@@ -5,6 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".features.procurardiscussao.ProcurarDiscussaoActivity" >
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -12,6 +16,7 @@
         android:layout_alignStart="@+id/recycler_view"
         android:layout_toStartOf="@+id/btnProcurarDiscussao"
         android:layout_alignBottom="@+id/btnProcurarDiscussao"
+        android:layout_below="@id/toolbar"
         android:hint="@string/procure_por"
         android:singleLine="true"
         android:textColor="#3a3939"
@@ -22,10 +27,10 @@
         android:layout_height="wrap_content"
         android:text="@string/procurar"
         android:id="@+id/btnProcurarDiscussao"
-        android:onClick="procurarDiscussao"
-        android:layout_alignParentTop="true"
+
         android:layout_alignParentEnd="true"
-        android:textColor="@color/colorPrimaryInverseText"
+        android:layout_below="@id/toolbar"
+        android:textColor="@android:color/primary_text_dark"
         android:background="@drawable/btncustomshape"
         android:layout_marginRight="10dp"
         android:layout_marginTop="5dp"/>

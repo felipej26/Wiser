@@ -11,8 +11,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
-import br.com.wiser.AbstractActivity;
+import br.com.wiser.AbstractAppCompatActivity;
 import br.com.wiser.R;
 import br.com.wiser.features.discussao.DiscussaoAdapter;
 import br.com.wiser.features.discussao.DiscussaoPartial;
@@ -25,12 +26,13 @@ import butterknife.OnClick;
 /**
  * Created by Jefferson on 16/05/2016.
  */
-public class ProcurarDiscussaoActivity extends AbstractActivity implements IDiscussao {
+public class ProcurarDiscussaoActivity extends AbstractAppCompatActivity implements IDiscussao {
 
     private ProcurarDiscussaoPresenter procurarDiscussaoPresenter;
     private DiscussaoPartial discussaoPartial;
     private DiscussaoAdapter adapter;
 
+    @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.txtDiscussao) EditText txtDiscussao;
     @BindView(R.id.lblResultados) TextView lblResultados;
     @BindView(R.id.lblContResultados) TextView lblContResultados;
@@ -58,6 +60,7 @@ public class ProcurarDiscussaoActivity extends AbstractActivity implements IDisc
     private void onLoad() {
         ButterKnife.bind(this);
 
+        setActionBar(toolbar);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         lblResultados.setVisibility(View.INVISIBLE);

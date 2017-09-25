@@ -11,8 +11,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
-import br.com.wiser.AbstractActivity;
+import br.com.wiser.AbstractAppCompatActivity;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.features.conversa.ConversaPresenter;
@@ -30,12 +31,13 @@ import butterknife.OnClick;
 /**
  * Created by Lucas on 25/09/2016.
  */
-public class PerfilCompletoActivity extends AbstractActivity implements IDiscussao {
+public class PerfilCompletoActivity extends AbstractAppCompatActivity implements IDiscussao {
 
     private PerfilCompletoPresenter perfilCompletoPresenter;
     private DiscussaoPartial discussaoPartial;
     private DiscussaoAdapter adapter;
 
+    @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.imgPerfil) ImageView imgPerfil;
     @BindView(R.id.lblNomeDetalhe) TextView lblNomeDetalhe;
     @BindView(R.id.lblIdade) TextView lblIdade;
@@ -80,6 +82,7 @@ public class PerfilCompletoActivity extends AbstractActivity implements IDiscuss
 
         onSetVisibilityProgressBar(View.VISIBLE);
 
+        setActionBar(toolbar);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         recyclerView.setHasFixedSize(true);

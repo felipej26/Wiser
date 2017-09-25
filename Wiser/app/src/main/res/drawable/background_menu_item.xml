@@ -3,8 +3,7 @@
     android:color="@color/colorPrimary">
 
     <item
-        android:id="@+id/mask"
-        android:drawable="@color/colorWindowBackground">
+        android:id="@+id/mask">
         <shape android:shape="rectangle" />
     </item>
 

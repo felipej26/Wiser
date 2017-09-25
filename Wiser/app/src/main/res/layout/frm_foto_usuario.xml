@@ -7,7 +7,7 @@
         android:id="@+id/imgPerfil"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        style="@style/AppTema.AppImgPerfil" />
+        style="@style/UserPicture" />
 
     <ProgressBar
         android:id="@+id/prgBarra"

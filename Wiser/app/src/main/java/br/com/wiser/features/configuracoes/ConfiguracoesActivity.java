@@ -8,8 +8,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
-import br.com.wiser.AbstractActivity;
+import br.com.wiser.AbstractAppCompatActivity;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.dialogs.DialogConfirmar;
@@ -23,10 +24,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 
-public class ConfiguracoesActivity extends AbstractActivity {
+public class ConfiguracoesActivity extends AbstractAppCompatActivity {
 
     private ConfiguracoesPresenter configuracoesPresenter;
 
+    @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.cmbIdiomaConfig) Spinner cmbIdioma;
     @BindView(R.id.cmbFluenciaConfig) Spinner cmbFluencia;
     @BindView(R.id.lblContLetras) TextView lblContLetras;
@@ -53,6 +55,7 @@ public class ConfiguracoesActivity extends AbstractActivity {
     private void onLoad() {
         ButterKnife.bind(this);
 
+        setActionBar(toolbar);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         Sistema.carregarComboIdiomas(cmbIdioma, ConfiguracoesActivity.this);

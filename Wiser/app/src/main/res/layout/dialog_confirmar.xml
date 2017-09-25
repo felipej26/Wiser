@@ -36,7 +36,7 @@
             android:layout_marginRight="5dp"
             android:layout_marginLeft="0dp"
             android:layout_marginBottom="5dp"
-            style="@style/AppTema.AppBotao" />
+            style="@style/MainButton" />
 
         <Button
             android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
             android:layout_marginRight="0dp"
             android:layout_marginLeft="5dp"
             android:layout_marginBottom="5dp"
-            style="@style/AppTema.AppBotao" />
+            style="@style/MainButton" />
 
     </LinearLayout>
 

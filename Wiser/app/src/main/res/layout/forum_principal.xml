@@ -16,7 +16,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="0dp"
-        style="@style/AppTema.AppBotao" />
+        style="@style/MainButton" />
 
     <Button
         android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        style="@style/AppTema.AppBotao" />
+        style="@style/MainButton" />
 
     <Button
         android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
         android:layout_marginLeft="0dp"
         android:layout_marginRight="10dp"
         android:layout_alignParentEnd="true"
-        style="@style/AppTema.AppBotao" />
+        style="@style/MainButton" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"

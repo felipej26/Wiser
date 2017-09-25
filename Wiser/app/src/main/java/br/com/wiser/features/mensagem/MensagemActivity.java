@@ -9,8 +9,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
-import br.com.wiser.AbstractActivity;
+import br.com.wiser.AbstractAppCompatActivity;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.dialogs.DialogSugestoes;
@@ -24,10 +25,11 @@ import butterknife.OnTextChanged;
 /**
  * Created by Jefferson on 30/05/2016.
  */
-public class MensagemActivity extends AbstractActivity implements DialogSugestoes.CallbackSugestao {
+public class MensagemActivity extends AbstractAppCompatActivity implements DialogSugestoes.CallbackSugestao {
 
     private MensagemPresenter mensagensPresenter;
 
+    @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
     @BindView(R.id.lblContResposta) TextView lblContResposta;
     @BindView(R.id.lblSugestao) TextView lblSugestao;
@@ -71,6 +73,7 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
 
         ButterKnife.bind(this);
 
+        setActionBar(toolbar);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setTitle(mensagensPresenter.getUsuario().getNome());
 
@@ -123,7 +126,6 @@ public class MensagemActivity extends AbstractActivity implements DialogSugestoe
     public void setSugestao(String sugestao) {
         lblSugestao.setVisibility(View.VISIBLE);
         lblSugestao.setText(sugestao);
-        //recyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
 
     private void ajustarLista() {

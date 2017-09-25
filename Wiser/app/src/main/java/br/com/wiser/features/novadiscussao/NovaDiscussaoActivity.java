@@ -7,8 +7,9 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
-import br.com.wiser.AbstractActivity;
+import br.com.wiser.AbstractAppCompatActivity;
 import br.com.wiser.R;
 import br.com.wiser.dialogs.DialogConfirmar;
 import br.com.wiser.dialogs.DialogInformar;
@@ -23,10 +24,11 @@ import butterknife.OnTextChanged;
 /**
  * Created by Jefferson on 16/05/2016.
  */
-public class NovaDiscussaoActivity extends AbstractActivity {
+public class NovaDiscussaoActivity extends AbstractAppCompatActivity {
 
     private NovaDiscussaoPresenter novaDiscussaoPresenter;
 
+    @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.txtTituloDiscussao) EditText txtTituloDiscussao;
     @BindView(R.id.txtDescricaoDiscussao) EditText txtDescricaoDiscussao;
     @BindView(R.id.lblContTitulo) TextView lblContTitulo;
@@ -52,6 +54,7 @@ public class NovaDiscussaoActivity extends AbstractActivity {
     public void onLoad() {
         ButterKnife.bind(this);
 
+        setActionBar(toolbar);
         getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

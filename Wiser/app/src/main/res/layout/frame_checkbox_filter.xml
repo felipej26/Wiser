@@ -5,5 +5,6 @@
     android:drawableLeft="@drawable/back_check_filter"
     android:button="@null"
     android:padding="6dp"
-    style="@style/AppCompatTema.BackFilter"
+    android:drawablePadding="5dp"
+    style="@style/FilterBox"
     xmlns:android="http://schemas.android.com/apk/res/android" />

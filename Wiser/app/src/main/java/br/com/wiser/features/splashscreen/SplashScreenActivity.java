@@ -9,7 +9,7 @@ import android.os.Bundle;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import br.com.wiser.AbstractActivity;
+import br.com.wiser.AbstractAppCompatActivity;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.dialogs.DialogInformar;
@@ -17,7 +17,7 @@ import br.com.wiser.dialogs.IDialog;
 import br.com.wiser.features.login.LoginActivity;
 import br.com.wiser.interfaces.ICallback;
 
-public class SplashScreenActivity extends AbstractActivity {
+public class SplashScreenActivity extends AbstractAppCompatActivity {
 
     private final long SPLASH_TIMEOUT = 1000;
 

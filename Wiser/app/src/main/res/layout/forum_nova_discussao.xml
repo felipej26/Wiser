@@ -4,15 +4,21 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     tools:context=".features.novadiscussao.NovaDiscussaoActivity">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
     <TextView
         android:text="@string/titulo"
         android:id="@+id/lblTitulo"
-        style="@style/AppTema.AppTextTitulo" />
+        android:layout_below="@id/toolbar"
+        style="@style/Title" />
 
     <TextView
         android:text="0 / 30"
         android:id="@+id/lblContTitulo"
-        style="@style/AppTema.AppInfoTitulo" />
+        android:layout_below="@id/toolbar"
+        style="@style/Info" />
 
     <EditText
         android:id="@+id/txtTituloDiscussao"
@@ -20,22 +26,22 @@
         android:maxLength="30"
         android:singleLine="true"
         android:inputType="textCapSentences"
-        android:textColor="@color/colorSecondaryText"
+        android:textColor="@android:color/black"
         android:layout_marginTop="5dp"
-        style="@style/AppTema.AppItemFrame"
+        style="@style/Placeholder"
         android:capitalize="sentences" />
 
     <TextView
         android:text="@string/descricao"
         android:id="@+id/lblDescricao"
         android:layout_below="@+id/txtTituloDiscussao"
-        style="@style/AppTema.AppTextTitulo" />
+        style="@style/Title" />
 
     <TextView
         android:text="0 / 250"
         android:id="@+id/lblContDescricao"
         android:layout_below="@+id/txtTituloDiscussao"
-        style="@style/AppTema.AppInfoTitulo" />
+        style="@style/Info" />
 
     <EditText
         android:id="@+id/txtDescricaoDiscussao"
@@ -45,9 +51,9 @@
         android:maxLines="10"
         android:gravity="top|left"
         android:scrollbars="vertical"
-        android:textColor="@color/colorSecondaryText"
+        android:textColor="@android:color/black"
         android:layout_marginTop="5dp"
-        style="@style/AppTema.AppItemFrame"
+        style="@style/Placeholder"
         android:capitalize="sentences" />
 
     <Button
@@ -55,7 +61,6 @@
         android:id="@+id/btnCriarDiscussao"
         android:layout_below="@+id/txtDescricaoDiscussao"
         android:layout_marginTop="20dp"
-        android:onClick="salvar"
-        style="@style/AppTema.AppBotao" />
+        style="@style/MainButton" />
 
 </RelativeLayout>

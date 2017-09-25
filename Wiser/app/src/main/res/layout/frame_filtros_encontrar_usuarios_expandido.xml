@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,14 +11,20 @@
     android:paddingBottom="16dp">
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/lblIdioma"
-        android:text="@string/idioma"
-        style="@style/AppCompatTema.TextViewTitulo" />
+        android:textSize="14sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:textColor="@color/colorPrimaryTextLight"
+        android:textAllCaps="true"
+        tools:text="@string/idioma"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/lytI"
+        android:id="@+id/lytBoxIdiomas"
         android:layout_below="@id/lblIdioma">
 
         <com.google.android.flexbox.FlexboxLayout
@@ -25,9 +32,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/lytIdiomas"
             android:layout_marginTop="6dp"
-            app:flexWrap="wrap">
-
-        </com.google.android.flexbox.FlexboxLayout>
+            app:flexWrap="wrap" />
 
         <Button
             android:layout_width="24dp"
@@ -41,10 +46,16 @@
     </RelativeLayout>
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/lblFluencia"
-        android:layout_below="@+id/lytI"
-        android:text="@string/fluencia"
-        style="@style/AppCompatTema.TextViewTitulo"/>
+        android:layout_below="@+id/lytBoxIdiomas"
+        android:textSize="14sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:textColor="@color/colorPrimaryTextLight"
+        android:textAllCaps="true"
+        tools:text="@string/fluencia"/>
 
     <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
@@ -52,37 +63,35 @@
         android:id="@+id/lytFluencias"
         android:layout_below="@id/lblFluencia"
         android:layout_marginTop="6dp"
-        app:flexWrap="wrap">
-
-    </com.google.android.flexbox.FlexboxLayout>
+        app:flexWrap="wrap"/>
 
     <Button
         android:id="@+id/btnLimpar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
+        android:text="@string/limpar"
         android:textSize="14sp"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
-        android:textColor="@color/colorPrimaryText"
+        android:textColor="@android:color/primary_text_dark"
         android:layout_marginRight="12dp"
         android:layout_below="@id/lytFluencias"
         android:layout_marginTop="12dp"
-        android:layout_toLeftOf="@+id/btnProcurar"
-        android:text="@string/limpar" />
+        android:layout_toLeftOf="@+id/btnProcurar"/>
 
     <Button
         android:id="@+id/btnProcurar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:text="@string/procurar"
         android:textSize="14sp"
         android:fontFamily="sans-serif-medium"
         android:textStyle="normal"
         android:background="@color/colorAlpha"
-        android:textColor="@color/colorPrimaryText"
+        android:textColor="@android:color/primary_text_dark"
         android:layout_below="@id/lytFluencias"
-        android:layout_marginTop="12dp"
-        android:text="@string/procurar" />
+        android:layout_marginTop="12dp"/>
 
 </RelativeLayout>

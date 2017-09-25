@@ -6,7 +6,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -102,9 +102,9 @@ public class ProcurarUsuariosActivity extends AbstractAppCompatActivity {
 
         ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        setActionBar(toolbar);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        
         rcvUsuarios.setHasFixedSize(true);
         rcvUsuarios.setLayoutManager(new LinearLayoutManager(this));
 
