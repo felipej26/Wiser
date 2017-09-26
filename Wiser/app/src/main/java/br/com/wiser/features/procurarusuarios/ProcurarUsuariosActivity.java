@@ -104,7 +104,7 @@ public class ProcurarUsuariosActivity extends AbstractAppCompatActivity {
 
         setActionBar(toolbar);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        
+
         rcvUsuarios.setHasFixedSize(true);
         rcvUsuarios.setLayoutManager(new LinearLayoutManager(this));
 
@@ -159,7 +159,7 @@ public class ProcurarUsuariosActivity extends AbstractAppCompatActivity {
             idiomasManager.addFiltro(item.getId(), item.getDescricao(), defaultIdioma, defaultIdioma);
         }
 
-        for (Button button : idiomasManager.getFiltrosAsButton(this, lytIdiomas)) {
+        for (Button button : idiomasManager.getFiltrosAsButton(this, lytIdiomas, getClickListener())) {
             lytIdiomas.addView(button);
         }
 
@@ -241,6 +241,7 @@ public class ProcurarUsuariosActivity extends AbstractAppCompatActivity {
     public void onLimparClicked() {
         idiomasManager.limparSelecionados(lytIdiomas);
         fluenciasManager.limparSelecionados(lytFluencias);
+        btnAddFiltro.setVisibility(View.VISIBLE);
     }
 
     @OnClick({R.id.btnFiltrar, R.id.btnMostrarFiltros})
@@ -254,8 +255,12 @@ public class ProcurarUsuariosActivity extends AbstractAppCompatActivity {
             @Override
             public void onFinish() {
                 lytIdiomas.removeAllViews();
-                for (Button button : idiomasManager.getFiltrosAsButton(ProcurarUsuariosActivity.this, lytIdiomas)) {
+                for (Button button : idiomasManager.getFiltrosAsButton(ProcurarUsuariosActivity.this, lytIdiomas, getClickListener())) {
                     lytIdiomas.addView(button);
+                }
+
+                if (idiomasManager.getCountNaoSelecionados() == 0) {
+                    btnAddFiltro.setVisibility(View.GONE);
                 }
             }
         });
@@ -290,5 +295,14 @@ public class ProcurarUsuariosActivity extends AbstractAppCompatActivity {
     private void showUsersNotFound(boolean show) {
         lblUsuariosNaoEncontrados.setVisibility(show ? View.VISIBLE : View.GONE);
         btnMostrarFiltros.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    private View.OnClickListener getClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnAddFiltro.setVisibility(View.VISIBLE);
+            }
+        };
     }
 }

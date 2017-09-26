@@ -10,4 +10,5 @@
     <color name="colorPrimaryTextLight">#ffffff</color>
     <color name="colorAlpha">#19cccccc</color>
     <color name="colorDivider">#BDBDBD</color>
+    <color name="colorWindowBackground">#EFEFEF</color>
 </resources>

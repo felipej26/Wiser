@@ -10,7 +10,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/nova"
-        android:onClick="chamarNovaDiscussao"
         android:id="@+id/btnNovaDiscussao"
         android:layout_centerHorizontal="false"
         android:layout_marginTop="5dp"
@@ -23,7 +22,6 @@
         android:layout_height="wrap_content"
         android:text="@string/procurar_discussao"
         android:id="@+id/btnProcurarDiscussao"
-        android:onClick="chamarProcurarDiscussao"
         android:layout_toEndOf="@id/btnNovaDiscussao"
         android:layout_toStartOf="@+id/btnAtualizarDiscussoes"
         android:layout_marginTop="5dp"
@@ -36,7 +34,6 @@
         android:layout_height="wrap_content"
         android:text="@string/atualizar"
         android:id="@+id/btnAtualizarDiscussoes"
-        android:onClick="atualizarDiscussoes"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="0dp"
         android:layout_marginRight="10dp"
@@ -49,7 +46,8 @@
         android:layout_height="match_parent"
         android:layout_below="@id/btnProcurarDiscussao"
         android:scrollbars="vertical"
-        android:layout_marginTop="5dp" />
+        android:layout_marginTop="5dp"
+        tools:listitem="@layout/forum_discussao_resultados"/>
 
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"
@@ -59,7 +57,7 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:progressDrawable="@drawable/circular_loading"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:progressTint="@color/colorAccent"
         android:indeterminateTint="@color/colorAccent"
         android:indeterminateTintMode="src_in" />

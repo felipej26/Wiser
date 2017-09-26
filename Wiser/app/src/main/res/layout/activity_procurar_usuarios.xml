@@ -41,7 +41,8 @@
             android:id="@+id/rcvUsuarios"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            tools:listitem="@layout/contatos_encontrar_pessoas_resultados_grid"/>
 
         <TextView
             android:id="@+id/lblUsuariosNaoEncontrados"

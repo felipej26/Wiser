@@ -17,11 +17,14 @@
         android:background="@android:color/black" />
 
     <include
-        layout="@layout/frm_foto_usuario"
+        layout="@layout/frm_foto_usuario_circular"
         android:id="@+id/frmImgPerfil"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/viewSeparator" />
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_below="@id/viewSeparator"/>
 
     <TextView
         android:layout_width="wrap_content"

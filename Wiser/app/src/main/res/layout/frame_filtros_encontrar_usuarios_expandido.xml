@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -14,12 +13,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/lblIdioma"
+        android:text="@string/idioma"
         android:textSize="14sp"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
         android:textColor="@color/colorPrimaryTextLight"
-        android:textAllCaps="true"
-        tools:text="@string/idioma"/>
+        android:textAllCaps="true"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -39,7 +38,6 @@
             android:layout_height="24dp"
             android:id="@+id/btnAddFiltro"
             android:layout_marginTop="9dp"
-            android:layout_marginBottom="9dp"
             android:layout_toEndOf="@id/lytIdiomas"
             android:background="@drawable/ic_add_filter"/>
 
@@ -50,12 +48,13 @@
         android:layout_height="wrap_content"
         android:id="@+id/lblFluencia"
         android:layout_below="@+id/lytBoxIdiomas"
+        android:layout_marginTop="18dp"
+        android:text="@string/fluencia"
         android:textSize="14sp"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
         android:textColor="@color/colorPrimaryTextLight"
-        android:textAllCaps="true"
-        tools:text="@string/fluencia"/>
+        android:textAllCaps="true"/>
 
     <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"

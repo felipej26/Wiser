@@ -82,7 +82,7 @@
         android:layout_marginRight="20dp"
         android:id="@+id/txtStatus"
         android:layout_below="@+id/lblStatus"
-        android:textColor="@android:color/secondary_text_dark"
+        android:textColor="@color/colorPrimaryText"
         android:layout_marginTop="18dp"
         android:background="@null"
         android:maxLength="30"

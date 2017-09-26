@@ -76,7 +76,7 @@ public class FiltrosManager {
         return listaChecks;
     }
 
-    public List<Button> getFiltrosAsButton(Context context, final ViewGroup parent) {
+    public List<Button> getFiltrosAsButton(Context context, final ViewGroup parent, final View.OnClickListener onClickListener) {
         List<Button> listaButtons = new ArrayList<>();
 
         for (final Filtro filtro : listaFiltros) {
@@ -92,6 +92,7 @@ public class FiltrosManager {
                         public void onClick(View v) {
                             parent.removeView(filtro.button);
                             filtro.selecionado = false;
+                            onClickListener.onClick(v);
                         }
                     });
                 }
@@ -165,6 +166,18 @@ public class FiltrosManager {
         return selecionados;
     }
 
+    public long getCountNaoSelecionados() {
+        int cont = 0;
+
+        for (Filtro filtro : listaFiltros) {
+            if (!filtro.selecionado) {
+                cont++;
+            }
+        }
+
+        return cont;
+    }
+
     public Set<String> getDescricoesSelecionadas() {
         Set<String> descricoes = new HashSet<>();
 
@@ -214,8 +227,6 @@ public class FiltrosManager {
         }
 
         public CharSequence[] get() {
-            // String[] filtrosNaoSelecionados = filtros.toArray(new String[filtros.size()]);
-
             CharSequence[] charSequence = new CharSequence[filtros.size()];
             for (int i = 0; i < filtros.size(); i++) {
                 charSequence[i] = String.valueOf(filtros.get(i).descricao);

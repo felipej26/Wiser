@@ -27,8 +27,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/frmDiscussao"
                 android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 android:padding="5dp"
                 android:background="@drawable/bordershadow">
 
@@ -97,7 +97,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/lblRespostas"
-                android:scrollbars="vertical" />
+                android:scrollbars="vertical"
+                tools:listitem="@layout/forum_discussao_resposta"/>
 
             <ProgressBar
                 style="?android:attr/progressBarStyleLarge"
