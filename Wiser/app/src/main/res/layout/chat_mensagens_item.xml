@@ -22,8 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="5dp"
         android:layout_below="@id/viewSeparator"/>
 
     <TextView
@@ -35,6 +34,7 @@
         android:layout_alignStart="@+id/viewSeparator"
         android:layout_alignTop="@+id/frmImgPerfil"
         android:layout_marginLeft="5dp"
+        android:textColor="@color/colorPrimaryText"
         android:singleLine="true"
         android:textStyle="bold" />
 

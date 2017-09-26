@@ -31,7 +31,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/lytIdiomas"
             android:layout_marginTop="6dp"
-            app:flexWrap="wrap" />
+            android:animateLayoutChanges="true"
+            app:flexWrap="wrap"/>
 
         <Button
             android:layout_width="24dp"

@@ -254,7 +254,6 @@ public class ProcurarUsuariosActivity extends AbstractAppCompatActivity {
         idiomasManager.selecionarItens(this, new ICallbackFinish() {
             @Override
             public void onFinish() {
-                lytIdiomas.removeAllViews();
                 for (Button button : idiomasManager.getFiltrosAsButton(ProcurarUsuariosActivity.this, lytIdiomas, getClickListener())) {
                     lytIdiomas.addView(button);
                 }

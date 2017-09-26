@@ -30,6 +30,7 @@ public class FiltrosManager {
         public String descricao;
         public boolean selecionado;
         public boolean bloqueado;
+        public boolean isExibido;
         public CheckBox checkBox;
         public Button button;
     }
@@ -50,6 +51,7 @@ public class FiltrosManager {
         filtro.descricao = descricao;
         filtro.selecionado = selecionado;
         filtro.bloqueado = bloqueado;
+        filtro.isExibido = false;
 
         listaFiltros.add(filtro);
     }
@@ -62,6 +64,7 @@ public class FiltrosManager {
             filtro.checkBox.setText(filtro.descricao);
             filtro.checkBox.setChecked(filtro.selecionado);
             filtro.checkBox.setEnabled(!filtro.bloqueado);
+            filtro.isExibido = true;
 
             filtro.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -81,7 +84,7 @@ public class FiltrosManager {
 
         for (final Filtro filtro : listaFiltros) {
 
-            if (filtro.selecionado || filtro.bloqueado) {
+            if ((filtro.selecionado || filtro.bloqueado) && (!filtro.isExibido)) {
                 if (filtro.button == null) {
                     filtro.button = (Button) LayoutInflater.from(context).inflate(R.layout.frame_button_filter, parent, false);
                     filtro.button.setText(filtro.descricao);
@@ -92,11 +95,13 @@ public class FiltrosManager {
                         public void onClick(View v) {
                             parent.removeView(filtro.button);
                             filtro.selecionado = false;
+                            filtro.isExibido = false;
                             onClickListener.onClick(v);
                         }
                     });
                 }
 
+                filtro.isExibido = true;
                 listaButtons.add(filtro.button);
             }
         }
@@ -116,7 +121,7 @@ public class FiltrosManager {
 
         if (selecionarFiltros.getFiltros().size() > 0) {
             AlertDialog dialog = new AlertDialog.Builder(context)
-                    .setTitle("Selecione os idiomas")
+                    .setTitle(R.string.selecionar_idiomas)
                     .setMultiChoiceItems(selecionarFiltros.get(), null, new DialogInterface.OnMultiChoiceClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which, boolean isChecked) {
@@ -128,7 +133,7 @@ public class FiltrosManager {
 
                             }
                         }
-                    }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -144,7 +149,7 @@ public class FiltrosManager {
 
                             callback.onFinish();
                         }
-                    }).setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -201,6 +206,7 @@ public class FiltrosManager {
                     parent.removeView(filtro.button);
 
                 filtro.selecionado = false;
+                filtro.isExibido = false;
             }
         }
     }

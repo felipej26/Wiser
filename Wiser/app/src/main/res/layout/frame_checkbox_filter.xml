@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<CheckBox
-    android:id="@+id/checkBox"
-    android:text="Texto"
+<CheckBox android:id="@+id/checkBox"
     android:drawableLeft="@drawable/back_check_filter"
     android:button="@null"
-    android:padding="6dp"
+    android:paddingLeft="6dp"
+    android:paddingRight="9dp"
     android:drawablePadding="5dp"
     style="@style/FilterBox"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
+    tools:text="Fluent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" />

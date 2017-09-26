@@ -106,6 +106,7 @@
     <string name="digite_mensagem">Digite a sua mensagem</string>
     <string name="precisa_atualizar">Uma nova versão do app está disponível!</string>
     <string name="novas_mensagem">Chegaram novas mensagens!</string>
+    <string name="selecionar_idiomas">Selecione os idiomas</string>
 
     <string name="preferences_file_key" translatable="false">valores</string>
     <string name="preferences_usuario_key" translatable="false">usuario</string>

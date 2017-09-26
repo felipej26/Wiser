@@ -2,9 +2,11 @@
 <Button
     android:layout_height="30dp"
     android:id="@+id/button"
-    android:text="Texto"
     android:drawableLeft="@drawable/back_button_filter"
-    android:paddingLeft="6dp"
     android:inputType="textCapWords|textNoSuggestions"
+    android:paddingRight="9dp"
+    android:paddingLeft="9dp"
     style="@style/FilterBox"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
+    tools:text="English"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" />

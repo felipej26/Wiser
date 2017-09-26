@@ -92,4 +92,5 @@
     <string name="solicitar_permissao_armazenamento">Wiser requires Storage permission to share!</string>
     <string name="precisa_atualizar">A new version of the app is available!</string>
     <string name="novas_mensagem">New Messages!</string>
+    <string name="selecionar_idiomas">Select the language</string>
 </resources>

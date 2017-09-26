@@ -2,6 +2,7 @@ package br.com.wiser.features.conversa;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,6 @@ import br.com.wiser.WiserApplication;
 import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.interfaces.IClickListener;
 import br.com.wiser.utils.Utils;
-import br.com.wiser.utils.UtilsDate;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -121,7 +121,10 @@ public class ConversaAdapter extends RealmRecyclerViewAdapter<Conversa, Recycler
             viewSeparator.setVisibility(posicao == 0 ? View.INVISIBLE : View.VISIBLE);
 
             if (conversa.getMensagens().size() > 0) {
-                lblDataHora.setText(UtilsDate.formatDate(conversa.getMensagens().last().getData(), UtilsDate.HHMM));
+                lblDataHora.setText(DateUtils.getRelativeTimeSpanString(
+                        conversa.getMensagens().last().getData().getTime(), System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS
+                ));
+
                 lblMensagens.setText(Utils.decode(conversa.getMensagens().last().getMensagem()));
             }
             lblContMensagens.setText(conversa.getContMsgNaoLidas() + " " + context.getString(conversa.getContMsgNaoLidas() <= 1 ? R.string.nao_lida : R.string.nao_lidas));
