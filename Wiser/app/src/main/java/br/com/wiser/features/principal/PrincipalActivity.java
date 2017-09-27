@@ -49,6 +49,9 @@ public class PrincipalActivity extends AbstractAppCompatActivity {
         setContentView(R.layout.app_principal);
 
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+
+
         onLoad();
 
         usuarioPresenter = new UsuarioPresenter();
