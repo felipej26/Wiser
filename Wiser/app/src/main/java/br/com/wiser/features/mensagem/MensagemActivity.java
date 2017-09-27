@@ -67,9 +67,6 @@ public class MensagemActivity extends AbstractAppCompatActivity implements Dialo
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(mensagensPresenter.getUsuario().getNome());
 
-        lblSugestao.setText("");
-        lblSugestao.setVisibility(View.INVISIBLE);
-
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -80,6 +77,9 @@ public class MensagemActivity extends AbstractAppCompatActivity implements Dialo
                 atualizarMensagensLidas();
             }
         });
+
+        lblSugestao.setText("");
+        lblSugestao.setVisibility(View.GONE);
         /*
         adapter.onSetSugestao(new MensagemAdapter.Callback() {
             @Override

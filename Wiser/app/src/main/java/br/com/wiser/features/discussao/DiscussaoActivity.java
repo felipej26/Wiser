@@ -11,7 +11,6 @@ import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -102,7 +101,7 @@ public class DiscussaoActivity extends AbstractAppCompatActivity {
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((ViewGroup) lblSugestao.getParent()).removeView(lblSugestao);
+        lblSugestao.setVisibility(View.GONE);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

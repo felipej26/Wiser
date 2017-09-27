@@ -102,6 +102,6 @@ public class Mensagem extends RealmObject implements Serializable {
     }
 
     public boolean isDestinatario() {
-        return usuario != Sistema.getUsuario().getId();
+        return getUsuario() != Sistema.getUsuario().getId();
     }
 }
