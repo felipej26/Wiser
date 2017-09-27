@@ -1,6 +1,7 @@
 package br.com.wiser.features.configuracoes;
 
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.util.Log;
 import android.view.MenuItem;
@@ -8,7 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import br.com.wiser.AbstractAppCompatActivity;
 import br.com.wiser.R;
@@ -55,8 +55,8 @@ public class ConfiguracoesActivity extends AbstractAppCompatActivity {
     private void onLoad() {
         ButterKnife.bind(this);
 
-        setActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Sistema.carregarComboIdiomas(cmbIdioma, ConfiguracoesActivity.this);
         Sistema.carregarComboFluencia(cmbFluencia, ConfiguracoesActivity.this);

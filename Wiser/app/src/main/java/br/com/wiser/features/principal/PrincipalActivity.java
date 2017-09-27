@@ -8,10 +8,10 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toolbar;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -117,7 +117,7 @@ public class PrincipalActivity extends AbstractAppCompatActivity {
         super.onCreateOptionsMenu(menu);
 
         getMenuInflater().inflate(R.menu.menu_principal, menu);
-        return (true);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -139,7 +139,7 @@ public class PrincipalActivity extends AbstractAppCompatActivity {
                 Sistema.logout(this);
                 break;
         }
-        return (true);
+        return super.onOptionsItemSelected(item);
     }
 
     private void startMinhasDiscussoesActivity() {
@@ -156,7 +156,7 @@ public class PrincipalActivity extends AbstractAppCompatActivity {
 
     public void onLoad() {
 
-        setActionBar(toolbar);
+        setSupportActionBar(toolbar);
         adapter = new PrincipalTabs(getSupportFragmentManager());
 
         viewPager.setAdapter(adapter);

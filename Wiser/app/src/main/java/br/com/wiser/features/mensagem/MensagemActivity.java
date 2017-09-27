@@ -3,13 +3,13 @@ package br.com.wiser.features.mensagem;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import br.com.wiser.AbstractAppCompatActivity;
 import br.com.wiser.R;
@@ -73,9 +73,9 @@ public class MensagemActivity extends AbstractAppCompatActivity implements Dialo
 
         ButterKnife.bind(this);
 
-        setActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setTitle(mensagensPresenter.getUsuario().getNome());
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(mensagensPresenter.getUsuario().getNome());
 
         lblSugestao.setText("");
         lblSugestao.setVisibility(View.INVISIBLE);

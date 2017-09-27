@@ -3,15 +3,15 @@ package br.com.wiser.features.sobre;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import br.com.wiser.AbstractAppCompatActivity;
-import br.com.wiser.features.boasvindas.ConfiguracoesIniciaisActivity;
 import br.com.wiser.R;
+import br.com.wiser.features.boasvindas.ConfiguracoesIniciaisActivity;
 import br.com.wiser.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,8 +43,8 @@ public class SobreActivity extends AbstractAppCompatActivity {
 
     public void onLoad() {
 
-        setActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         try {
             lblVersao.setText(getString(R.string.app_sobre_item_versao,

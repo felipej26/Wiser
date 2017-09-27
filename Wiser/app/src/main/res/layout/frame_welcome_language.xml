@@ -11,27 +11,32 @@
         android:layout_marginLeft="32dp"
         android:layout_margin="50dp">
 
-        <TextView
-            android:id="@+id/lblSelecionarIdioma"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="175dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
-            android:textSize="20dp"
-            android:textAlignment="center"
-            android:text="Selecione o idioma que você esteja praticando" />
+            android:layout_centerVertical="true">
 
-        <Button
-            android:id="@+id/btnIdioma"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/lblSelecionarIdioma"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="16dp"
-            android:text="@string/idioma"
-            style="@style/MainButton"/>
+            <TextView
+                android:id="@+id/lblSelecionarIdioma"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:textSize="20dp"
+                android:textAlignment="center"
+                android:text="Selecione o idioma que você esteja praticando" />
 
+            <Button
+                android:id="@+id/btnIdioma"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lblSelecionarIdioma"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp"
+                android:text="@string/idioma"
+                style="@style/MainButton"/>
+
+        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

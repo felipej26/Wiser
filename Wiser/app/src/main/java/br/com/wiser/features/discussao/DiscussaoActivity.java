@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.format.DateUtils;
 import android.view.Menu;
@@ -17,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import br.com.wiser.AbstractAppCompatActivity;
 import br.com.wiser.R;
@@ -100,8 +100,8 @@ public class DiscussaoActivity extends AbstractAppCompatActivity {
 
         onPrgLoadingChanged(View.VISIBLE);
 
-        setActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((ViewGroup) lblSugestao.getParent()).removeView(lblSugestao);
 
         recyclerView.setHasFixedSize(true);

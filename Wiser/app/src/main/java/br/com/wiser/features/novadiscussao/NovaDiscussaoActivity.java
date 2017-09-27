@@ -2,12 +2,12 @@ package br.com.wiser.features.novadiscussao;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import br.com.wiser.AbstractAppCompatActivity;
 import br.com.wiser.R;
@@ -54,8 +54,8 @@ public class NovaDiscussaoActivity extends AbstractAppCompatActivity {
     public void onLoad() {
         ButterKnife.bind(this);
 
-        setActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @OnTextChanged(value = R.id.txtTituloDiscussao, callback = OnTextChanged.Callback.TEXT_CHANGED)

@@ -9,71 +9,67 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar" />
 
-    <ImageView
-        android:layout_height="match_parent"
-        android:id="@+id/imageView"
-        android:layout_below="@id/toolbar"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        style="@style/BaseBox" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/lblAppName"
-        android:text="@string/app_name"
-        android:layout_marginTop="28dp"
-        android:layout_alignTop="@+id/imageView"
-        android:layout_centerHorizontal="true"
-        android:textSize="35dp"
-        android:textColor="#8B8989"
-        android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/app_sobre_item_versao"
-        android:id="@+id/lblVersao"
-        android:layout_below="@+id/lblAppName"
-        android:layout_centerHorizontal="true"
-        android:textColor="#8B8989"
-        android:textStyle="italic" />
-
-    <ImageView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/imgSobre"
-        android:nestedScrollingEnabled="false"
-        android:src="@mipmap/logo_wiser_2"
-        android:layout_below="@id/lblVersao"
-        android:layout_above="@+id/lblSobreRodape"
-        android:layout_marginLeft="45dp"
-        android:layout_marginRight="45dp"/>
+        android:layout_below="@id/toolbar"
+        android:layout_margin="15dp"
+        android:background="@drawable/containershape">
 
-    <TextView
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/app_sobre_item_copyright"
-        android:id="@+id/lblSobreRodape"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
-        android:layout_alignBottom="@+id/imageView"
-        android:layout_centerHorizontal="true"
-        android:textColor="#8B8989" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/lblAppName"
+            android:text="@string/app_name"
+            android:layout_centerHorizontal="true"
+            android:textSize="35sp"
+            android:textColor="#8B8989"
+            android:textStyle="bold" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="25dp"
-        android:text="@string/compartilhar"
-        android:textSize="10dp"
-        android:id="@+id/btnCompartilhar"
-        android:background="@android:color/transparent"
-        android:textColor="#8B8989"
-        android:layout_alignBottom="@+id/imageView"
-        android:layout_alignStart="@+id/lblVersao"
-        android:layout_marginBottom="10dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/app_sobre_item_versao"
+            android:id="@+id/lblVersao"
+            android:layout_below="@+id/lblAppName"
+            android:layout_centerHorizontal="true"
+            android:textColor="#8B8989"
+            android:textStyle="italic" />
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imgSobre"
+            android:src="@mipmap/logo_wiser_2"
+            android:layout_below="@id/lblVersao"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"/>
+
+        <TextView
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/app_sobre_item_copyright"
+            android:id="@+id/lblSobreRodape"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/imgSobre"
+            android:textColor="#8B8989" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:text="@string/compartilhar"
+            android:textSize="10dp"
+            android:id="@+id/btnCompartilhar"
+            android:background="@android:color/transparent"
+            android:textColor="#8B8989"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/lblSobreRodape"/>
+
+    </RelativeLayout>
 </RelativeLayout>
