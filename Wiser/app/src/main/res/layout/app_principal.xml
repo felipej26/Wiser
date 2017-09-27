@@ -1,53 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:clipChildren="false"
     android:orientation="vertical"
     tools:context=".features.principal.PrincipalActivity"
-    tools:menu="br.br.wiser.res.menu.menu_principal">
+    tools:menu="br.br.wiser.res.menu.menu_principal"
+    >
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
+  <include
+      layout="@layout/toolbar"
+      android:id="@+id/toolbar"
+      />
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/sliding_tabs"
-        android:layout_width="match_parent"
+  <android.support.design.widget.TabLayout
+      android:id="@+id/sliding_tabs"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/toolbar"
+      android:layout_gravity="top"
+      android:background="@color/colorPrimary"
+      android:elevation="@dimen/toolbar_elevation"
+      app:tabIndicatorColor="@android:color/white"
+      app:tabMode="fixed"
+      >
+
+    <android.support.design.widget.TabItem
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:elevation="@dimen/toolbar_elevation"
+        android:icon="@drawable/tab_contatos"
+        />
 
-        app:tabBackground="@color/colorPrimary"
-        app:tabIndicatorColor="@android:color/white"
-        app:tabMode="fixed" >
+    <android.support.design.widget.TabItem
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/tab_chat"
+        />
 
-        <android.support.design.widget.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:icon="@drawable/tab_contatos" />
+    <android.support.design.widget.TabItem
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/tab_forum"
+        />
 
-        <android.support.design.widget.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:icon="@drawable/tab_chat" />
+  </android.support.design.widget.TabLayout>
+  <android.support.v4.view.ViewPager
+      android:id="@+id/viewpager"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_below="@id/sliding_tabs"
+      />
 
-        <android.support.design.widget.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:icon="@drawable/tab_forum" />
+  <View
+      android:id="@+id/snackbar_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_alignParentBottom="true"
+      />
 
-    </android.support.design.widget.TabLayout>
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/snackbar_view"/>
-
-</LinearLayout>
+</RelativeLayout>
