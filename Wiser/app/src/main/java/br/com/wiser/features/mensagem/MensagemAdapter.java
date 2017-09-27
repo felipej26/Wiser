@@ -32,6 +32,10 @@ public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, Recycler
         void onSugestaoClick();
     }
 
+    public interface IMensagensListener {
+        void onMensagensChanged();
+    }
+
     private List<MensagemAbstract> listaMensagensAbstratas;
     private RealmList<Mensagem> listaMensagens;
 
@@ -43,7 +47,7 @@ public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, Recycler
     private boolean hasSugestao;
     private Callback callback;
 
-    public MensagemAdapter(RealmList<Mensagem> listaMensagens) {
+    public MensagemAdapter(RealmList<Mensagem> listaMensagens, final IMensagensListener listener) {
         super(listaMensagens, false);
         listaMensagens.addChangeListener(new OrderedRealmCollectionChangeListener<RealmList<Mensagem>>() {
             @Override
@@ -56,18 +60,20 @@ public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, Recycler
                 OrderedCollectionChangeSet.Range[] deletions = changeSet.getDeletionRanges();
                 for (int i = deletions.length - 1; i >= 0; i--) {
                     OrderedCollectionChangeSet.Range range = deletions[i];
-                    notifyItemRangeRemoved(range.startIndex, range.length);
+                    notifyItemRangeRemoved(listaMensagensAbstratas.size() - 1, range.length);
                 }
 
                 OrderedCollectionChangeSet.Range[] insertions = changeSet.getInsertionRanges();
                 for (OrderedCollectionChangeSet.Range range : insertions) {
-                    notifyItemRangeChanged(listaMensagensAbstratas.size(), range.length);
+                    notifyItemRangeChanged(listaMensagensAbstratas.size() - 1, range.length);
                 }
 
                 OrderedCollectionChangeSet.Range[] modifications = changeSet.getChangeRanges();
                 for (OrderedCollectionChangeSet.Range range : modifications) {
-                    notifyItemRangeChanged(range.startIndex, range.length);
+                    notifyItemRangeChanged(listaMensagensAbstratas.size() - 1, range.length);
                 }
+
+                listener.onMensagensChanged();
             }
         });
         this.listaMensagens = listaMensagens;

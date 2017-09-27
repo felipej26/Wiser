@@ -83,7 +83,13 @@ public class MensagemActivity extends AbstractAppCompatActivity implements Dialo
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new MensagemAdapter(mensagensPresenter.getMensagens());
+        adapter = new MensagemAdapter(mensagensPresenter.getMensagens(), new MensagemAdapter.IMensagensListener() {
+            @Override
+            public void onMensagensChanged() {
+                ajustarLista();
+            }
+        });
+        /*
         adapter.onSetSugestao(new MensagemAdapter.Callback() {
             @Override
             public void onSugestaoClick() {
@@ -91,6 +97,7 @@ public class MensagemActivity extends AbstractAppCompatActivity implements Dialo
                 sugestoes.show(getContext(), MensagemActivity.this, mensagensPresenter.getConversa().getSugestoes());
             }
         });
+        */
         recyclerView.setAdapter(adapter);
         ajustarLista();
     }

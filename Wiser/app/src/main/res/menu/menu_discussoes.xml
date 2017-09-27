@@ -6,6 +6,6 @@
         android:id="@+id/itmCompartilhar"
         android:title="@string/compartilhar"
         android:icon="@android:drawable/ic_menu_share"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
 </menu>
