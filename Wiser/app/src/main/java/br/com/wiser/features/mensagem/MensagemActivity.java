@@ -48,17 +48,7 @@ public class MensagemActivity extends AbstractAppCompatActivity implements Dialo
         onLoad();
 
         if (mensagensPresenter.getConversa().getId() > 0 && mensagensPresenter.getConversa().getMensagens().size() > 0) {
-            mensagensPresenter.atualizarMensagensLidas(new ICallback() {
-                @Override
-                public void onSuccess() {
-
-                }
-
-                @Override
-                public void onError(String mensagemErro) {
-
-                }
-            });
+            atualizarMensagensLidas();
         }
     }
 
@@ -87,6 +77,7 @@ public class MensagemActivity extends AbstractAppCompatActivity implements Dialo
             @Override
             public void onMensagensChanged() {
                 ajustarLista();
+                atualizarMensagensLidas();
             }
         });
         /*
@@ -137,5 +128,19 @@ public class MensagemActivity extends AbstractAppCompatActivity implements Dialo
 
     private void ajustarLista() {
         recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+    }
+
+    private void atualizarMensagensLidas() {
+        mensagensPresenter.atualizarMensagensLidas(new ICallback() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError(String mensagemErro) {
+
+            }
+        });
     }
 }

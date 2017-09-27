@@ -12,20 +12,20 @@ import io.realm.Realm;
  */
 public class WiserApplication extends Application {
 
-  private static WiserApplication application;
+    private static WiserApplication application;
 
-  @Override public void onCreate() {
-    super.onCreate();
-    application = this;
+    @Override public void onCreate() {
+        super.onCreate();
+        application = this;
 
-    if (!BuildConfig.DEBUG) {
-      Fabric.with(this, new Crashlytics(), new Answers());
+        if (!BuildConfig.DEBUG) {
+            Fabric.with(this, new Crashlytics(), new Answers());
+        }
+
+        Realm.init(this);
     }
 
-    Realm.init(this);
-  }
-
-  public static Context getAppContext() {
-    return application;
-  }
+    public static Context getAppContext() {
+        return application;
+    }
 }

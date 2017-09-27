@@ -93,4 +93,9 @@
     <string name="precisa_atualizar">A new version of the app is available!</string>
     <string name="novas_mensagem">New Messages!</string>
     <string name="selecionar_idiomas">Select the language</string>
+    <string name="bemvindo">Welcome</string>
+    <string name="feito">Done</string>
+    <string name="apresentacao_app">Wiser is an app that connects you and other users to practice a language</string>
+    <string name="apresentacao_fluencia">Select your level in the chosen language</string>
+    <string name="apresentacao_idioma">Select the language you want to practice</string>
 </resources>

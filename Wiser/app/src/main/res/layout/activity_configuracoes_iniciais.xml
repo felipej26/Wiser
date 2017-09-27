@@ -29,6 +29,6 @@
         android:layout_alignParentRight="true"
         android:background="@android:color/transparent"
         android:textColor="@color/colorPrimaryTextLight"
-        android:text="Feito" />
+        android:text="@string/feito" />
 
 </RelativeLayout>

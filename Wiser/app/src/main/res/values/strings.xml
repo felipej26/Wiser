@@ -107,6 +107,11 @@
     <string name="precisa_atualizar">Uma nova versão do app está disponível!</string>
     <string name="novas_mensagem">Chegaram novas mensagens!</string>
     <string name="selecionar_idiomas">Selecione os idiomas</string>
+    <string name="bemvindo">Bem-Vindo</string>
+    <string name="feito">Feito</string>
+    <string name="apresentacao_app">O Wiser é um app que conecta você a outros usuarios para praticarem um idioma</string>
+    <string name="apresentacao_fluencia">Selecionar o seu nivel no idioma escolhido</string>
+    <string name="apresentacao_idioma">Selecione o idioma que você esteja praticando</string>
 
     <string name="preferences_file_key" translatable="false">valores</string>
     <string name="preferences_usuario_key" translatable="false">usuario</string>

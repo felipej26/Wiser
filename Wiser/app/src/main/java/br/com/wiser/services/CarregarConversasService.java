@@ -20,8 +20,10 @@ import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.features.conversa.Conversa;
 import br.com.wiser.features.conversa.IConversaService;
+import br.com.wiser.features.mensagem.Mensagem;
 import br.com.wiser.features.splashscreen.SplashScreenActivity;
 import br.com.wiser.interfaces.ICallbackFinish;
+import br.com.wiser.utils.Utils;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -111,6 +113,12 @@ public class CarregarConversasService extends Service {
                     for (Conversa conversa : listaConversas) {
                         if (conversa.getMensagens().size() > 0) {
                             carregarConversasPresenter.adicionarConversa(conversa);
+
+                            for (Mensagem mensagem : conversa.getMensagens()) {
+                                if (mensagem.isDestinatario() && !mensagem.isLida()) {
+                                    Utils.vibrar(CarregarConversasService.this, 150);
+                                }
+                            }
                         }
                     }
                 }

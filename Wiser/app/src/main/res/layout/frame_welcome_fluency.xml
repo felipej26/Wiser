@@ -26,7 +26,7 @@
                 android:layout_marginRight="32dp"
                 android:textSize="20dp"
                 android:textAlignment="center"
-                android:text="Selecionar o seu nivel no idioma escolhido" />
+                android:text="@string/apresentacao_fluencia" />
 
             <Button
                 android:id="@+id/btnFluencia"
