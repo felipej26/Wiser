@@ -11,6 +11,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 
 import br.com.wiser.AbstractActivity;
+import br.com.wiser.features.boasvindas.ConfiguracoesIniciaisActivity;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.facebook.Facebook;
@@ -111,7 +112,15 @@ public class LoginActivity extends AbstractActivity {
     }
 
     private void startPrincipalActivity() {
-        Intent i = new Intent(this, PrincipalActivity.class);
+        Intent i;
+
+        if (Sistema.getUsuario().isSetouConfiguracoes()) {
+            i = new Intent(this, PrincipalActivity.class);
+        }
+        else {
+            i = new Intent(this, ConfiguracoesIniciaisActivity.class);
+        }
+
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
         finish();

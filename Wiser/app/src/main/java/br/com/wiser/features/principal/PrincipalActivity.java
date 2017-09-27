@@ -56,19 +56,14 @@ public class PrincipalActivity extends AbstractAppCompatActivity {
                 getString(R.string.solicitar_permissao_localizacao));
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        if (Sistema.getUsuario().isSetouConfiguracoes()) {
-            showSnackBar();
-
-            if (!checkPermissaoLocalizacao.checkPermissions(this)) {
-                checkPermissaoLocalizacao.requestPermissions(this);
-            }
-            else {
-                updateLocation();
-            }
+        if (!checkPermissaoLocalizacao.checkPermissions(this)) {
+            checkPermissaoLocalizacao.requestPermissions(this);
         }
         else {
-            startConfiguracoesActivity();
+            updateLocation();
         }
+
+        showSnackBar();
     }
 
     @Override

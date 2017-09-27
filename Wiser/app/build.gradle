@@ -10,8 +10,8 @@ android {
         applicationId "br.com.wiser"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 19
-        versionName "0.12.0-beta"
+        versionCode 20
+        versionName "0.13.0-beta"
     }
     buildTypes {
         release {
@@ -60,7 +60,7 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'io.realm:android-adapters:2.0.0'
-
+    compile 'fr.avianey.com.viewpagerindicator:library:2.4.1@aar'
     compile 'com.jakewharton:butterknife:8.6.0'
     apt 'com.jakewharton:butterknife-compiler:8.6.0'
 }

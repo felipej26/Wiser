@@ -18,6 +18,7 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="cb35ebfa32186cb0603bd8f2346d5b7d1a1610aa" />
@@ -50,11 +51,11 @@
 
         <activity
             android:name=".features.login.LoginActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".features.principal.PrincipalActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".features.sobre.SobreActivity"
@@ -64,7 +65,7 @@
         <activity
             android:name=".features.procurarusuarios.ProcurarUsuariosActivity"
             android:label="@string/title_activity_procurar_usuarios"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".features.mensagem.MensagemActivity"
@@ -90,6 +91,10 @@
             android:name=".features.procurardiscussao.ProcurarDiscussaoActivity"
             android:label="@string/forum_pesquisa_title"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".features.boasvindas.ConfiguracoesIniciaisActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 

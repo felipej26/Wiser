@@ -35,6 +35,10 @@ public class FiltrosManager {
         public Button button;
     }
 
+    public interface OnClickItemListener {
+        void onClick(int idFiltro, String descricao);
+    }
+
     private Set<Filtro> listaFiltros;
 
     public FiltrosManager() {
@@ -109,7 +113,7 @@ public class FiltrosManager {
         return listaButtons;
     }
 
-    public void selecionarItens(Context context, final ICallbackFinish callback) {
+    public void selecionarMultiplosItens(Context context, final ICallbackFinish callback) {
         final Set<Integer> itensSelecionados = new HashSet<>();
 
         final SelecionarFiltros selecionarFiltros = new SelecionarFiltros();
@@ -155,6 +159,39 @@ public class FiltrosManager {
 
                         }
                     }).create();
+            dialog.show();
+        }
+    }
+
+    public void selecionarItem(Context context, final OnClickItemListener listener) {
+        final SelecionarFiltros selecionarFiltros = new SelecionarFiltros();
+        for (Filtro filtro : listaFiltros) {
+            if (!filtro.selecionado) {
+                selecionarFiltros.add(filtro.codigo, filtro.descricao);
+            }
+        }
+
+        if (selecionarFiltros.getFiltros().size() > 0) {
+            AlertDialog dialog = new AlertDialog.Builder(context)
+                    .setTitle(R.string.selecionar_idiomas)
+                    .setItems(selecionarFiltros.get(), new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            for (SelecionarFiltros.Filtro filtro : selecionarFiltros.getFiltros()) {
+                                if (filtro.codigoDialog == which) {
+                                    for (Filtro f : listaFiltros) {
+                                        if (f.codigo == filtro.codigo) {
+                                            listener.onClick(f.codigo, f.descricao);
+                                            dialog.dismiss();
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    })
+                    .create();
             dialog.show();
         }
     }

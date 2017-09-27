@@ -251,7 +251,7 @@ public class ProcurarUsuariosActivity extends AbstractAppCompatActivity {
 
     @OnClick(R.id.btnAddFiltro)
     public void onAddFiltroClicked() {
-        idiomasManager.selecionarItens(this, new ICallbackFinish() {
+        idiomasManager.selecionarMultiplosItens(this, new ICallbackFinish() {
             @Override
             public void onFinish() {
                 for (Button button : idiomasManager.getFiltrosAsButton(ProcurarUsuariosActivity.this, lytIdiomas, getClickListener())) {
