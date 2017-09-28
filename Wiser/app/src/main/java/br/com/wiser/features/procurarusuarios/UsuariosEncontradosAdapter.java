@@ -38,7 +38,7 @@ public class UsuariosEncontradosAdapter extends RecyclerView.Adapter<UsuariosEnc
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.contatos_encontrar_pessoas_resultados_grid, parent, false);
+                R.layout.item_search_users, parent, false);
 
         ViewHolder viewHolder = new ViewHolder(itemLayoutView);
         return viewHolder;

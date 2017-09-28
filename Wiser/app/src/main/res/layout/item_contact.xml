@@ -30,7 +30,7 @@
       />
 
   <include
-      layout="@layout/frm_foto_usuario_circular"
+      layout="@layout/frame_user_picture_circular"
       android:id="@+id/frmImgPerfil"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

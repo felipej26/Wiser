@@ -34,7 +34,7 @@ public class DialogSugestoes {
         this.callback = callback;
 
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_sugestao, null);
+        View view = inflater.inflate(R.layout.dialog_suggestion, null);
 
         lytBotoes = (LinearLayout) view.findViewById(R.id.lytBotoes);
 

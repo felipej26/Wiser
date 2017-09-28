@@ -38,7 +38,7 @@ public class NovaDiscussaoActivity extends AbstractAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.forum_nova_discussao);
+        setContentView(R.layout.activity_new_discussion);
 
         novaDiscussaoPresenter = new NovaDiscussaoPresenter();
 

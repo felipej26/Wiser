@@ -39,7 +39,7 @@ public class MinhasDiscussoesActivity extends AbstractAppCompatActivity implemen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.forum_minhas_discussoes);
+        setContentView(R.layout.activity_my_discussions);
 
         minhasDiscussoesPresenter = new MinhasDiscussoesPresenter();
         minhasDiscussoesPresenter.carregarDiscussoes(new ICallback() {

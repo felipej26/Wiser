@@ -45,7 +45,7 @@ public abstract class AbstractAppCompatActivity extends AppCompatActivity {
             TextView textView = (TextView) layout.findViewById(android.support.design.R.id.snackbar_text);
             textView.setVisibility(View.INVISIBLE);
 
-            View snackView = LayoutInflater.from(getContext()).inflate(R.layout.snackbar_imagem, null);
+            View snackView = LayoutInflater.from(getContext()).inflate(R.layout.frame_snackbar, null);
             ImageView imageView = (ImageView) snackView.findViewById(R.id.imgView);
             imageView.setImageBitmap(imagem);
             TextView textViewTop = (TextView) snackView.findViewById(R.id.txtMensagem);

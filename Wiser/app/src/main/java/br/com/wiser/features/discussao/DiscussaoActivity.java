@@ -61,7 +61,7 @@ public class DiscussaoActivity extends AbstractAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.forum_discussao);
+        setContentView(R.layout.activity_discussion);
 
         discussaoPresenter = new DiscussaoPresenter((Discussao) getIntent().getBundleExtra(Sistema.DISCUSSAO).get(Sistema.DISCUSSAO));
         checkPermissaoArmazenamento = new CheckPermissao(Manifest.permission.WRITE_EXTERNAL_STORAGE, getString(R.string.solicitar_permissao_armazenamento));

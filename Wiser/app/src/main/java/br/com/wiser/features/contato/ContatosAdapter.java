@@ -34,7 +34,7 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.ViewHo
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.contatos_contato, parent, false);
+                R.layout.item_contact, parent, false);
 
         ViewHolder viewHolder = new ViewHolder(itemLayoutView);
         return viewHolder;

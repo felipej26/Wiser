@@ -32,7 +32,7 @@ public class ConfiguracoesIniciaisActivity extends AbstractAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_configuracoes_iniciais);
+        setContentView(R.layout.activity_welcome);
 
         ButterKnife.bind(this);
         onLoad();

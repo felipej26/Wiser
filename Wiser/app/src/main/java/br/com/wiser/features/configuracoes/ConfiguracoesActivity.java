@@ -38,7 +38,7 @@ public class ConfiguracoesActivity extends AbstractAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.app_configuracoes);
+        setContentView(R.layout.activity_settings);
 
         configuracoesPresenter = new ConfiguracoesPresenter();
 

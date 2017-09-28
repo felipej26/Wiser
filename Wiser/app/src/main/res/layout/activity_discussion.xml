@@ -43,7 +43,7 @@
                         android:id="@+id/lblIDDiscussao" />
 
                     <include
-                        layout="@layout/frm_foto_usuario"
+                        layout="@layout/frame_user_picture"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:id="@+id/frmImgPerfil"
@@ -98,7 +98,7 @@
                 android:layout_height="match_parent"
                 android:layout_below="@id/lblRespostas"
                 android:scrollbars="vertical"
-                tools:listitem="@layout/forum_discussao_resposta"/>
+                tools:listitem="@layout/item_discussion_answer"/>
 
             <ProgressBar
                 style="?android:attr/progressBarStyleLarge"
@@ -118,7 +118,7 @@
     </ScrollView>
 
     <include
-        layout="@layout/frm_enviar_mensagem"
+        layout="@layout/frame_send_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

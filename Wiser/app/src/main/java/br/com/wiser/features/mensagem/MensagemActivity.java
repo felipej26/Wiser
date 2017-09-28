@@ -39,7 +39,7 @@ public class MensagemActivity extends AbstractAppCompatActivity implements Dialo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.chat_mensagens);
+        setContentView(R.layout.activity_messages);
 
         mensagensPresenter = new MensagemPresenter(
                 getIntent().getLongExtra(Sistema.CONVERSA, 0),

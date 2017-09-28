@@ -361,7 +361,7 @@ public class Sistema {
     }
 
     private static void carregarCombo(List<ComboBoxItem> itens, Spinner cmb, Context context) {
-        ArrayAdapter<ComboBoxItem> dataAdapter = new ArrayAdapter<>(context, R.layout.frm_spinner_text, itens);
+        ArrayAdapter<ComboBoxItem> dataAdapter = new ArrayAdapter<>(context, R.layout.spinner_text, itens);
 
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         cmb.setAdapter(dataAdapter);

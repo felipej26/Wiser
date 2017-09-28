@@ -39,7 +39,7 @@ public class DiscussaoAdapter extends RecyclerView.Adapter<DiscussaoAdapter.View
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.forum_discussao_resultados, parent, false);
+                R.layout.item_discussion, parent, false);
 
         ViewHolder viewHolder = new ViewHolder(itemLayoutView);
         return viewHolder;

@@ -23,7 +23,7 @@ public class SplashScreenActivity extends AbstractAppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.app_splash_screen);
+        setContentView(R.layout.activity_splash_screen);
     }
 
     @Override

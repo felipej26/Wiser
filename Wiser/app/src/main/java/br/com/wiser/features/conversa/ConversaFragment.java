@@ -35,7 +35,7 @@ public class ConversaFragment extends AbstractFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.chat_principal, container, false);
+        View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
         conversaPresenter = new ConversaPresenter();
 

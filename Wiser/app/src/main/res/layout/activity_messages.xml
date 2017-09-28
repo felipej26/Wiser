@@ -20,7 +20,7 @@
         android:layout_above="@+id/frmEnviarMensagem"/>
 
     <include
-        layout="@layout/frm_enviar_mensagem"
+        layout="@layout/frame_send_message"
         android:id="@+id/frmEnviarMensagem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

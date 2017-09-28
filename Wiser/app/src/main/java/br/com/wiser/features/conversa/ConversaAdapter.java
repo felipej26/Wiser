@@ -49,7 +49,7 @@ public class ConversaAdapter extends RealmRecyclerViewAdapter<Conversa, Recycler
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemLayoutView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.chat_mensagens_item, parent, false);
+                .inflate(R.layout.item_chat, parent, false);
 
         return new ViewHolder(itemLayoutView, callback);
     }

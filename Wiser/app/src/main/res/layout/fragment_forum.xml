@@ -47,7 +47,7 @@
         android:layout_below="@id/btnProcurarDiscussao"
         android:scrollbars="vertical"
         android:layout_marginTop="5dp"
-        tools:listitem="@layout/forum_discussao_resultados"/>
+        tools:listitem="@layout/item_discussion"/>
 
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"

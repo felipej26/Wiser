@@ -64,7 +64,7 @@ public class FiltrosManager {
         List<CheckBox> listaChecks = new ArrayList<>();
 
         for (final Filtro filtro : listaFiltros) {
-            filtro.checkBox = (CheckBox) LayoutInflater.from(context).inflate(R.layout.frame_checkbox_filter, parent, false);
+            filtro.checkBox = (CheckBox) LayoutInflater.from(context).inflate(R.layout.filter_checkbox, parent, false);
             filtro.checkBox.setText(filtro.descricao);
             filtro.checkBox.setChecked(filtro.selecionado);
             filtro.checkBox.setEnabled(!filtro.bloqueado);
@@ -90,7 +90,7 @@ public class FiltrosManager {
 
             if ((filtro.selecionado || filtro.bloqueado) && (!filtro.isExibido)) {
                 if (filtro.button == null) {
-                    filtro.button = (Button) LayoutInflater.from(context).inflate(R.layout.frame_button_filter, parent, false);
+                    filtro.button = (Button) LayoutInflater.from(context).inflate(R.layout.filter_button, parent, false);
                     filtro.button.setText(filtro.descricao);
                     filtro.button.setEnabled(!filtro.bloqueado);
 

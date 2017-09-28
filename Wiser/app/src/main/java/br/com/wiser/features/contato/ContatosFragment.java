@@ -42,7 +42,7 @@ public class ContatosFragment extends AbstractFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.contatos_principal, container, false);
+        View view = inflater.inflate(R.layout.fragment_contacts, container, false);
 
         contatosPresenter = new ContatosPresenter();
         contatosPresenter.carregarContatos(new ICallback() {

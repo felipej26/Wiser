@@ -47,7 +47,7 @@ public class ForumFragment extends AbstractFragment implements IDiscussao {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.forum_principal, container, false);
+        View view = inflater.inflate(R.layout.fragment_forum, container, false);
         discussaoPartial = new DiscussaoPartial();
 
         callbackCarregarDiscussoes = new ICallback() {

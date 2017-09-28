@@ -27,7 +27,7 @@
             android:singleLine="true" />
 
         <include
-            layout="@layout/frm_foto_usuario"
+            layout="@layout/frame_user_picture"
             android:id="@id/frmImgPerfil"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

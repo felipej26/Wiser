@@ -73,7 +73,7 @@ public class ProcurarUsuariosActivity extends AbstractAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_procurar_usuarios);
+        setContentView(R.layout.activity_search_users);
 
         procurarContatosPresenter = new ProcurarUsuariosPresenter();
         usuarioPresenter = new UsuarioPresenter();

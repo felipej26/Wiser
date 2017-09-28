@@ -51,7 +51,7 @@ public class LoginActivity extends AbstractActivity {
             logout();
         }
 
-        setContentView(R.layout.app_login);
+        setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
     }
 

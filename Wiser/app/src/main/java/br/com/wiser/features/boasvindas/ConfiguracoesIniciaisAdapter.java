@@ -102,7 +102,7 @@ public class ConfiguracoesIniciaisAdapter extends FragmentPagerAdapter {
         @Nullable
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.frame_welcome_wiser, container, false);
+            View view = inflater.inflate(R.layout.fragment_welcome_wiser, container, false);
 
             return view;
         }
@@ -122,7 +122,7 @@ public class ConfiguracoesIniciaisAdapter extends FragmentPagerAdapter {
         @Nullable
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.frame_welcome_language, container, false);
+            View view = inflater.inflate(R.layout.fragment_welcome_language, container, false);
 
             ButterKnife.bind(this, view);
 
@@ -164,7 +164,7 @@ public class ConfiguracoesIniciaisAdapter extends FragmentPagerAdapter {
         @Nullable
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.frame_welcome_fluency, container, false);
+            View view = inflater.inflate(R.layout.fragment_welcome_fluency, container, false);
 
             ButterKnife.bind(this, view);
 

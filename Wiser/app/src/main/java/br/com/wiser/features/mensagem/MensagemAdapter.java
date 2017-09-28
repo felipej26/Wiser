@@ -102,19 +102,19 @@ public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, Recycler
             case VIEW_MENSAGEM_USUARIO:
                 return new MensagensViewHolder(
                         LayoutInflater.from(parent.getContext()).inflate(
-                                R.layout.chat_mensagens_baloes_usuario, parent, false));
+                                R.layout.item_message_balloon_user, parent, false));
             case VIEW_MENSAGEM_CONTATO:
                 return new MensagensViewHolder(
                         LayoutInflater.from(parent.getContext()).inflate(
-                                R.layout.chat_mensagens_baloes_contato, parent, false));
+                                R.layout.item_message_balloon_contact, parent, false));
             case VIEW_BOTAO_SUGESTAO:
                 return new SugestaoViewHolder(
                         LayoutInflater.from(parent.getContext()).inflate(
-                                R.layout.chat_mensagens_sugestao, parent, false));
+                                R.layout.item_message_suggestion, parent, false));
             case VIEW_DATA:
                 return new DataViewHolder(
                         LayoutInflater.from(parent.getContext()).inflate(
-                                R.layout.chat_mensagens_data, parent, false));
+                                R.layout.item_message_date, parent, false));
         }
 
         return null;

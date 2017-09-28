@@ -54,7 +54,7 @@ public class DialogPerfilUsuario {
 
         this.contato = contato;
 
-        View view = ((Activity) context).getLayoutInflater().inflate(R.layout.dialog_perfil, null);
+        View view = ((Activity) context).getLayoutInflater().inflate(R.layout.dialog_profile, null);
 
         onLoad(view, contato);
 

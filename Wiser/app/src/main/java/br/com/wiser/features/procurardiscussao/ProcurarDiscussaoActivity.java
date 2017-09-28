@@ -43,7 +43,7 @@ public class ProcurarDiscussaoActivity extends AbstractAppCompatActivity impleme
     @Override
     protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
-        setContentView(R.layout.forum_pesquisa);
+        setContentView(R.layout.activity_search_discussions);
 
         procurarDiscussaoPresenter = new ProcurarDiscussaoPresenter();
         discussaoPartial = new DiscussaoPartial();

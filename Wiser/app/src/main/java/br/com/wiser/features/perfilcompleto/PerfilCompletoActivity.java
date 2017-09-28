@@ -50,7 +50,7 @@ public class PerfilCompletoActivity extends AbstractAppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.app_perfil_completo);
+        setContentView(R.layout.activity_full_profile);
 
         perfilCompletoPresenter = new PerfilCompletoPresenter((Usuario) getIntent().getExtras().get(Sistema.CONTATO));
         perfilCompletoPresenter.carregarDiscussoes(new ICallback() {

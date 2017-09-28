@@ -44,7 +44,7 @@ public class DialogConfirmar {
         AlertDialog.Builder builder;
 
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_confirmar, null);
+        View view = inflater.inflate(R.layout.dialog_confirm, null);
 
         onLoad(view);
 

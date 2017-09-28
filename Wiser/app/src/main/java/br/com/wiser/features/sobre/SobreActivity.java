@@ -29,7 +29,7 @@ public class SobreActivity extends AbstractAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.app_sobre);
+        setContentView(R.layout.activity_about);
 
         ButterKnife.bind(this);
         onLoad();

@@ -42,7 +42,7 @@ public class DialogInformar {
         AlertDialog.Builder builder;
 
         LayoutInflater inflater = activity.getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_informar, null);
+        View view = inflater.inflate(R.layout.dialog_inform, null);
 
         onLoad(view);
 
