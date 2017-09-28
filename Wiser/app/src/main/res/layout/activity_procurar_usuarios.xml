@@ -8,81 +8,88 @@
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
+        layout="@layout/toolbar"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/lytFiltros"
-        android:elevation="@dimen/toolbar_elevation"
-        android:animateLayoutChanges="true">
-
-        <include
-            layout="@layout/frame_filtros_encontrar_usuarios_expandido"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/lytFiltroExpandido" />
-
-        <include
-            layout="@layout/frame_filtros_encontrar_usuarios"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/lytFiltro"
-            android:visibility="gone" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/lytFiltros">
+        android:orientation="vertical"
+        android:elevation="@dimen/toolbar_elevation"
+        android:clipChildren="false">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rcvUsuarios"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lytFiltros"
+            android:animateLayoutChanges="true">
+
+            <include
+                layout="@layout/frame_filtros_encontrar_usuarios_expandido"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/lytFiltroExpandido"/>
+
+            <include
+                layout="@layout/frame_filtros_encontrar_usuarios"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/lytFiltro"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="vertical"
-            tools:listitem="@layout/contatos_encontrar_pessoas_resultados_grid"/>
+            android:layout_below="@id/lytFiltros">
 
-        <TextView
-            android:id="@+id/lblUsuariosNaoEncontrados"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
-            android:text="@string/usuarios_nao_encontrados"
-            android:textSize="14sp"
-            android:fontFamily="sans-serif-medium"
-            android:textStyle="normal"
-            android:gravity="center_horizontal"
-            android:textColor="@android:color/primary_text_light"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"/>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rcvUsuarios"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                tools:listitem="@layout/contatos_encontrar_pessoas_resultados_grid"/>
 
-        <Button
-            android:id="@+id/btnMostrarFiltros"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/lblUsuariosNaoEncontrados"
-            android:background="@color/colorAlpha"
-            android:text="@string/mostrar_filtros"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:textColor="@color/colorPrimary"/>
+            <TextView
+                android:id="@+id/lblUsuariosNaoEncontrados"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:text="@string/usuarios_nao_encontrados"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-medium"
+                android:textStyle="normal"
+                android:gravity="center_horizontal"
+                android:textColor="@android:color/primary_text_light"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"/>
 
-        <ProgressBar
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/pgbLoading"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:progressDrawable="@drawable/circular_loading"
-            android:visibility="gone"
-            android:progressTint="@color/colorAccent"
-            android:indeterminateTint="@color/colorAccent"
-            android:indeterminateTintMode="src_in" />
+            <Button
+                android:id="@+id/btnMostrarFiltros"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/lblUsuariosNaoEncontrados"
+                android:background="@color/colorAlpha"
+                android:text="@string/mostrar_filtros"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:textColor="@color/colorPrimary"/>
 
-    </RelativeLayout>
+            <ProgressBar
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/pgbLoading"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:progressDrawable="@drawable/circular_loading"
+                android:visibility="gone"
+                android:progressTint="@color/colorAccent"
+                android:indeterminateTint="@color/colorAccent"
+                android:indeterminateTintMode="src_in"/>
+
+        </RelativeLayout>
+    </LinearLayout>
 </LinearLayout>

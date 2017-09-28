@@ -41,3 +41,4 @@ captures/
 projectFilesBackup
 Wiser/app/app-production-release.apk
 Wiser/app/app-release.apk
+*.apk
