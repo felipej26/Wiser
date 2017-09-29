@@ -45,6 +45,11 @@ public class Facebook {
         void onCompleted(String nome, String primeiroNome, Date dataNascimento);
     }
 
+    private interface ICallbackContextID {
+        void onSuccess(String userContextID);
+        void onError(String error);
+    }
+
     private Context context;
     private static CallbackManager callbackManager;
 
@@ -186,7 +191,50 @@ public class Facebook {
         request.executeAsync();
     }
 
-    private void carregarPaginasEmComum(final String userContextID, final ICallbackPaginas callbackPaginas) {
+    public void carregarPaginasEmComum(String facebookIDDestinarario, final ICallbackPaginas callback) {
+        carregarContextID(facebookIDDestinarario, new ICallbackContextID() {
+            @Override
+            public void onSuccess(String userContextID) {
+                carregarMutualLikes(userContextID, callback);
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.e("Facebook", "Erro ao carregar paginas em comum. Erro: " + error);
+            }
+        });
+    }
+
+    private void carregarContextID(String facebookIDDestinarario, final ICallbackContextID callback) {
+        GraphRequest request = GraphRequest.newGraphPathRequest(
+                createAccessToken(Sistema.getUsuario()),
+                "/" + facebookIDDestinarario,
+                new GraphRequest.Callback() {
+                    @Override
+                    public void onCompleted(GraphResponse response) {
+                        if (response.getError() == null) {
+                            try {
+                                callback.onSuccess(response.getJSONObject()
+                                        .getJSONObject("context")
+                                        .getString("id"));
+                            }
+                            catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        else {
+                            callback.onError(response.getError().getErrorMessage());
+                        }
+                    }
+                });
+
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "context.fields(id)");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+    private void carregarMutualLikes(final String userContextID, final ICallbackPaginas callbackPaginas) {
         final HashSet<Pagina> paginas = new HashSet<>();
         final Bundle parametros = new Bundle();
 

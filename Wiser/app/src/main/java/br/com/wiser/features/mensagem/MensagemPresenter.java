@@ -26,21 +26,21 @@ public class MensagemPresenter {
     private IMensagemService service;
     private Realm realm;
     private Conversa conversa;
-    private Usuario usuario;
+    private Usuario contato;
 
-    public MensagemPresenter(long idConversa, Usuario usuario) {
+    public MensagemPresenter(long idConversa, Usuario contato) {
         this.service = APIClient.getClient().create(IMensagemService.class);
         this.realm = Realm.getDefaultInstance();
         this.conversa = realm.where(Conversa.class).equalTo("id", idConversa).findFirst();
-        this.usuario = usuario;
+        this.contato = contato;
     }
 
     public Conversa getConversa() {
         return conversa;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public Usuario getContato() {
+        return contato;
     }
 
     public RealmList<Mensagem> getMensagens() {

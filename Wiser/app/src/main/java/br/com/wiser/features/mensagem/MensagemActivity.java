@@ -11,10 +11,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Random;
+
 import br.com.wiser.AbstractAppCompatActivity;
 import br.com.wiser.R;
 import br.com.wiser.Sistema;
 import br.com.wiser.dialogs.DialogSugestoes;
+import br.com.wiser.facebook.Facebook;
+import br.com.wiser.facebook.ICallbackPaginas;
+import br.com.wiser.features.assunto.Assunto;
+import br.com.wiser.features.assunto.Pagina;
 import br.com.wiser.features.usuario.Usuario;
 import br.com.wiser.interfaces.ICallback;
 import butterknife.BindView;
@@ -28,6 +37,7 @@ import butterknife.OnTextChanged;
 public class MensagemActivity extends AbstractAppCompatActivity implements DialogSugestoes.CallbackSugestao {
 
     private MensagemPresenter mensagensPresenter;
+    private MensagemAdapter adapter;
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
@@ -50,6 +60,8 @@ public class MensagemActivity extends AbstractAppCompatActivity implements Dialo
         if (mensagensPresenter.getConversa().getId() > 0 && mensagensPresenter.getConversa().getMensagens().size() > 0) {
             atualizarMensagensLidas();
         }
+
+        carregarSugestoes();
     }
 
     @Override
@@ -59,13 +71,11 @@ public class MensagemActivity extends AbstractAppCompatActivity implements Dialo
     }
 
     private void onLoad() {
-        MensagemAdapter adapter;
-
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(mensagensPresenter.getUsuario().getNome());
+        getSupportActionBar().setTitle(mensagensPresenter.getContato().getNome());
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -79,16 +89,8 @@ public class MensagemActivity extends AbstractAppCompatActivity implements Dialo
         });
 
         lblSugestao.setText("");
-        lblSugestao.setVisibility(View.GONE);
-        /*
-        adapter.onSetSugestao(new MensagemAdapter.Callback() {
-            @Override
-            public void onSugestaoClick() {
-                DialogSugestoes sugestoes = new DialogSugestoes();
-                sugestoes.show(getContext(), MensagemActivity.this, mensagensPresenter.getConversa().getSugestoes());
-            }
-        });
-        */
+        lblSugestao.setVisibility(View.INVISIBLE);
+
         recyclerView.setAdapter(adapter);
         ajustarLista();
     }
@@ -140,6 +142,55 @@ public class MensagemActivity extends AbstractAppCompatActivity implements Dialo
             @Override
             public void onError(String mensagemErro) {
 
+            }
+        });
+    }
+
+    private void carregarSugestoes() {
+        Facebook facebook = new Facebook();
+
+        if (mensagensPresenter.getConversa().getSugestoes().size() > 0) {
+            adicionarSugestao();
+        }
+        else {
+            facebook.carregarPaginasEmComum(mensagensPresenter.getContato().getFacebookID(), new ICallbackPaginas() {
+                @Override
+                public void setResponse(HashSet<Pagina> paginas) {
+
+                    Map<String, Assunto> mapAssuntos = new HashMap<>();
+
+                    for (Assunto assunto : Sistema.getAssuntos()) {
+                        for (String categoria : assunto.getCategorias()) {
+                            mapAssuntos.put(categoria, assunto);
+                        }
+                    }
+
+                    for (Pagina pagina : paginas) {
+                        if (mapAssuntos.containsKey(pagina.getCategoria())) {
+                            Assunto assunto = mapAssuntos.get(pagina.getCategoria());
+
+                            int item = new Random().nextInt(assunto.getItens().size());
+                            mensagensPresenter.getConversa().getSugestoes().add(assunto.getItens().get(item)
+                                    .replace("%a", pagina.getNome())
+                                    .replace("%i", Sistema.getDescricaoIdioma(Sistema.getUsuario().getIdioma()))
+                                    .replace("%u", mensagensPresenter.getContato().getPrimeiroNome()));
+                        }
+                    }
+
+                    if (mensagensPresenter.getConversa().getSugestoes().size() > 0) {
+                        adicionarSugestao();
+                    }
+                }
+            });
+        }
+    }
+
+    private void adicionarSugestao() {
+        adapter.onSetSugestao(new MensagemAdapter.Callback() {
+            @Override
+            public void onSugestaoClick() {
+                DialogSugestoes sugestoes = new DialogSugestoes();
+                sugestoes.show(getContext(), MensagemActivity.this, mensagensPresenter.getConversa().getSugestoes());
             }
         });
     }

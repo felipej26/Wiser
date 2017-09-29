@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:text="Sugestão de Assunto"
         android:id="@+id/lblSugestao"
-        android:textColor="@android:color/primary_text_light"
+        android:textColor="@color/colorPrimaryText"
         android:layout_centerHorizontal="true"
         android:textAlignment="center" />
 
