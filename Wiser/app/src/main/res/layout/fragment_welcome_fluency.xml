@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/containershape"
+        android:elevation="4dp"
         android:layout_marginLeft="32dp"
         android:layout_margin="50dp">
 
@@ -40,9 +41,5 @@
                 android:text="@string/fluencia" />
 
         </RelativeLayout>
-
-
-
     </RelativeLayout>
-
 </RelativeLayout>
