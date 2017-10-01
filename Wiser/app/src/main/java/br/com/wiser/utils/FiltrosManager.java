@@ -3,6 +3,7 @@ package br.com.wiser.utils;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,7 +114,7 @@ public class FiltrosManager {
         return listaButtons;
     }
 
-    public void selecionarMultiplosItens(Context context, final ICallbackFinish callback) {
+    public void selecionarMultiplosItens(Context context, @StringRes int title, final ICallbackFinish callback) {
         final Set<Integer> itensSelecionados = new HashSet<>();
 
         final SelecionarFiltros selecionarFiltros = new SelecionarFiltros();
@@ -125,7 +126,7 @@ public class FiltrosManager {
 
         if (selecionarFiltros.getFiltros().size() > 0) {
             AlertDialog dialog = new AlertDialog.Builder(context)
-                    .setTitle(R.string.selecionar_idiomas)
+                    .setTitle(title)
                     .setMultiChoiceItems(selecionarFiltros.get(), null, new DialogInterface.OnMultiChoiceClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which, boolean isChecked) {
@@ -163,7 +164,7 @@ public class FiltrosManager {
         }
     }
 
-    public void selecionarItem(Context context, final OnClickItemListener listener) {
+    public void selecionarItem(Context context, @StringRes int title, final OnClickItemListener listener) {
         final SelecionarFiltros selecionarFiltros = new SelecionarFiltros();
         for (Filtro filtro : listaFiltros) {
             if (!filtro.selecionado) {
@@ -173,7 +174,7 @@ public class FiltrosManager {
 
         if (selecionarFiltros.getFiltros().size() > 0) {
             AlertDialog dialog = new AlertDialog.Builder(context)
-                    .setTitle(R.string.selecionar_idiomas)
+                    .setTitle(title)
                     .setItems(selecionarFiltros.get(), new DialogInterface.OnClickListener() {
 
                         @Override

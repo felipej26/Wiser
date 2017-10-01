@@ -140,7 +140,7 @@ public class ConfiguracoesIniciaisAdapter extends FragmentPagerAdapter {
 
         @OnClick(R.id.btnIdioma)
         public void onLanguageClicked() {
-            fm.selecionarItem(getContext(), new FiltrosManager.OnClickItemListener() {
+            fm.selecionarItem(getContext(), R.string.selecionar_idiomas, new FiltrosManager.OnClickItemListener() {
                 @Override
                 public void onClick(int idFiltro, String descricao) {
                     btnIdioma.setText(descricao);
@@ -182,7 +182,7 @@ public class ConfiguracoesIniciaisAdapter extends FragmentPagerAdapter {
 
         @OnClick(R.id.btnFluencia)
         public void onFluencyClicked() {
-            fm.selecionarItem(getContext(), new FiltrosManager.OnClickItemListener() {
+            fm.selecionarItem(getContext(), R.string.selecionar_fluencias, new FiltrosManager.OnClickItemListener() {
                 @Override
                 public void onClick(int idFiltro, String descricao) {
                     btnFluencia.setText(descricao);

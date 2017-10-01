@@ -98,4 +98,5 @@
     <string name="apresentacao_app">Wiser is an app that connects you and other users to practice a language</string>
     <string name="apresentacao_fluencia">Select your level in the chosen language</string>
     <string name="apresentacao_idioma">Select the language you want to practice</string>
+    <string name="selecionar_fluencias">Select the fluency</string>
 </resources>

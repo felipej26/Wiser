@@ -1,6 +1,8 @@
 package br.com.wiser.features.boasvindas;
 
+import android.animation.ArgbEvaluator;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -15,7 +17,6 @@ import br.com.wiser.features.configuracoes.Configuracoes;
 import br.com.wiser.features.configuracoes.ConfiguracoesPresenter;
 import br.com.wiser.features.principal.PrincipalActivity;
 import br.com.wiser.interfaces.ICallbackFinish;
-import br.com.wiser.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -25,9 +26,12 @@ public class ConfiguracoesIniciaisActivity extends AbstractAppCompatActivity {
     private ConfiguracoesIniciaisAdapter adapter;
 
     @BindView(R.id.viewpager) ViewPager viewPager;
+    @BindView(R.id.animated_color) View animated_color;
     @BindView(R.id.indicator) CirclePageIndicator indicator;
 
     @BindView(R.id.btnFeito) Button btnFeito;
+
+    private int[] colors;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +50,10 @@ public class ConfiguracoesIniciaisActivity extends AbstractAppCompatActivity {
             }
         });
 
+        setUpColors();
+        animated_color.setBackgroundColor(colors[0]);
         viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new CustomOnPageChangeListener());
 
         indicator.setViewPager(viewPager);
         indicator.setSnap(true);
@@ -71,8 +78,48 @@ public class ConfiguracoesIniciaisActivity extends AbstractAppCompatActivity {
         configuracoes.setId(Sistema.getUsuario().getId());
         configuracoes.setIdioma(adapter.getLanguageChoosed());
         configuracoes.setFluencia(adapter.getFluencyChoosed());
-        configuracoes.setStatus(Utils.encode(""));
+        configuracoes.setStatus("");
 
         configuracoesPresenter.salvar(configuracoes);
+    }
+
+    private void setUpColors() {
+        colors = new int[] {
+                getResourceColor(R.color.colorPrimary),
+                getResourceColor(R.color.colorAccent),
+                getResourceColor(R.color.colorPrimaryDark)
+        };
+    }
+
+    public int getResourceColor(int color) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return getColor(color);
+        }
+        else {
+            return getResources().getColor(color);
+        }
+    }
+
+    private class CustomOnPageChangeListener implements ViewPager.OnPageChangeListener {
+
+        private ArgbEvaluator argbEvaluator = new ArgbEvaluator();
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            if (position < (adapter.getCount() - 1) && position < (colors.length - 1)) {
+                viewPager.setBackgroundColor(
+                        (Integer) argbEvaluator.evaluate(positionOffset, colors[position], colors[position + 1])
+                );
+            }
+            else {
+                viewPager.setBackgroundColor(colors[colors.length - 1]);
+            }
+        }
+
+        @Override
+        public void onPageSelected(int position) { }
+
+        @Override
+        public void onPageScrollStateChanged(int state) { }
     }
 }
