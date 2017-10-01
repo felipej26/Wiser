@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"
-        android:layout_margin="15dp"
+        android:layout_margin="20dp"
+        android:elevation="4dp"
         android:background="@drawable/containershape">
 
         <TextView
@@ -23,6 +24,7 @@
             android:id="@+id/lblAppName"
             android:text="@string/app_name"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
             android:textSize="35sp"
             android:textColor="#8B8989"
             android:textStyle="bold" />
@@ -39,37 +41,37 @@
             android:textStyle="italic" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/imgSobre"
             android:src="@mipmap/logo_wiser_2"
             android:layout_below="@id/lblVersao"
+            android:layout_above="@id/lblSobreRodape"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="45dp"
-            android:layout_marginRight="45dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginRight="45dp"/>
 
         <TextView
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/app_sobre_item_copyright"
             android:id="@+id/lblSobreRodape"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/btnCompartilhar"
             android:layout_centerHorizontal="true"
-            android:layout_below="@id/imgSobre"
+            android:text="@string/app_sobre_item_copyright"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#8B8989" />
 
         <Button
+            android:id="@+id/btnCompartilhar"
             android:layout_width="wrap_content"
             android:layout_height="25dp"
-            android:text="@string/compartilhar"
-            android:textSize="10dp"
-            android:id="@+id/btnCompartilhar"
-            android:background="@android:color/transparent"
-            android:textColor="#8B8989"
+            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_below="@id/lblSobreRodape"/>
+            android:layout_marginBottom="16dp"
+            android:background="@android:color/transparent"
+            android:text="@string/compartilhar"
+            android:textColor="#8B8989"
+            android:textSize="10dp" />
 
     </RelativeLayout>
 </RelativeLayout>
