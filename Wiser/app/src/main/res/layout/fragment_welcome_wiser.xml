@@ -1,54 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.constraint.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary">
+    android:background="@color/colorPrimary"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
+    <View
+        android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/containershape"
+        android:layout_margin="50dp"
+        android:elevation="2dp"
+        android:background="@drawable/containershape" />
+
+    <TextView
+        android:id="@+id/lblWelcome"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/bemvindo"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:layout_margin="16dp"
+        android:gravity="center"
         android:elevation="4dp"
-        android:layout_marginLeft="32dp"
-        android:layout_margin="50dp">
+        app:layout_constraintBottom_toTopOf="@+id/imgWiser"
+        app:layout_constraintEnd_toEndOf="@+id/view"
+        app:layout_constraintStart_toStartOf="@+id/view"
+        app:layout_constraintTop_toTopOf="@+id/view"
+        app:layout_constraintVertical_chainStyle="packed"/>
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true">
+    <ImageView
+        android:id="@+id/imgWiser"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:elevation="4dp"
+        app:layout_constraintBottom_toTopOf="@id/lblWelcomeMessage"
+        app:layout_constraintTop_toBottomOf="@+id/lblWelcome"
+        app:layout_constraintEnd_toEndOf="@+id/view"
+        app:layout_constraintStart_toStartOf="@+id/view"
+        app:srcCompat="@mipmap/logo_wiser_2" />
 
-            <TextView
-                android:id="@+id/lblWelcome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:textStyle="bold"
-                android:text="@string/bemvindo"
-                android:textSize="25sp"/>
+    <TextView
+        android:id="@+id/lblWelcomeMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/apresentacao_app"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:layout_margin="16dp"
+        android:elevation="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/view"
+        app:layout_constraintEnd_toEndOf="@+id/view"
+        app:layout_constraintStart_toStartOf="@+id/view"
+        app:layout_constraintTop_toBottomOf="@+id/imgWiser" />
 
-            <ImageView
-                android:id="@+id/imgWiser"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_below="@+id/lblWelcome"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                app:srcCompat="@mipmap/logo_wiser_2" />
-
-            <TextView
-                android:id="@+id/lblWelcomeMessage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/imgWiser"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="25dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:textSize="20sp"
-                android:textAlignment="center"
-                android:text="@string/apresentacao_app" />
-
-        </RelativeLayout>
-    </RelativeLayout>
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
