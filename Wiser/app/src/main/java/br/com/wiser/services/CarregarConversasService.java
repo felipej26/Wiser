@@ -117,6 +117,7 @@ public class CarregarConversasService extends Service {
                             for (Mensagem mensagem : conversa.getMensagens()) {
                                 if (mensagem.isDestinatario() && !mensagem.isLida()) {
                                     Utils.vibrar(CarregarConversasService.this, 150);
+                                    notificar(conversa.getId() + ": " + mensagem.getMensagem());
                                 }
                             }
                         }
@@ -138,16 +139,16 @@ public class CarregarConversasService extends Service {
 
         final int NOTIFICATION_ID = 1;
 
-        NotificationCompat.Builder builder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.logo_wiser_notificacao)
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText(getString(R.string.novas_mensagem));
-
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
         inboxStyle.setBigContentTitle(getString(R.string.app_name));
         inboxStyle.addLine(mensagemNova);
 
-        builder.setStyle(inboxStyle);
+        NotificationCompat.Builder builder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_wiser_notification)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(getString(R.string.novas_mensagem))
+                .setStyle(inboxStyle)
+                .setAutoCancel(true);
 
         Intent resultIntent = new Intent(this, SplashScreenActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
